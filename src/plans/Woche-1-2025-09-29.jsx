@@ -5,10 +5,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
  * GhibliKitchen – Woche 1 (CN/JP/KR) – JSX Edition
  * - Pläne immer .jsx
  * - PDF-Link erscheint nach Erzeugung unter dem Plan
- * - A4 Querformat, höhere Auflösung (html2canvas.scale = 3), .page-Wrapper für saubere Seiten/Pagebreaks
- * - Kochbuch-Tab: Layout-Hinweis NICHT anzeigen (internes Prompt-Template)
- * - Mehr Abstand unter den Action-Knöpfen
+ * - A4 Querformat, leserlich (scale=3, saubere .page-Seiten)
+ * - Kochbuch-Layout-Hinweis NICHT anzeigen (internes Prompt-Template)
+ * - Mehr Abstand unter & zwischen den Action-Knöpfen
  * - Mittag: kein Metformin-Reminder; Einkaufsliste: ohne Metformin-Hinweis im Footer
+ * - Überschriften je Mahlzeit: Frühstück / Mittagessen / Abendessen
  */
 
 export const meta = {
@@ -43,6 +44,8 @@ function formatYMD(d = new Date()) {
 }
 const FILE_BASE = `Woche 1 ${formatYMD()}`;
 const isMiddayId = (id = "") => /-m$/.test(id);
+const mealLabel = (id="") =>
+  id.endsWith("-f") ? "Frühstück" : id.endsWith("-m") ? "Mittagessen" : "Abendessen";
 
 /* ---------------- Prompt-Header (intern, nicht im UI) ---------------- */
 const PROMPT_HEADER =
@@ -209,7 +212,7 @@ const LIST_SUMMARY = [
   { name: "Algen, Brühen & Würze", items: [["Wakame (getrocknet)","9 g"],["Miso hell","20 g"],["Sojasauce natriumarm","150 ml"],["Sesamöl","10 ml"],["Speisestärke","10 g"],["Hühnerfond ungesalzen","800 ml"],["Kombu/Dashi (mild) für Brühen","≈4,6 L"],["Salz (Prisen) & Zucker (opt.)","–"]] },
 ];
 
-/* ---------------- html2pdf Helper (höhere Auflösung + saubere Pagebreaks) ---------------- */
+/* ---------------- html2pdf Helper (robust gegen leere Seiten) ---------------- */
 function useHtml2Pdf() {
   const ensureScript = (src, check) =>
     new Promise((resolve, reject) => {
@@ -226,23 +229,33 @@ function useHtml2Pdf() {
       "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js",
       () => !!window.html2pdf
     );
+
+    // Dimensionen des Elements (für html2canvas)
+    const w = el.scrollWidth || el.clientWidth || 1123;
+    const h = el.scrollHeight || el.clientHeight || 794;
+
     const merged = {
       margin: [24, 28, 24, 28],
       image: { type: "jpeg", quality: 0.97 },
       html2canvas: {
-        scale: 3, // höhere Renderauflösung für Lesbarkeit
+        scale: 3,
         useCORS: true,
         backgroundColor: COLORS.pageBg,
-        foreignObjectRendering: true,
-        preferCanvas: false,
+        foreignObjectRendering: false, // stabiler in Safari/iOS
         letterRendering: true,
+        windowWidth: w,
+        windowHeight: h,
+        scrollX: 0,
+        scrollY: -window.scrollY,
       },
       jsPDF: { unit: "pt", format: "a4", orientation: "landscape" },
-      // Pagebreaks exakt an .page-Container-Grenzen:
-      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"], avoid: [".avoid-break"] },
+      // Nur "after", damit keine leere erste Seite entsteht:
+      pagebreak: { mode: ["css","legacy"], after: [".page"], avoid: [".avoid-break"] },
       ...opt,
     };
-    const worker = window.html2pdf().from(el).set(merged).toPdf();
+
+    const worker = window.html2pdf().from(el).set(merged);
+    await worker.toPdf(); // sicherstellen, dass gerendert wurde
     const blob = await worker.output("blob");
     const url = URL.createObjectURL(blob);
     return { blob, url };
@@ -260,20 +273,20 @@ function TopBar({ title, subtitle, onPDF, onExportHTML, onPrint }) {
     borderRadius: 16,
   };
   return (
-    <div className="print:hidden" style={{ color: COLORS.text, marginBottom: 16 }}>
-      <div className="flex items-center justify-between gap-2">
+    <div className="print:hidden" style={{ color: COLORS.text, marginBottom: 24 }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
         <div>
           <h1 className="text-2xl font-semibold">{title}</h1>
           {!!subtitle && <p className="text-sm" style={{ opacity: .8 }}>{subtitle}</p>}
         </div>
-        <div className="flex flex-wrap gap-2 items-center">
+        <div style={{ display:"flex", flexWrap:"wrap", gap:12, alignItems:"center" }}>
           <button onClick={onPDF} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.emerald }}>PDF erzeugen</button>
           <button onClick={onExportHTML} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.amber }}>HTML exportieren</button>
           <button onClick={onPrint} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.sky }}>Drucken</button>
         </div>
       </div>
-      {/* mehr Abstand UNTER den Knöpfen */}
-      <div style={{ height: 16 }} />
+      {/* Extra-Abstand unter den Knöpfen */}
+      <div style={{ height: 20 }} />
     </div>
   );
 }
@@ -338,9 +351,9 @@ export default function Woche1_2025_09_29() {
       margin: preset.page.marginPt,
       filename: `${FILE_BASE} – Kochbuch.pdf`,
       image: { type: "jpeg", quality: 0.97 },
-      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.page.background, foreignObjectRendering: true, preferCanvas: false, letterRendering: true },
+      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.page.background, foreignObjectRendering: false, letterRendering: true },
       jsPDF: { unit: "pt", format: "a4", orientation: preset.page.orientation },
-      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"], avoid: [".avoid-break"] },
+      pagebreak: { mode: ["css","legacy"], after: [".page"], avoid: [".avoid-break"] },
     };
     const { url } = await pdf.make(el, opt);
     setHrefKB(old => { if (old) URL.revokeObjectURL(old); return url; });
@@ -351,9 +364,9 @@ export default function Woche1_2025_09_29() {
       margin: preset.listPage.marginPt,
       filename: `${FILE_BASE} – Einkaufsliste.pdf`,
       image: { type: "jpeg", quality: 0.97 },
-      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.listPage.background, foreignObjectRendering: true, preferCanvas: false, letterRendering: true },
+      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.listPage.background, foreignObjectRendering: false, letterRendering: true },
       jsPDF: { unit: "pt", format: "a4", orientation: preset.listPage.orientation },
-      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"] },
+      pagebreak: { mode: ["css","legacy"], after: [".page"] },
     };
     const { url } = await pdf.make(el, opt);
     setHrefLI(old => { if (old) URL.revokeObjectURL(old); return url; });
@@ -387,7 +400,7 @@ export default function Woche1_2025_09_29() {
           <div style={{ maxWidth:1123, margin:"0 auto" }}>
             <TopBar
               title={`GhibliKitchen – Woche 1 • Kochbuch-PDF (${formatYMD()})`}
-              subtitle="" /* Hinweis bewusst ausgeblendet */
+              subtitle=""
               onPDF={makePDF_KB}
               onExportHTML={()=>exportHTML(kbRef.current, `${FILE_BASE} – Kochbuch`, "landscape")}
               onPrint={doPrint}
@@ -430,13 +443,12 @@ export default function Woche1_2025_09_29() {
                   <main style={{ gridColumn:"span 8 / span 8" }}>
                     <div style={{ ...cardMainStyle }}>
                       <h2 style={{ fontSize:32, fontWeight:600 }}>{DEFAULT_PRESET.layout.title}</h2>
-                      {/* Kein Subtitle im UI */}
                       <ul style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginTop:16, fontSize:10 }}>
                         {DATA.map((d, i)=> (
                           <li key={i} style={{ ...cardMainStyle, padding:10 }}>
                             <div style={{ fontWeight:600 }}>{d.day}</div>
                             <ul style={{ paddingLeft:16, listStyle:"disc" }}>
-                              {d.meals.map((m)=> <li key={m.id}>{m.title}</li>)}
+                              {d.meals.map((m)=> <li key={m.id}><em>{mealLabel(m.id)}:</em> {m.title}</li>)}
                             </ul>
                           </li>
                         ))}
@@ -452,13 +464,18 @@ export default function Woche1_2025_09_29() {
               </div>
             </div>
 
-            {/* Rezeptseiten – jede Seite in eigener .page für klare Pagebreaks */}
+            {/* Rezeptseiten – jede Seite in eigener .page */}
             {DATA.map((d) => (
               <div className="page" key={d.day}>
                 <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
                   <h3 style={{ fontSize:24, fontWeight:600, marginBottom:8 }}>{d.day}</h3>
                   {d.meals.map((m) => (
                     <div key={m.id} style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24, marginBottom:16 }}>
+                      {/* ÜBERSCHRIFT je Mahlzeit */}
+                      <div style={{ gridColumn:"1 / -1", fontSize:16, fontWeight:700, marginBottom:4 }}>
+                        {mealLabel(m.id)}
+                      </div>
+
                       <aside style={{ gridColumn:"span 4 / span 4" }}>
                         <div style={cardPanelStyle}>
                           <div style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -487,6 +504,7 @@ export default function Woche1_2025_09_29() {
                           </details>
                         </div>
                       </aside>
+
                       <main style={{ gridColumn:"span 8 / span 8" }}>
                         <article className="avoid-break" style={cardMainStyle}>
                           <h4 style={{ fontSize:18, fontWeight:600 }}>{m.title} – 2 Portionen</h4>
@@ -621,6 +639,11 @@ function SmokeTests({ DATA, DEFAULT_PRESET }) {
       console.assert(show(sampleMorning) === true, "Morning should show Metformin");
       console.assert(show(sampleMidday)  === false, "Midday should NOT show Metformin");
       console.assert(show(sampleEvening) === true, "Evening should show Metformin");
+
+      // Überschriften-Test für mealLabel
+      console.assert(mealLabel("x-f")==="Frühstück", "mealLabel breakfast");
+      console.assert(mealLabel("x-m")==="Mittagessen", "mealLabel lunch");
+      console.assert(mealLabel("x-a")==="Abendessen", "mealLabel dinner");
 
       // Einkaufsliste-Footer darf kein "Metformin" enthalten
       const listFooter = `Hinweise: ${DEFAULT_PRESET.health.gastritis} · ${DEFAULT_PRESET.health.pregnancy}. Diabetes: ${DEFAULT_PRESET.health.diabetesKH2p}.`;
