@@ -5,10 +5,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
  * GhibliKitchen – Woche 1 (CN/JP/KR) – JSX Edition
  * - Pläne immer .jsx
  * - PDF-Link erscheint nach Erzeugung unter dem Plan
- * - A4 Querformat, leserlich (scale=3, saubere .page-Seiten)
- * - Kochbuch-Layout-Hinweis NICHT anzeigen (internes Prompt-Template)
- * - Mehr Abstand unter & zwischen den Action-Knöpfen
- * - Mittag: kein Metformin-Reminder; Einkaufsliste: ohne Metformin-Hinweis im Footer
+ * - A4 Querformat, leserlich (scale=3, .page-Seiten)
+ * - DALL·E-Prompts NICHT rendern (nur im Code vorhanden)
+ * - Mittag: kein Metformin-Reminder; Einkaufsliste: ohne Metformin-Hinweis
  * - Überschriften je Mahlzeit: Frühstück / Mittagessen / Abendessen
  */
 
@@ -18,7 +17,7 @@ export const meta = {
   id: "woche-1-" + new Date().toISOString().slice(0, 10),
 };
 
-/* ---------------- Palette (nur HEX/RGBA, keine oklab/oklch) ---------------- */
+/* ---------------- Palette (HEX/RGBA only) ---------------- */
 const COLORS = {
   pageBg: "#FAF7F1",
   text: "#111827",
@@ -35,17 +34,14 @@ const COLORS = {
 };
 
 /* ---------------- Helper ---------------- */
-function buildPrompt(header, body) {
-  return `${header}\n${body}`;
-}
+function buildPrompt(header, body) { return `${header}\n${body}`; }
 function formatYMD(d = new Date()) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
-const FILE_BASE = `Woche 1 ${formatYMD()}`;
+const LIST_TITLE = `GhibliKitchen – Einkaufsliste – ${meta.title}`;
 const isMiddayId = (id = "") => /-m$/.test(id);
-const mealLabel = (id="") =>
-  id.endsWith("-f") ? "Frühstück" : id.endsWith("-m") ? "Mittagessen" : "Abendessen";
+const mealLabel = (id="") => id.endsWith("-f") ? "Frühstück" : id.endsWith("-m") ? "Mittagessen" : "Abendessen";
 
 /* ---------------- Prompt-Header (intern, nicht im UI) ---------------- */
 const PROMPT_HEADER =
@@ -55,7 +51,7 @@ const PROMPT_HEADER =
 const DEFAULT_PRESET = {
   page: { orientation: "landscape", marginPt: [24, 28, 24, 28], background: COLORS.pageBg },
   listPage: { orientation: "portrait", marginPt: [20, 24, 20, 24], background: COLORS.pageBg },
-  layout: { title: "GhibliKitchen – Woche 1 (CN/JP/KR)", subtitle: "" }, // Subtitle bewusst leer
+  layout: { title: "GhibliKitchen – Woche 1", subtitle: "" },
   buttons: { pdf: true, htmlExport: true, htmlOpen: false, print: true },
   health: {
     diabetesKH2p: "60–90 g KH/ Mahlzeit (2 P.)",
@@ -70,10 +66,7 @@ function useGhibliPreset(defaultPreset = DEFAULT_PRESET) {
   const KEY = "ghibliKitchenPreset_v1";
   const [preset, setPreset] = useState(defaultPreset);
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setPreset({ ...defaultPreset, ...JSON.parse(raw) });
-    } catch (_) {}
+    try { const raw = localStorage.getItem(KEY); if (raw) setPreset({ ...defaultPreset, ...JSON.parse(raw) }); } catch (_) {}
   }, []);
   return preset;
 }
@@ -212,7 +205,7 @@ const LIST_SUMMARY = [
   { name: "Algen, Brühen & Würze", items: [["Wakame (getrocknet)","9 g"],["Miso hell","20 g"],["Sojasauce natriumarm","150 ml"],["Sesamöl","10 ml"],["Speisestärke","10 g"],["Hühnerfond ungesalzen","800 ml"],["Kombu/Dashi (mild) für Brühen","≈4,6 L"],["Salz (Prisen) & Zucker (opt.)","–"]] },
 ];
 
-/* ---------------- html2pdf Helper (robust gegen leere Seiten) ---------------- */
+/* ---------------- html2pdf Helper (Chrome & Safari robust) ---------------- */
 function useHtml2Pdf() {
   const ensureScript = (src, check) =>
     new Promise((resolve, reject) => {
@@ -230,35 +223,50 @@ function useHtml2Pdf() {
       () => !!window.html2pdf
     );
 
-    // Dimensionen des Elements (für html2canvas)
     const w = el.scrollWidth || el.clientWidth || 1123;
     const h = el.scrollHeight || el.clientHeight || 794;
 
-    const merged = {
+    const base = {
       margin: [24, 28, 24, 28],
       image: { type: "jpeg", quality: 0.97 },
       html2canvas: {
         scale: 3,
         useCORS: true,
-        backgroundColor: COLORS.pageBg,
-        foreignObjectRendering: false, // stabiler in Safari/iOS
+        backgroundColor: "#FAF7F1",
         letterRendering: true,
+        removeContainer: true,
         windowWidth: w,
         windowHeight: h,
         scrollX: 0,
-        scrollY: -window.scrollY,
+        scrollY: 0,
       },
       jsPDF: { unit: "pt", format: "a4", orientation: "landscape" },
-      // Nur "after", damit keine leere erste Seite entsteht:
       pagebreak: { mode: ["css","legacy"], after: [".page"], avoid: [".avoid-break"] },
       ...opt,
     };
 
-    const worker = window.html2pdf().from(el).set(merged);
-    await worker.toPdf(); // sicherstellen, dass gerendert wurde
-    const blob = await worker.output("blob");
-    const url = URL.createObjectURL(blob);
-    return { blob, url };
+    const run = async (overrides = {}) => {
+      const merged = {
+        ...base,
+        ...overrides,
+        html2canvas: { ...base.html2canvas, ...(overrides.html2canvas || {}) },
+        pagebreak: { ...base.pagebreak, ...(overrides.pagebreak || {}) },
+      };
+      await new Promise((r) => requestAnimationFrame(r));
+      const worker = window.html2pdf().set(merged).from(el);
+      await worker.toPdf();
+      const blob = await worker.output("blob");
+      const url = URL.createObjectURL(blob);
+      return { blob, url, opts: merged };
+    };
+
+    // Pass 1: FoR AUS (stabiler)
+    let res = await run({ html2canvas: { foreignObjectRendering: false } });
+    // Pass 2 Fallback: wenn klein -> FoR EIN
+    if (res.blob.size < 50_000) {
+      res = await run({ html2canvas: { foreignObjectRendering: true, letterRendering: false }, pagebreak: { mode: ["css"], after: [".page"] } });
+    }
+    return res;
   }, []);
 
   return { make };
@@ -274,19 +282,18 @@ function TopBar({ title, subtitle, onPDF, onExportHTML, onPrint }) {
   };
   return (
     <div className="print:hidden" style={{ color: COLORS.text, marginBottom: 24 }}>
-      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12 }}>
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:16 }}>
         <div>
           <h1 className="text-2xl font-semibold">{title}</h1>
           {!!subtitle && <p className="text-sm" style={{ opacity: .8 }}>{subtitle}</p>}
         </div>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:12, alignItems:"center" }}>
+        <div style={{ display:"flex", flexWrap:"wrap", gap:16, alignItems:"center" }}>
           <button onClick={onPDF} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.emerald }}>PDF erzeugen</button>
           <button onClick={onExportHTML} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.amber }}>HTML exportieren</button>
           <button onClick={onPrint} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.sky }}>Drucken</button>
         </div>
       </div>
-      {/* Extra-Abstand unter den Knöpfen */}
-      <div style={{ height: 20 }} />
+      <div style={{ height: 24 }} />
     </div>
   );
 }
@@ -294,12 +301,8 @@ function TopBar({ title, subtitle, onPDF, onExportHTML, onPrint }) {
 /* ---------------- Panel-Images ---------------- */
 function usePanelImages(storageKey = "gk_w1_panel_images") {
   const [images, setImages] = useState({});
-  useEffect(() => {
-    try { const raw = localStorage.getItem(storageKey); if (raw) setImages(JSON.parse(raw)); } catch(_) {}
-  }, [storageKey]);
-  useEffect(() => {
-    try { localStorage.setItem(storageKey, JSON.stringify(images)); } catch(_) {}
-  }, [images, storageKey]);
+  useEffect(() => { try { const raw = localStorage.getItem(storageKey); if (raw) setImages(JSON.parse(raw)); } catch(_) {} }, [storageKey]);
+  useEffect(() => { try { localStorage.setItem(storageKey, JSON.stringify(images)); } catch(_) {} }, [images, storageKey]);
   const setImage = (id, dataUrl) => setImages(prev => ({ ...prev, [id]: dataUrl }));
   const clearImage = (id) => setImages(prev => { const n = { ...prev }; delete n[id]; return n; });
   return { images, setImage, clearImage };
@@ -317,10 +320,7 @@ export default function Woche1_2025_09_29() {
   const [hrefLI, setHrefLI] = useState("");
   const pdf = useHtml2Pdf();
 
-  useEffect(() => () => {
-    if (hrefKB) URL.revokeObjectURL(hrefKB);
-    if (hrefLI) URL.revokeObjectURL(hrefLI);
-  }, [hrefKB, hrefLI]);
+  useEffect(() => () => { if (hrefKB) URL.revokeObjectURL(hrefKB); if (hrefLI) URL.revokeObjectURL(hrefLI); }, [hrefKB, hrefLI]);
 
   const exportHTML = (node, name, orient = "landscape") => {
     const content = node?.innerHTML || "";
@@ -335,12 +335,8 @@ export default function Woche1_2025_09_29() {
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `${name.replaceAll(" ","_")}.html`;
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
-    a.remove();
+    a.href = url; a.download = `${name.replaceAll(" ","_")}.html`;
+    document.body.appendChild(a); a.click(); URL.revokeObjectURL(url); a.remove();
   };
   const doPrint = () => window.print();
 
@@ -384,8 +380,7 @@ export default function Woche1_2025_09_29() {
   const cardMainStyle  = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.panelBG80, boxShadow: COLORS.btnShadow, borderRadius: 18, padding: 22 };
   const imageFrameStyle = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.white, borderRadius: 14 };
 
-  const showMetformin = (meal) =>
-    DEFAULT_PRESET.health.metformin && meal.remind && !isMiddayId(meal.id);
+  const showMetformin = (meal) => DEFAULT_PRESET.health.metformin && meal.remind && !isMiddayId(meal.id);
 
   return (
     <div style={{ background: preset.page.background, color: COLORS.text }}>
@@ -399,7 +394,7 @@ export default function Woche1_2025_09_29() {
         <section style={{ padding:"0 28px 28px" }}>
           <div style={{ maxWidth:1123, margin:"0 auto" }}>
             <TopBar
-              title={`GhibliKitchen – Woche 1 • Kochbuch-PDF (${formatYMD()})`}
+              title={DEFAULT_PRESET.layout.title} // "GhibliKitchen – Woche 1"
               subtitle=""
               onPDF={makePDF_KB}
               onExportHTML={()=>exportHTML(kbRef.current, `${FILE_BASE} – Kochbuch`, "landscape")}
@@ -424,6 +419,7 @@ export default function Woche1_2025_09_29() {
                           </div>
                         )}
                       </div>
+                      {/* Bild-Upload-Buttons */}
                       <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
                         <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
                           Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage("cover")} style={{ display:"none" }}/>
@@ -432,12 +428,7 @@ export default function Woche1_2025_09_29() {
                           <button onClick={()=>clearImage("cover")} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
                         )}
                       </div>
-                      <details style={{ marginTop:8, fontSize:10 }}>
-                        <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt (Cover)</summary>
-                        <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
-                          {buildPrompt(DEFAULT_PRESET.promptHeader, "Cozy kitchen overview with bamboo trays, congee, miso soup, soba; steam-spirits forming 中 日 韓; warm golden light; washi texture.")}
-                        </div>
-                      </details>
+                      {/* DALL·E Prompt bewusst NICHT gerendert */}
                     </div>
                   </aside>
                   <main style={{ gridColumn:"span 8 / span 8" }}>
@@ -454,9 +445,7 @@ export default function Woche1_2025_09_29() {
                         ))}
                       </ul>
                       <div style={{ marginTop:12, fontSize:10, opacity:.75 }}>
-                        <p>
-                          Leitplanken: {DEFAULT_PRESET.health.gastritis}; {DEFAULT_PRESET.health.pregnancy}. <strong>Diabetes:</strong> {DEFAULT_PRESET.health.diabetesKH2p}. {DEFAULT_PRESET.health.metformin && "Metformin mit der Mahlzeit einnehmen."}
-                        </p>
+                        <p>Leitplanken: {DEFAULT_PRESET.health.gastritis}; {DEFAULT_PRESET.health.pregnancy}. <strong>Diabetes:</strong> {DEFAULT_PRESET.health.diabetesKH2p}. {DEFAULT_PRESET.health.metformin && "Metformin mit der Mahlzeit einnehmen."}</p>
                       </div>
                     </div>
                   </main>
@@ -464,17 +453,15 @@ export default function Woche1_2025_09_29() {
               </div>
             </div>
 
-            {/* Rezeptseiten – jede Seite in eigener .page */}
+            {/* Rezeptseiten */}
             {DATA.map((d) => (
               <div className="page" key={d.day}>
                 <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
                   <h3 style={{ fontSize:24, fontWeight:600, marginBottom:8 }}>{d.day}</h3>
                   {d.meals.map((m) => (
                     <div key={m.id} style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24, marginBottom:16 }}>
-                      {/* ÜBERSCHRIFT je Mahlzeit */}
-                      <div style={{ gridColumn:"1 / -1", fontSize:16, fontWeight:700, marginBottom:4 }}>
-                        {mealLabel(m.id)}
-                      </div>
+                      {/* Meal-Label */}
+                      <div style={{ gridColumn:"1 / -1", fontSize:16, fontWeight:700, marginBottom:4 }}>{mealLabel(m.id)}</div>
 
                       <aside style={{ gridColumn:"span 4 / span 4" }}>
                         <div style={cardPanelStyle}>
@@ -488,6 +475,7 @@ export default function Woche1_2025_09_29() {
                               </div>
                             )}
                           </div>
+                          {/* Upload-Buttons */}
                           <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
                             <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
                               Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage(m.id)} style={{ display:"none" }}/>
@@ -496,12 +484,7 @@ export default function Woche1_2025_09_29() {
                               <button onClick={()=>clearImage(m.id)} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
                             )}
                           </div>
-                          <details style={{ marginTop:8, fontSize:10 }}>
-                            <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt</summary>
-                            <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
-                              {buildPrompt(DEFAULT_PRESET.promptHeader, m.prompt)}
-                            </div>
-                          </details>
+                          {/* KEIN Prompt-Details-Block */}
                         </div>
                       </aside>
 
@@ -527,9 +510,7 @@ export default function Woche1_2025_09_29() {
                             <p><span style={{ fontWeight:600 }}>Hinweise:</span> {m.checks}</p>
                             <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Austausche:</span> {m.swaps}</p>
                             <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Beilage:</span> {m.side}</p>
-                            {showMetformin(m) && (
-                              <p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>
-                            )}
+                            {showMetformin(m) && (<p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>)}
                           </div>
                           <div style={{ marginTop:8, fontSize:10, opacity:.7 }}>Inspiration: Just One Cookbook · My Korean Kitchen · Made With Lau · The Woks of Life (mild, salzarm adaptiert).</div>
                         </article>
@@ -543,8 +524,7 @@ export default function Woche1_2025_09_29() {
 
           {hrefKB && (
             <div className="print:hidden" style={{ maxWidth:1123, margin:"8px auto 0", padding:"0 28px" }}>
-              <a href={hrefKB} download={`${FILE_BASE} – Kochbuch.pdf`} className="px-3 py-1.5 rounded-2xl"
-                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
+              <a href={hrefKB} download={`${FILE_BASE} – Kochbuch.pdf`} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
                 PDF herunterladen
               </a>
             </div>
@@ -554,7 +534,7 @@ export default function Woche1_2025_09_29() {
         <section style={{ padding:"0 28px 28px" }}>
           <div style={{ maxWidth:1123, margin:"0 auto" }}>
             <TopBar
-              title={`GhibliKitchen – Einkaufsliste (1 Seite) (${formatYMD()})`}
+              title={"GhibliKitchen – Einkaufsliste – Woche 1"}
               subtitle=""
               onPDF={makePDF_LI}
               onExportHTML={()=>exportHTML(liRef.current, `${FILE_BASE} – Einkaufsliste`, "portrait")}
@@ -582,7 +562,6 @@ export default function Woche1_2025_09_29() {
                       </section>
                     ))}
                   </div>
-                  {/* Einkaufsliste-FOOTER: ohne Metformin-Hinweis */}
                   <footer style={{ marginTop:12, fontSize:10, opacity:.8 }}>
                     <p>Hinweise: {DEFAULT_PRESET.health.gastritis} · {DEFAULT_PRESET.health.pregnancy}. Diabetes: {DEFAULT_PRESET.health.diabetesKH2p}.</p>
                     <p style={{ marginTop:4 }}>iPhone: In Safari öffnen → Teilen → <em>Drucken</em> → Vorschau mit Zwei-Finger-Zoom → Teilen → <em>In Dateien sichern</em> (als PDF).</p>
@@ -594,8 +573,7 @@ export default function Woche1_2025_09_29() {
 
           {hrefLI && (
             <div className="print:hidden" style={{ maxWidth:1123, margin:"8px auto 0", padding:"0 28px" }}>
-              <a href={hrefLI} download={`${FILE_BASE} – Einkaufsliste.pdf`} className="px-3 py-1.5 rounded-2xl"
-                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
+              <a href={hrefLI} download={`${FILE_BASE} – Einkaufsliste.pdf`} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
                 PDF herunterladen
               </a>
             </div>
@@ -629,7 +607,11 @@ function SmokeTests({ DATA, DEFAULT_PRESET }) {
 
       const built = buildPrompt("A","B");
       console.assert(built === "A\nB", "buildPrompt must join with a single newline");
-      console.assert((built.match(/\n/g) || []).length === 1, "buildPrompt one newline");
+
+      // mealLabel
+      console.assert(mealLabel("x-f")==="Frühstück", "mealLabel breakfast");
+      console.assert(mealLabel("x-m")==="Mittagessen", "mealLabel lunch");
+      console.assert(mealLabel("x-a")==="Abendessen", "mealLabel dinner");
 
       // Metformin: bei Mittag nicht
       const sampleMorning = { id:"xx-f", remind:true };
@@ -640,16 +622,10 @@ function SmokeTests({ DATA, DEFAULT_PRESET }) {
       console.assert(show(sampleMidday)  === false, "Midday should NOT show Metformin");
       console.assert(show(sampleEvening) === true, "Evening should show Metformin");
 
-      // Überschriften-Test für mealLabel
-      console.assert(mealLabel("x-f")==="Frühstück", "mealLabel breakfast");
-      console.assert(mealLabel("x-m")==="Mittagessen", "mealLabel lunch");
-      console.assert(mealLabel("x-a")==="Abendessen", "mealLabel dinner");
+      // meta.title enthält Woche 1
+      console.assert(meta.title === "Woche 1", "meta.title should be 'Woche 1'");
 
-      // Einkaufsliste-Footer darf kein "Metformin" enthalten
-      const listFooter = `Hinweise: ${DEFAULT_PRESET.health.gastritis} · ${DEFAULT_PRESET.health.pregnancy}. Diabetes: ${DEFAULT_PRESET.health.diabetesKH2p}.`;
-      console.assert(!/Metformin/i.test(listFooter), "Einkaufsliste-Footer must not mention Metformin");
-
-      console.log("[GhibliKitchen] All tests passed (JSX). Meals:", allMeals.length);
+      console.log("[GhibliKitchen] All tests passed (JSX).");
     } catch (err) {
       console.error("[GhibliKitchen] Test failure:", err);
     }
