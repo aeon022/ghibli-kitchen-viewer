@@ -5,8 +5,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
  * GhibliKitchen – Woche 1 (CN/JP/KR) – JSX Edition
  * - Pläne immer .jsx
  * - PDF-Link erscheint nach Erzeugung unter dem Plan
- * - A4 Querformat, höhere Auflösung (html2canvas.scale = 3), feste .page-Wrapper für saubere Seiten und Pagebreaks
- * - Kochbuch-Tab: Layout-Hinweis NICHT mehr anzeigen (separates Prompt-Template statt Subtitle)
+ * - A4 Querformat, höhere Auflösung (html2canvas.scale = 3), .page-Wrapper für saubere Seiten/Pagebreaks
+ * - Kochbuch-Tab: Layout-Hinweis NICHT anzeigen (internes Prompt-Template)
  * - Mehr Abstand unter den Action-Knöpfen
  * - Mittag: kein Metformin-Reminder; Einkaufsliste: ohne Metformin-Hinweis im Footer
  */
@@ -52,7 +52,7 @@ const PROMPT_HEADER =
 const DEFAULT_PRESET = {
   page: { orientation: "landscape", marginPt: [24, 28, 24, 28], background: COLORS.pageBg },
   listPage: { orientation: "portrait", marginPt: [20, 24, 20, 24], background: COLORS.pageBg },
-  layout: { title: "GhibliKitchen – Woche 1 (CN/JP/KR)", subtitle: "" }, // <<< Subtitle bewusst leer
+  layout: { title: "GhibliKitchen – Woche 1 (CN/JP/KR)", subtitle: "" }, // Subtitle bewusst leer
   buttons: { pdf: true, htmlExport: true, htmlOpen: false, print: true },
   health: {
     diabetesKH2p: "60–90 g KH/ Mahlzeit (2 P.)",
@@ -230,7 +230,7 @@ function useHtml2Pdf() {
       margin: [24, 28, 24, 28],
       image: { type: "jpeg", quality: 0.97 },
       html2canvas: {
-        scale: 3, // <<— erhöhte Renderauflösung für Lesbarkeit
+        scale: 3, // höhere Renderauflösung für Lesbarkeit
         useCORS: true,
         backgroundColor: COLORS.pageBg,
         foreignObjectRendering: true,
@@ -370,6 +370,266 @@ export default function Woche1_2025_09_29() {
   const cardPanelStyle = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.panelBG70, boxShadow: COLORS.btnShadow, borderRadius: 18, padding: 20 };
   const cardMainStyle  = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.panelBG80, boxShadow: COLORS.btnShadow, borderRadius: 18, padding: 22 };
   const imageFrameStyle = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.white, borderRadius: 14 };
-  const pageWrapStyle = { background: preset.page.background, color: COLORS.text, padding: 28, width: 1123, margin: "0 auto" };
 
-  const showMetformin = (meal)
+  const showMetformin = (meal) =>
+    DEFAULT_PRESET.health.metformin && meal.remind && !isMiddayId(meal.id);
+
+  return (
+    <div style={{ background: preset.page.background, color: COLORS.text }}>
+      {/* Tabs */}
+      <div className="print:hidden" style={{ display:"flex", gap:8, padding:"28px 28px 0", maxWidth:1123, margin:"0 auto" }}>
+        <button onClick={()=>setView("kochbuch")} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: view==="kochbuch"?COLORS.neutral:COLORS.white, color:view==="kochbuch"?"white":COLORS.text, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Kochbuch</button>
+        <button onClick={()=>setView("liste")} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: view==="liste"?COLORS.neutral:COLORS.white, color:view==="liste"?"white":COLORS.text, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Einkaufsliste</button>
+      </div>
+
+      {view === "kochbuch" ? (
+        <section style={{ padding:"0 28px 28px" }}>
+          <div style={{ maxWidth:1123, margin:"0 auto" }}>
+            <TopBar
+              title={`GhibliKitchen – Woche 1 • Kochbuch-PDF (${formatYMD()})`}
+              subtitle="" /* Hinweis bewusst ausgeblendet */
+              onPDF={makePDF_KB}
+              onExportHTML={()=>exportHTML(kbRef.current, `${FILE_BASE} – Kochbuch`, "landscape")}
+              onPrint={doPrint}
+            />
+          </div>
+
+          <div ref={kbRef}>
+            {/* Titelseite */}
+            <div className="page">
+              <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
+                <div style={{ display:"grid", gridTemplateColumns:"repeat(12, minmax(0,1fr))", gap:24 }}>
+                  <aside style={{ gridColumn:"span 4 / span 4" }}>
+                    <div style={cardPanelStyle}>
+                      <div style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                        {images["cover"] ? (
+                          <img src={images["cover"]} alt="Cover" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                        ) : (
+                          <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
+                            <div style={{ fontWeight:600 }}>Cover-Panel (Illustration einfügen)</div>
+                            <div>Ghibli watercolor · warm light · kitchen scene</div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
+                        <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
+                          Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage("cover")} style={{ display:"none" }}/>
+                        </label>
+                        {images["cover"] && (
+                          <button onClick={()=>clearImage("cover")} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
+                        )}
+                      </div>
+                      <details style={{ marginTop:8, fontSize:10 }}>
+                        <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt (Cover)</summary>
+                        <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
+                          {buildPrompt(DEFAULT_PRESET.promptHeader, "Cozy kitchen overview with bamboo trays, congee, miso soup, soba; steam-spirits forming 中 日 韓; warm golden light; washi texture.")}
+                        </div>
+                      </details>
+                    </div>
+                  </aside>
+                  <main style={{ gridColumn:"span 8 / span 8" }}>
+                    <div style={{ ...cardMainStyle }}>
+                      <h2 style={{ fontSize:32, fontWeight:600 }}>{DEFAULT_PRESET.layout.title}</h2>
+                      {/* Kein Subtitle im UI */}
+                      <ul style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginTop:16, fontSize:10 }}>
+                        {DATA.map((d, i)=> (
+                          <li key={i} style={{ ...cardMainStyle, padding:10 }}>
+                            <div style={{ fontWeight:600 }}>{d.day}</div>
+                            <ul style={{ paddingLeft:16, listStyle:"disc" }}>
+                              {d.meals.map((m)=> <li key={m.id}>{m.title}</li>)}
+                            </ul>
+                          </li>
+                        ))}
+                      </ul>
+                      <div style={{ marginTop:12, fontSize:10, opacity:.75 }}>
+                        <p>
+                          Leitplanken: {DEFAULT_PRESET.health.gastritis}; {DEFAULT_PRESET.health.pregnancy}. <strong>Diabetes:</strong> {DEFAULT_PRESET.health.diabetesKH2p}. {DEFAULT_PRESET.health.metformin && "Metformin mit der Mahlzeit einnehmen."}
+                        </p>
+                      </div>
+                    </div>
+                  </main>
+                </div>
+              </div>
+            </div>
+
+            {/* Rezeptseiten – jede Seite in eigener .page für klare Pagebreaks */}
+            {DATA.map((d) => (
+              <div className="page" key={d.day}>
+                <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
+                  <h3 style={{ fontSize:24, fontWeight:600, marginBottom:8 }}>{d.day}</h3>
+                  {d.meals.map((m) => (
+                    <div key={m.id} style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24, marginBottom:16 }}>
+                      <aside style={{ gridColumn:"span 4 / span 4" }}>
+                        <div style={cardPanelStyle}>
+                          <div style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                            {images[m.id] ? (
+                              <img src={images[m.id]} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+                            ) : (
+                              <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
+                                <div style={{ fontWeight:600 }}>Panel (Illustration einfügen)</div>
+                                <div style={{ marginTop:4 }}>{m.title}</div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
+                            <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
+                              Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage(m.id)} style={{ display:"none" }}/>
+                            </label>
+                            {images[m.id] && (
+                              <button onClick={()=>clearImage(m.id)} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
+                            )}
+                          </div>
+                          <details style={{ marginTop:8, fontSize:10 }}>
+                            <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt</summary>
+                            <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
+                              {buildPrompt(DEFAULT_PRESET.promptHeader, m.prompt)}
+                            </div>
+                          </details>
+                        </div>
+                      </aside>
+                      <main style={{ gridColumn:"span 8 / span 8" }}>
+                        <article className="avoid-break" style={cardMainStyle}>
+                          <h4 style={{ fontSize:18, fontWeight:600 }}>{m.title} – 2 Portionen</h4>
+                          <div style={{ fontSize:10, opacity:.8 }}>Nähr-Ziel: {m.target}</div>
+                          <div style={{ marginTop:8, display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12 }}>
+                            <div>
+                              <div style={{ fontSize:12, fontWeight:600 }}>Zutaten (g/ml)</div>
+                              <ul style={{ listStyle:"disc", paddingLeft:20, fontSize:12, marginTop:4 }}>
+                                {m.ingredients.map((it)=> <li key={it}>{it}</li>)}
+                              </ul>
+                            </div>
+                            <div>
+                              <div style={{ fontSize:12, fontWeight:600 }}>Zubereitung</div>
+                              <ol style={{ listStyle:"decimal", paddingLeft:20, fontSize:12, marginTop:4 }}>
+                                {m.steps.map((st)=> <li key={st}>{st}</li>)}
+                              </ol>
+                            </div>
+                          </div>
+                          <div style={{ marginTop:8, fontSize:12 }}>
+                            <p><span style={{ fontWeight:600 }}>Hinweise:</span> {m.checks}</p>
+                            <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Austausche:</span> {m.swaps}</p>
+                            <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Beilage:</span> {m.side}</p>
+                            {showMetformin(m) && (
+                              <p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>
+                            )}
+                          </div>
+                          <div style={{ marginTop:8, fontSize:10, opacity:.7 }}>Inspiration: Just One Cookbook · My Korean Kitchen · Made With Lau · The Woks of Life (mild, salzarm adaptiert).</div>
+                        </article>
+                      </main>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {hrefKB && (
+            <div className="print:hidden" style={{ maxWidth:1123, margin:"8px auto 0", padding:"0 28px" }}>
+              <a href={hrefKB} download={`${FILE_BASE} – Kochbuch.pdf`} className="px-3 py-1.5 rounded-2xl"
+                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
+                PDF herunterladen
+              </a>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section style={{ padding:"0 28px 28px" }}>
+          <div style={{ maxWidth:1123, margin:"0 auto" }}>
+            <TopBar
+              title={`GhibliKitchen – Einkaufsliste (1 Seite) (${formatYMD()})`}
+              subtitle=""
+              onPDF={makePDF_LI}
+              onExportHTML={()=>exportHTML(liRef.current, `${FILE_BASE} – Einkaufsliste`, "portrait")}
+              onPrint={doPrint}
+            />
+          </div>
+
+          <div ref={liRef}>
+            <div className="page">
+              <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
+                <div style={{ ...cardMainStyle, fontSize:11, lineHeight:1.55 }}>
+                  <header><h2 style={{ fontSize:18, fontWeight:600 }}>Gesamt – Hauptzutaten zuerst</h2></header>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginTop:8 }}>
+                    {LIST_SUMMARY.map((g) => (
+                      <section key={g.name} style={{ ...cardPanelStyle }}>
+                        <h3 style={{ fontSize:14, fontWeight:600 }}>{g.name}</h3>
+                        <ul style={{ marginTop:4 }}>
+                          {g.items.map(([name, qty]) => (
+                            <li key={name} style={{ display:"flex", alignItems:"flex-start", gap:8 }}>
+                              <input type="checkbox" style={{ marginTop:3 }}/>
+                              <span><span style={{ fontWeight:600 }}>{name}</span> – {qty}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ))}
+                  </div>
+                  {/* Einkaufsliste-FOOTER: ohne Metformin-Hinweis */}
+                  <footer style={{ marginTop:12, fontSize:10, opacity:.8 }}>
+                    <p>Hinweise: {DEFAULT_PRESET.health.gastritis} · {DEFAULT_PRESET.health.pregnancy}. Diabetes: {DEFAULT_PRESET.health.diabetesKH2p}.</p>
+                    <p style={{ marginTop:4 }}>iPhone: In Safari öffnen → Teilen → <em>Drucken</em> → Vorschau mit Zwei-Finger-Zoom → Teilen → <em>In Dateien sichern</em> (als PDF).</p>
+                  </footer>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {hrefLI && (
+            <div className="print:hidden" style={{ maxWidth:1123, margin:"8px auto 0", padding:"0 28px" }}>
+              <a href={hrefLI} download={`${FILE_BASE} – Einkaufsliste.pdf`} className="px-3 py-1.5 rounded-2xl"
+                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
+                PDF herunterladen
+              </a>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Smoke- & Unit-Tests */}
+      <SmokeTests DATA={DATA} DEFAULT_PRESET={DEFAULT_PRESET} />
+    </div>
+  );
+}
+
+/* ---------------- Smoke Tests ---------------- */
+function assertNoUnsupportedColors(text) {
+  const bad = /(oklab|oklch|color-mix|lab\()/i.test(text);
+  if (bad) throw new Error("Unsupported CSS color function detected");
+}
+function SmokeTests({ DATA, DEFAULT_PRESET }) {
+  useEffect(() => {
+    try {
+      console.assert(Array.isArray(DATA) && DATA.length === 7, "DATA must have 7 days");
+      const allMeals = DATA.flatMap((d) => d.meals);
+      console.assert(allMeals.length === 21, "There should be 21 meals (7×3)");
+      allMeals.forEach(m => {
+        console.assert(m.id && m.title && m.ingredients.length > 0 && m.steps.length > 0, `Meal ${m?.id} invalid`);
+      });
+
+      assertNoUnsupportedColors(JSON.stringify(COLORS));
+      assertNoUnsupportedColors(JSON.stringify(DEFAULT_PRESET));
+
+      const built = buildPrompt("A","B");
+      console.assert(built === "A\nB", "buildPrompt must join with a single newline");
+      console.assert((built.match(/\n/g) || []).length === 1, "buildPrompt one newline");
+
+      // Metformin: bei Mittag nicht
+      const sampleMorning = { id:"xx-f", remind:true };
+      const sampleMidday  = { id:"xx-m", remind:true };
+      const sampleEvening = { id:"xx-a", remind:true };
+      const show = (meal)=> DEFAULT_PRESET.health.metformin && meal.remind && !/-m$/.test(meal.id);
+      console.assert(show(sampleMorning) === true, "Morning should show Metformin");
+      console.assert(show(sampleMidday)  === false, "Midday should NOT show Metformin");
+      console.assert(show(sampleEvening) === true, "Evening should show Metformin");
+
+      // Einkaufsliste-Footer darf kein "Metformin" enthalten
+      const listFooter = `Hinweise: ${DEFAULT_PRESET.health.gastritis} · ${DEFAULT_PRESET.health.pregnancy}. Diabetes: ${DEFAULT_PRESET.health.diabetesKH2p}.`;
+      console.assert(!/Metformin/i.test(listFooter), "Einkaufsliste-Footer must not mention Metformin");
+
+      console.log("[GhibliKitchen] All tests passed (JSX). Meals:", allMeals.length);
+    } catch (err) {
+      console.error("[GhibliKitchen] Test failure:", err);
+    }
+  }, [DATA, DEFAULT_PRESET]);
+  return null;
+}
