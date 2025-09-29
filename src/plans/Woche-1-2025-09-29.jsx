@@ -39,6 +39,10 @@ function formatYMD(d = new Date()) {
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
+
+// ⬇️ FEHLTE – wieder hinzufügen:
+const FILE_BASE = `Woche 1 ${formatYMD()}`;
+
 const LIST_TITLE = `GhibliKitchen – Einkaufsliste – ${meta.title}`;
 const isMiddayId = (id = "") => /-m$/.test(id);
 const mealLabel = (id="") => id.endsWith("-f") ? "Frühstück" : id.endsWith("-m") ? "Mittagessen" : "Abendessen";
@@ -534,7 +538,7 @@ export default function Woche1_2025_09_29() {
         <section style={{ padding:"0 28px 28px" }}>
           <div style={{ maxWidth:1123, margin:"0 auto" }}>
             <TopBar
-              title={"GhibliKitchen – Einkaufsliste – Woche 1"}
+              title={LIST_TITLE}
               subtitle=""
               onPDF={makePDF_LI}
               onExportHTML={()=>exportHTML(liRef.current, `${FILE_BASE} – Einkaufsliste`, "portrait")}
@@ -632,3 +636,7 @@ function SmokeTests({ DATA, DEFAULT_PRESET }) {
   }, [DATA, DEFAULT_PRESET]);
   return null;
 }
+
+// FILE_BASE vorhanden und richtig formatiert
+console.assert(typeof FILE_BASE === "string" && /^Woche 1 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE),
+  "FILE_BASE missing or wrong format (expected: 'Woche 1 YYYY-MM-DD')");
