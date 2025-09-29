@@ -2,11 +2,10 @@
 import type React from 'react';
 
 export type PlanMeta = { id?: string; title?: string; startDate?: string };
-export type PlanModule = { default: React.ComponentType; meta?: PlanMeta };
+export type PlanModule = { default?: React.ComponentType; meta?: PlanMeta };
 
-// Wenn du auch .jsx-Pläne hast, lass {tsx,jsx} stehen.
-// Falls nur .tsx: ändere auf './plans/**/*.tsx'
-const modules = import.meta.glob<PlanModule>('./plans/**/*.{tsx,jsx}', { eager: true });
+// .jsx **und** .tsx laden (eager = zur Buildzeit eingebunden)
+const modules = import.meta.glob<PlanModule>('./plans/**/*.{jsx,tsx}', { eager: true });
 
 const idFrom = (path: string, meta?: PlanMeta) =>
   meta?.id ?? (path.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? path);
@@ -22,12 +21,19 @@ export type PlanIndexItem = {
   path: string;
 };
 
+// Nur Module mit **default**-Export akzeptieren (sonst ignorieren)
 export const plans: PlanIndexItem[] = Object.entries(modules)
-  .map(([path, mod]) => ({
-    id: idFrom(path, mod.meta),
-    startDate: dateFrom(path, mod.meta),
-    title: mod.meta?.title ?? `Plan ${dateFrom(path, mod.meta)}`,
-    Component: mod.default,
-    path,
-  }))
-  .sort((a, b) => (a.startDate < b.startDate ? 1 : -1)); // neueste zuerst
+  .map(([path, mod]) => {
+    const Cmp = mod.default;
+    if (!Cmp) return null; // z. B. falls die Datei keinen default export hat
+    const startDate = dateFrom(path, mod.meta);
+    return {
+      id: idFrom(path, mod.meta),
+      startDate,
+      title: mod.meta?.title ?? `Plan ${startDate}`,
+      Component: Cmp,
+      path,
+    };
+  })
+  .filter((x): x is PlanIndexItem => !!x)
+  .sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
