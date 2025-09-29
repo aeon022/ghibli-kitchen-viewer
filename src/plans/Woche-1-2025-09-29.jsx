@@ -408,44 +408,7 @@ export default function Woche1_2025_09_29() {
 
           <div ref={kbRef}>
             {/* Titelseite */}
-            {/* Tages-Zusammenfassungen – je Tag eine eigene Seite (vor den Rezeptseiten) */}
-{DATA.map((d) => (
-  <div className="page day-summary" key={`${d.day}-summary`}>
-    <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
-      <header style={{ marginBottom:8 }}>
-        <h3 style={{ fontSize:24, fontWeight:600 }}>{d.day} – Übersicht</h3>
-      </header>
-
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24 }}>
-        {d.meals.map((m) => (
-          <section key={`${m.id}-summary`} style={{ gridColumn:"span 4 / span 4" }}>
-            <div style={{ ...cardMainStyle }}>
-              <div style={{ fontSize:14, fontWeight:700, marginBottom:6 }}>{mealLabel(m.id)}</div>
-              <div style={{ fontSize:12, fontWeight:600 }}>{m.title}</div>
-              <div style={{ fontSize:11, opacity:.8, marginTop:4 }}>
-                Nähr-Ziel: {m.target}
-              </div>
-
-              <div style={{ marginTop:6 }}>
-                <div style={{ fontSize:12, fontWeight:600 }}>Kurz-Zutaten</div>
-                <ul style={{ listStyle:"disc", paddingLeft:18, fontSize:11, marginTop:4 }}>
-                  {m.ingredients.slice(0,3).map((it) => (
-                    <li key={it}>{it}</li>
-                  ))}
-                  {m.ingredients.length > 3 && <li>…</li>}
-                </ul>
-              </div>
-
-              <div style={{ fontSize:10, opacity:.75, marginTop:6 }}>
-                {m.checks}
-              </div>
-            </div>
-          </section>
-        ))}
-      </div>
-    </div>
-  </div>
-))}
+            
             <div className="page">
               <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(12, minmax(0,1fr))", gap:24 }}>
