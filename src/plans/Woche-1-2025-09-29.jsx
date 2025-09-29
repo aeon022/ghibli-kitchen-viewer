@@ -3,23 +3,21 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * GhibliKitchen – Woche 1 (CN/JP/KR) – JSX Edition
- * - Mittags kein Metformin-Reminder (IDs enden auf "-m")
- * - Einkaufsliste: kein Metformin-Hinweis im Footer
- * - Buttons: PDF erzeugen, HTML exportieren, (Drucken). Kein "HTML öffnen".
- * - Mehr Rand (Seiten & Karten)
- * - Dateinamen: "Woche 1 YYYY-MM-DD – <Typ>.pdf/.html"
- * - Keine modernen Farbfunktionen (oklab/oklch/color-mix/lab()).
- * - Smoke-Tests in der Konsole.
+ * - Pläne immer .jsx
+ * - PDF-Link erscheint nach Erzeugung unter dem Plan
+ * - A4 Querformat, höhere Auflösung (html2canvas.scale = 3), feste .page-Wrapper für saubere Seiten und Pagebreaks
+ * - Kochbuch-Tab: Layout-Hinweis NICHT mehr anzeigen (separates Prompt-Template statt Subtitle)
+ * - Mehr Abstand unter den Action-Knöpfen
+ * - Mittag: kein Metformin-Reminder; Einkaufsliste: ohne Metformin-Hinweis im Footer
  */
 
-/* Optionales Meta-Objekt (für Loader, falls genutzt) */
 export const meta = {
   title: "Woche 1",
   startDate: new Date().toISOString().slice(0, 10),
   id: "woche-1-" + new Date().toISOString().slice(0, 10),
 };
 
-/* ---------------- Palette (nur HEX/RGBA) ---------------- */
+/* ---------------- Palette (nur HEX/RGBA, keine oklab/oklch) ---------------- */
 const COLORS = {
   pageBg: "#FAF7F1",
   text: "#111827",
@@ -46,11 +44,15 @@ function formatYMD(d = new Date()) {
 const FILE_BASE = `Woche 1 ${formatYMD()}`;
 const isMiddayId = (id = "") => /-m$/.test(id);
 
+/* ---------------- Prompt-Header (intern, nicht im UI) ---------------- */
+const PROMPT_HEADER =
+  "Use exactly two cats only: Fleur (small, playful, European Shorthair, grey-black tabby) and Finn (larger, reserved prankster, European Shorthair, grey-black tabby). No third cat, no extra animals. Chinese woman (traditional or sporty-modern; occasional Princess Mononoke aura). Western man with short fauxhawk. Studio Ghibli watercolor vibe, warm golden light, gentle magical steam/pot/vegetable spirits. Pregnancy-safe food only (no raw fish/eggs). A4 landscape page; manga/cartoon panel with generous margins; image intended to occupy ≤ one-third of the page width on the left.";
+
 /* ---------------- Preset ---------------- */
 const DEFAULT_PRESET = {
   page: { orientation: "landscape", marginPt: [24, 28, 24, 28], background: COLORS.pageBg },
   listPage: { orientation: "portrait", marginPt: [20, 24, 20, 24], background: COLORS.pageBg },
-  layout: { title: "GhibliKitchen – Woche 1 (CN/JP/KR)", subtitle: "Magenfreundlich · Diabetes-gerecht · Schwangerschaftssicher" },
+  layout: { title: "GhibliKitchen – Woche 1 (CN/JP/KR)", subtitle: "" }, // <<< Subtitle bewusst leer
   buttons: { pdf: true, htmlExport: true, htmlOpen: false, print: true },
   health: {
     diabetesKH2p: "60–90 g KH/ Mahlzeit (2 P.)",
@@ -58,8 +60,7 @@ const DEFAULT_PRESET = {
     gastritis: "Schärfe/Säure gering, Dämpfen/Sieden/Schmoren",
     pregnancy: "Durchgaren ≥75 °C; Jod sparsam; natriumarme Sojasauce",
   },
-  promptHeader:
-    "Use exactly two cats only: Fleur (small, playful, European Shorthair, grey-black tabby) and Finn (larger, reserved prankster, European Shorthair, grey-black tabby). No third cat, no extra animals. Chinese woman (traditional or sporty-modern; occasional Princess Mononoke aura). Western man with short fauxhawk. Studio Ghibli watercolor vibe, warm golden light, gentle magical steam/pot/vegetable spirits. Pregnancy-safe food only (no raw fish/eggs). A4 landscape page; manga/cartoon panel with generous margins; image intended to occupy ≤ one-third of the page width on the left.",
+  promptHeader: PROMPT_HEADER,
 };
 
 function useGhibliPreset(defaultPreset = DEFAULT_PRESET) {
@@ -208,7 +209,7 @@ const LIST_SUMMARY = [
   { name: "Algen, Brühen & Würze", items: [["Wakame (getrocknet)","9 g"],["Miso hell","20 g"],["Sojasauce natriumarm","150 ml"],["Sesamöl","10 ml"],["Speisestärke","10 g"],["Hühnerfond ungesalzen","800 ml"],["Kombu/Dashi (mild) für Brühen","≈4,6 L"],["Salz (Prisen) & Zucker (opt.)","–"]] },
 ];
 
-/* ---------------- html2pdf Helper ---------------- */
+/* ---------------- html2pdf Helper (höhere Auflösung + saubere Pagebreaks) ---------------- */
 function useHtml2Pdf() {
   const ensureScript = (src, check) =>
     new Promise((resolve, reject) => {
@@ -227,16 +228,18 @@ function useHtml2Pdf() {
     );
     const merged = {
       margin: [24, 28, 24, 28],
-      image: { type: "jpeg", quality: 0.96 },
+      image: { type: "jpeg", quality: 0.97 },
       html2canvas: {
-        scale: 2,
+        scale: 3, // <<— erhöhte Renderauflösung für Lesbarkeit
         useCORS: true,
         backgroundColor: COLORS.pageBg,
         foreignObjectRendering: true,
         preferCanvas: false,
+        letterRendering: true,
       },
       jsPDF: { unit: "pt", format: "a4", orientation: "landscape" },
-      pagebreak: { mode: ["css","legacy"], avoid: [".avoid-break"], after: [".pb-after"] },
+      // Pagebreaks exakt an .page-Container-Grenzen:
+      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"], avoid: [".avoid-break"] },
       ...opt,
     };
     const worker = window.html2pdf().from(el).set(merged).toPdf();
@@ -257,16 +260,20 @@ function TopBar({ title, subtitle, onPDF, onExportHTML, onPrint }) {
     borderRadius: 16,
   };
   return (
-    <div className="print:hidden flex items-center justify-between gap-2 mb-3" style={{ color: COLORS.text }}>
-      <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        {subtitle && <p className="text-sm" style={{ opacity: .8 }}>{subtitle}</p>}
+    <div className="print:hidden" style={{ color: COLORS.text, marginBottom: 16 }}>
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-semibold">{title}</h1>
+          {!!subtitle && <p className="text-sm" style={{ opacity: .8 }}>{subtitle}</p>}
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          <button onClick={onPDF} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.emerald }}>PDF erzeugen</button>
+          <button onClick={onExportHTML} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.amber }}>HTML exportieren</button>
+          <button onClick={onPrint} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.sky }}>Drucken</button>
+        </div>
       </div>
-      <div className="flex flex-wrap gap-2 items-center">
-        <button onClick={onPDF} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.emerald }}>PDF erzeugen</button>
-        <button onClick={onExportHTML} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.amber }}>HTML exportieren</button>
-        <button onClick={onPrint} className="px-3 py-1.5 rounded-2xl" style={{ ...btnBase, backgroundColor: COLORS.sky }}>Drucken</button>
-      </div>
+      {/* mehr Abstand UNTER den Knöpfen */}
+      <div style={{ height: 16 }} />
     </div>
   );
 }
@@ -309,6 +316,8 @@ export default function Woche1_2025_09_29() {
   html,body{margin:0;padding:0;background:${COLORS.pageBg};color:${COLORS.text};font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', Arial;}
   @page{size:A4 ${orient}; margin:14mm}
   .container{max-width:1123px;margin:0 auto;padding:28px}
+  .page{width:1123px; min-height:794px; margin:0 auto 16px; page-break-after: always; background:${COLORS.pageBg};}
+  .avoid-break{break-inside: avoid}
 </style></head><body><div class="container">${content}</div></body></html>`;
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -322,16 +331,16 @@ export default function Woche1_2025_09_29() {
   };
   const doPrint = () => window.print();
 
-  // PDFs (Dateinamen: Woche 1 YYYY-MM-DD – <Typ>.pdf)
+  // PDF-Erzeuger (Dateinamen: Woche 1 YYYY-MM-DD – <Typ>.pdf)
   const makePDF_KB = async () => {
     const el = kbRef.current; if (!el) return;
     const opt = {
       margin: preset.page.marginPt,
       filename: `${FILE_BASE} – Kochbuch.pdf`,
-      image: { type: "jpeg", quality: 0.96 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: preset.page.background, foreignObjectRendering: true, preferCanvas: false },
+      image: { type: "jpeg", quality: 0.97 },
+      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.page.background, foreignObjectRendering: true, preferCanvas: false, letterRendering: true },
       jsPDF: { unit: "pt", format: "a4", orientation: preset.page.orientation },
-      pagebreak: { mode: ["css","legacy"], after: [".pb-after"], avoid: [".avoid-break"] },
+      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"], avoid: [".avoid-break"] },
     };
     const { url } = await pdf.make(el, opt);
     setHrefKB(old => { if (old) URL.revokeObjectURL(old); return url; });
@@ -341,10 +350,10 @@ export default function Woche1_2025_09_29() {
     const opt = {
       margin: preset.listPage.marginPt,
       filename: `${FILE_BASE} – Einkaufsliste.pdf`,
-      image: { type: "jpeg", quality: 0.96 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: preset.listPage.background, foreignObjectRendering: true, preferCanvas: false },
+      image: { type: "jpeg", quality: 0.97 },
+      html2canvas: { scale: 3, useCORS: true, backgroundColor: preset.listPage.background, foreignObjectRendering: true, preferCanvas: false, letterRendering: true },
       jsPDF: { unit: "pt", format: "a4", orientation: preset.listPage.orientation },
-      pagebreak: { mode: ["css","legacy"] },
+      pagebreak: { mode: ["css","legacy"], before: [".page"], after: [".page"] },
     };
     const { url } = await pdf.make(el, opt);
     setHrefLI(old => { if (old) URL.revokeObjectURL(old); return url; });
@@ -357,254 +366,10 @@ export default function Woche1_2025_09_29() {
     reader.readAsDataURL(f);
   };
 
-  // Styles: mehr Innenabstand (Padding) und Ränder
+  // Styles
   const cardPanelStyle = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.panelBG70, boxShadow: COLORS.btnShadow, borderRadius: 18, padding: 20 };
   const cardMainStyle  = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.panelBG80, boxShadow: COLORS.btnShadow, borderRadius: 18, padding: 22 };
   const imageFrameStyle = { border: `1px solid ${COLORS.border}`, backgroundColor: COLORS.white, borderRadius: 14 };
   const pageWrapStyle = { background: preset.page.background, color: COLORS.text, padding: 28, width: 1123, margin: "0 auto" };
 
-  const showMetformin = (meal) => DEFAULT_PRESET.health.metformin && meal.remind && !isMiddayId(meal.id);
-
-  return (
-    <div style={pageWrapStyle}>
-      {/* Tabs */}
-      <div className="print:hidden mb-3" style={{ display:"flex", gap:8 }}>
-        <button onClick={()=>setView("kochbuch")} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: view==="kochbuch"?COLORS.neutral:COLORS.white, color:view==="kochbuch"?"white":COLORS.text, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Kochbuch</button>
-        <button onClick={()=>setView("liste")} className="px-3 py-1.5 rounded-2xl" style={{ backgroundColor: view==="liste"?COLORS.neutral:COLORS.white, color:view==="liste"?"white":COLORS.text, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Einkaufsliste</button>
-      </div>
-
-      {view === "kochbuch" ? (
-        <section>
-          <TopBar
-            title={`GhibliKitchen – Woche 1 • Kochbuch-PDF (${formatYMD()})`}
-            subtitle="A4 quer · Panel links ≤1/3 · Rezept rechts ≥2/3"
-            onPDF={makePDF_KB}
-            onExportHTML={()=>exportHTML(kbRef.current, `${FILE_BASE} – Kochbuch`, "landscape")}
-            onPrint={doPrint}
-          />
-          <div ref={kbRef} style={{ display:"grid", gap:24 }}>
-            {/* Titelseite */}
-            <section className="pb-after">
-              <div className="grid grid-cols-12" style={{ display:"grid", gridTemplateColumns:"repeat(12, minmax(0,1fr))", gap:24 }}>
-                <aside className="col-span-4" style={{ gridColumn:"span 4 / span 4" }}>
-                  <div style={cardPanelStyle}>
-                    <div className="aspect-[4/3]" style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                      {images["cover"] ? (
-                        <img src={images["cover"]} alt="Cover" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                      ) : (
-                        <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
-                          <div style={{ fontWeight:600 }}>Cover-Panel (Illustration einfügen)</div>
-                          <div>Ghibli watercolor · warm light · kitchen scene</div>
-                        </div>
-                      )}
-                    </div>
-                    <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
-                      <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
-                        Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage("cover")} style={{ display:"none" }}/>
-                      </label>
-                      {images["cover"] && (
-                        <button onClick={()=>clearImage("cover")} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
-                      )}
-                    </div>
-                    <details style={{ marginTop:8, fontSize:10 }}>
-                      <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt (Cover)</summary>
-                      <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
-                        {buildPrompt(DEFAULT_PRESET.promptHeader, "Cozy kitchen overview with bamboo trays, congee, miso soup, soba; steam-spirits forming 中 日 韓; warm golden light; washi texture.")}
-                      </div>
-                    </details>
-                  </div>
-                </aside>
-                <main className="col-span-8" style={{ gridColumn:"span 8 / span 8" }}>
-                  <div style={cardMainStyle}>
-                    <h2 className="text-4xl" style={{ fontSize:32, fontWeight:600 }}>{DEFAULT_PRESET.layout.title}</h2>
-                    <p style={{ fontSize:12, opacity:.8 }}>{DEFAULT_PRESET.layout.subtitle}</p>
-                    <ul style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginTop:16, fontSize:10 }}>
-                      {DATA.map((d, i)=> (
-                        <li key={i} style={{ ...cardMainStyle, padding:10 }}>
-                          <div style={{ fontWeight:600 }}>{d.day}</div>
-                          <ul style={{ paddingLeft:16, listStyle:"disc" }}>
-                            {d.meals.map((m)=> <li key={m.id}>{m.title}</li>)}
-                          </ul>
-                        </li>
-                      ))}
-                    </ul>
-                    <div style={{ marginTop:12, fontSize:10, opacity:.75 }}>
-                      <p>
-                        Leitplanken: {DEFAULT_PRESET.health.gastritis}; {DEFAULT_PRESET.health.pregnancy}. <strong>Diabetes:</strong> {DEFAULT_PRESET.health.diabetesKH2p}. {DEFAULT_PRESET.health.metformin && "Metformin mit der Mahlzeit einnehmen."}
-                      </p>
-                    </div>
-                  </div>
-                </main>
-              </div>
-            </section>
-
-            {/* Rezeptseiten */}
-            {DATA.map((d) => (
-              <section key={d.day} className="pb-after">
-                <h3 className="text-2xl" style={{ fontSize:24, fontWeight:600, marginBottom:8 }}>{d.day}</h3>
-                {d.meals.map((m) => (
-                  <div key={m.id} style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24, marginBottom:16 }}>
-                    <aside style={{ gridColumn:"span 4 / span 4" }}>
-                      <div style={cardPanelStyle}>
-                        <div className="aspect-[4/3]" style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                          {images[m.id] ? (
-                            <img src={images[m.id]} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                          ) : (
-                            <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
-                              <div style={{ fontWeight:600 }}>Panel (Illustration einfügen)</div>
-                              <div style={{ marginTop:4 }}>{m.title}</div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
-                          <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
-                            Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage(m.id)} style={{ display:"none" }}/>
-                          </label>
-                          {images[m.id] && (
-                            <button onClick={()=>clearImage(m.id)} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
-                          )}
-                        </div>
-                        <details style={{ marginTop:8, fontSize:10 }}>
-                          <summary style={{ cursor:"pointer", fontWeight:600 }}>DALL·E Prompt</summary>
-                          <div style={{ marginTop:4, opacity:.9, whiteSpace:"pre-wrap" }}>
-                            {buildPrompt(DEFAULT_PRESET.promptHeader, m.prompt)}
-                          </div>
-                        </details>
-                      </div>
-                    </aside>
-                    <main style={{ gridColumn:"span 8 / span 8" }}>
-                      <article className="avoid-break" style={cardMainStyle}>
-                        <h4 className="text-lg" style={{ fontSize:18, fontWeight:600 }}>{m.title} – 2 Portionen</h4>
-                        <div style={{ fontSize:10, opacity:.8 }}>Nähr-Ziel: {m.target}</div>
-                        <div style={{ marginTop:8, display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12 }}>
-                          <div>
-                            <div style={{ fontSize:12, fontWeight:600 }}>Zutaten (g/ml)</div>
-                            <ul style={{ listStyle:"disc", paddingLeft:20, fontSize:12, marginTop:4 }}>
-                              {m.ingredients.map((it)=> <li key={it}>{it}</li>)}
-                            </ul>
-                          </div>
-                          <div>
-                            <div style={{ fontSize:12, fontWeight:600 }}>Zubereitung</div>
-                            <ol style={{ listStyle:"decimal", paddingLeft:20, fontSize:12, marginTop:4 }}>
-                              {m.steps.map((st)=> <li key={st}>{st}</li>)}
-                            </ol>
-                          </div>
-                        </div>
-                        <div style={{ marginTop:8, fontSize:12 }}>
-                          <p><span style={{ fontWeight:600 }}>Hinweise:</span> {m.checks}</p>
-                          <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Austausche:</span> {m.swaps}</p>
-                          <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Beilage:</span> {m.side}</p>
-                          {showMetformin(m) && (
-                            <p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>
-                          )}
-                        </div>
-                        <div style={{ marginTop:8, fontSize:10, opacity:.7 }}>Inspiration: Just One Cookbook · My Korean Kitchen · Made With Lau · The Woks of Life (mild, salzarm adaptiert).</div>
-                      </article>
-                    </main>
-                  </div>
-                ))}
-              </section>
-            ))}
-          </div>
-
-          {hrefKB && (
-            <div className="print:hidden" style={{ marginTop:8 }}>
-              <a href={hrefKB} download={`${FILE_BASE} – Kochbuch.pdf`} className="px-3 py-1.5 rounded-2xl"
-                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
-                PDF herunterladen
-              </a>
-            </div>
-          )}
-        </section>
-      ) : (
-        <section>
-          <TopBar
-            title={`GhibliKitchen – Einkaufsliste (1 Seite) (${formatYMD()})`}
-            subtitle="A4 hoch · Checkboxen · iPhone-freundlich"
-            onPDF={makePDF_LI}
-            onExportHTML={()=>exportHTML(liRef.current, `${FILE_BASE} – Einkaufsliste`, "portrait")}
-            onPrint={doPrint}
-          />
-          <div ref={liRef} style={{ ...cardMainStyle, fontSize:11, lineHeight:1.55 }}>
-            <header><h2 className="text-lg" style={{ fontSize:18, fontWeight:600 }}>Gesamt – Hauptzutaten zuerst</h2></header>
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12, marginTop:8 }}>
-              {LIST_SUMMARY.map((g) => (
-                <section key={g.name} style={{ ...cardPanelStyle }}>
-                  <h3 style={{ fontSize:14, fontWeight:600 }}>{g.name}</h3>
-                  <ul style={{ marginTop:4 }}>
-                    {g.items.map(([name, qty]) => (
-                      <li key={name} style={{ display:"flex", alignItems:"flex-start", gap:8 }}>
-                        <input type="checkbox" style={{ marginTop:3 }}/>
-                        <span><span style={{ fontWeight:600 }}>{name}</span> – {qty}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
-            </div>
-            {/* Einkaufsliste-FOOTER: ohne Metformin-Hinweis */}
-            <footer style={{ marginTop:12, fontSize:10, opacity:.8 }}>
-              <p>Hinweise: {DEFAULT_PRESET.health.gastritis} · {DEFAULT_PRESET.health.pregnancy}. Diabetes: {DEFAULT_PRESET.health.diabetesKH2p}.</p>
-              <p style={{ marginTop:4 }}>iPhone: In Safari öffnen → Teilen → <em>Drucken</em> → Vorschau mit Zwei-Finger-Zoom → Teilen → <em>In Dateien sichern</em> (als PDF).</p>
-            </footer>
-          </div>
-
-          {hrefLI && (
-            <div className="print:hidden" style={{ marginTop:8 }}>
-              <a href={hrefLI} download={`${FILE_BASE} – Einkaufsliste.pdf`} className="px-3 py-1.5 rounded-2xl"
-                 style={{ backgroundColor: COLORS.indigo, color: COLORS.white, boxShadow: COLORS.btnShadow, border: `1px solid ${COLORS.border}` }}>
-                PDF herunterladen
-              </a>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Smoke- & Unit-Tests */}
-      <SmokeTests DATA={DATA} DEFAULT_PRESET={DEFAULT_PRESET} />
-    </div>
-  );
-}
-
-/* ---------------- Smoke Tests ---------------- */
-function assertNoUnsupportedColors(text) {
-  const bad = /(oklab|oklch|color-mix|lab\()/i.test(text);
-  if (bad) throw new Error("Unsupported CSS color function detected");
-}
-function SmokeTests({ DATA, DEFAULT_PRESET }) {
-  useEffect(() => {
-    try {
-      console.assert(Array.isArray(DATA) && DATA.length === 7, "DATA must have 7 days");
-      const allMeals = DATA.flatMap((d) => d.meals);
-      console.assert(allMeals.length === 21, "There should be 21 meals (7×3)");
-      allMeals.forEach(m => {
-        console.assert(m.id && m.title && m.ingredients.length > 0 && m.steps.length > 0, `Meal ${m?.id} invalid`);
-      });
-
-      assertNoUnsupportedColors(JSON.stringify(COLORS));
-      assertNoUnsupportedColors(JSON.stringify(DEFAULT_PRESET));
-
-      const built = buildPrompt("A","B");
-      console.assert(built === "A\nB", "buildPrompt must join with a single newline");
-      console.assert((built.match(/\n/g) || []).length === 1, "buildPrompt one newline");
-
-      // Metformin: bei Mittag nicht
-      const sampleMorning = { id:"xx-f", remind:true };
-      const sampleMidday  = { id:"xx-m", remind:true };
-      const sampleEvening = { id:"xx-a", remind:true };
-      const show = (meal)=> DEFAULT_PRESET.health.metformin && meal.remind && !/-m$/.test(meal.id);
-      console.assert(show(sampleMorning) === true, "Morning should show Metformin");
-      console.assert(show(sampleMidday)  === false, "Midday should NOT show Metformin");
-      console.assert(show(sampleEvening) === true, "Evening should show Metformin");
-
-      // Einkaufsliste-Footer darf kein "Metformin" enthalten
-      const listFooter = `Hinweise: ${DEFAULT_PRESET.health.gastritis} · ${DEFAULT_PRESET.health.pregnancy}. Diabetes: ${DEFAULT_PRESET.health.diabetesKH2p}.`;
-      console.assert(!/Metformin/i.test(listFooter), "Einkaufsliste-Footer must not mention Metformin");
-
-      console.log("[GhibliKitchen] All tests passed (JSX). Meals:", allMeals.length);
-    } catch (err) {
-      console.error("[GhibliKitchen] Test failure:", err);
-    }
-  }, [DATA, DEFAULT_PRESET]);
-  return null;
-}
+  const showMetformin = (meal)
