@@ -1,8 +1,20 @@
 import { Component, type ReactNode } from 'react';
 
-export default class ErrorBoundary extends Component<{ fallback?: ReactNode }, { error?: Error }> {
-  state = { error: undefined as Error | undefined };
-  static getDerivedStateFromError(error: Error) { return { error }; }
+type Props = { fallback?: ReactNode; children?: ReactNode };
+type State = { error?: Error };
+
+export default class ErrorBoundary extends Component<Props, State> {
+  state: Readonly<State> = {};
+
+  static getDerivedStateFromError(error: Error): State {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: unknown) {
+    // z.B. an Logging schicken oder zumindest console.error
+    console.error('Plan render error:', error, info);
+  }
+
   render() {
     if (this.state.error) {
       return this.props.fallback ?? (
@@ -12,6 +24,6 @@ export default class ErrorBoundary extends Component<{ fallback?: ReactNode }, {
         </div>
       );
     }
-    return this.props.children as ReactNode;
+    return this.props.children ?? null;
   }
 }

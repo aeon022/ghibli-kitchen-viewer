@@ -1,10 +1,7 @@
 import { Routes, Route, Navigate, Link, useParams, useNavigate } from 'react-router-dom';
 import { plans, type PlanIndexItem } from './planLoader';
 import ErrorBoundary from './ErrorBoundary';
-// ...
-      <ErrorBoundary>
-        <Cmp />
-      </ErrorBoundary>
+
 
 function PlanPage() {
   const { id } = useParams();
@@ -28,7 +25,9 @@ function PlanPage() {
         <button onClick={() => Next && nav(`/plan/${Next.id}`)} disabled={!Next}>Neuer →</button>
         <h1 style={{ margin: 0, marginLeft: 12, fontSize: 18 }}>{current.title}</h1>
       </div>
-      <Cmp />
+      <ErrorBoundary key={current.id}>
+        <Cmp />
+      </ErrorBoundary>
     </div>
   );
 }
@@ -59,4 +58,3 @@ export default function App() {
     </div>
   );
 }
-
