@@ -1,5 +1,10 @@
 import { Routes, Route, Navigate, Link, useParams, useNavigate } from 'react-router-dom';
 import { plans, type PlanIndexItem } from './planLoader';
+import ErrorBoundary from './ErrorBoundary';
+// ...
+      <ErrorBoundary>
+        <Cmp />
+      </ErrorBoundary>
 
 function PlanPage() {
   const { id } = useParams();
