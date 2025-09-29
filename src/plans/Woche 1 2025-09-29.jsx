@@ -751,7 +751,7 @@ function usePanelImages(storageKey = "gk_w1_panel_images") {
 }
 
 // -------- Hauptkomponente --------
-export default function GhibliKitchenButtonsUploadPresetAuto() {
+export default function GhibliKitchenButtonsUploadPresetAuto(): JSX.Element {
   const preset = useGhibliPreset();
   const { images, setImage, clearImage } = usePanelImages();
   const [view, setView] = useState<"kochbuch" | "liste">("kochbuch");
@@ -779,7 +779,7 @@ export default function GhibliKitchenButtonsUploadPresetAuto() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = name.replace(/ /g, "_") + ".html";
+    a.download = name.replaceAll(" ", "_") + ".html";
     document.body.appendChild(a);
     a.click();
     URL.revokeObjectURL(url);
@@ -1087,9 +1087,7 @@ function runUnitTests(): void {
 
   // Ensure every meal has mandatory fields
   for (const m of allMeals) {
-    console.assert(
-  !!m.id && !!m.title && m.ingredients.length > 0 && m.steps.length > 0,
-  `Meal ${m?.id} invalid` );
+    console.assert(m.id && m.title && m.ingredients.length > 0 && m.steps.length > 0, `Meal ${m?.id} invalid`);
   }
 
   // Color palette test
