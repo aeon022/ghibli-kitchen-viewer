@@ -408,6 +408,44 @@ export default function Woche1_2025_09_29() {
 
           <div ref={kbRef}>
             {/* Titelseite */}
+            {/* Tages-Zusammenfassungen – je Tag eine eigene Seite (vor den Rezeptseiten) */}
+{DATA.map((d) => (
+  <div className="page day-summary" key={`${d.day}-summary`}>
+    <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
+      <header style={{ marginBottom:8 }}>
+        <h3 style={{ fontSize:24, fontWeight:600 }}>{d.day} – Übersicht</h3>
+      </header>
+
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24 }}>
+        {d.meals.map((m) => (
+          <section key={`${m.id}-summary`} style={{ gridColumn:"span 4 / span 4" }}>
+            <div style={{ ...cardMainStyle }}>
+              <div style={{ fontSize:14, fontWeight:700, marginBottom:6 }}>{mealLabel(m.id)}</div>
+              <div style={{ fontSize:12, fontWeight:600 }}>{m.title}</div>
+              <div style={{ fontSize:11, opacity:.8, marginTop:4 }}>
+                Nähr-Ziel: {m.target}
+              </div>
+
+              <div style={{ marginTop:6 }}>
+                <div style={{ fontSize:12, fontWeight:600 }}>Kurz-Zutaten</div>
+                <ul style={{ listStyle:"disc", paddingLeft:18, fontSize:11, marginTop:4 }}>
+                  {m.ingredients.slice(0,3).map((it) => (
+                    <li key={it}>{it}</li>
+                  ))}
+                  {m.ingredients.length > 3 && <li>…</li>}
+                </ul>
+              </div>
+
+              <div style={{ fontSize:10, opacity:.75, marginTop:6 }}>
+                {m.checks}
+              </div>
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </div>
+))}
             <div className="page">
               <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
                 <div style={{ display:"grid", gridTemplateColumns:"repeat(12, minmax(0,1fr))", gap:24 }}>
@@ -457,73 +495,82 @@ export default function Woche1_2025_09_29() {
               </div>
             </div>
 
-            {/* Rezeptseiten */}
-            {DATA.map((d) => (
-              <div className="page" key={d.day}>
-                <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
-                  <h3 style={{ fontSize:24, fontWeight:600, marginBottom:8 }}>{d.day}</h3>
-                  {d.meals.map((m) => (
-                    <div key={m.id} style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24, marginBottom:16 }}>
-                      {/* Meal-Label */}
-                      <div style={{ gridColumn:"1 / -1", fontSize:16, fontWeight:700, marginBottom:4 }}>{mealLabel(m.id)}</div>
+            {/* Rezeptseiten – JE REZEPT eine eigene Seite */}
+{DATA.flatMap((d) => d.meals.map((m) => ({ day: d.day, meal: m }))).map(({ day, meal: m }) => (
+  <div className="page recipe-page" key={m.id}>
+    <div style={{ maxWidth:1123, margin:"0 auto", padding:28 }}>
+      {/* Seiten-Header: Tag + Mahlzeit */}
+      <header style={{ marginBottom:8 }}>
+        <h3 style={{ fontSize:24, fontWeight:600 }}>
+          {day} – {mealLabel(m.id)}
+        </h3>
+      </header>
 
-                      <aside style={{ gridColumn:"span 4 / span 4" }}>
-                        <div style={cardPanelStyle}>
-                          <div style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
-                            {images[m.id] ? (
-                              <img src={images[m.id]} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-                            ) : (
-                              <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
-                                <div style={{ fontWeight:600 }}>Panel (Illustration einfügen)</div>
-                                <div style={{ marginTop:4 }}>{m.title}</div>
-                              </div>
-                            )}
-                          </div>
-                          {/* Upload-Buttons */}
-                          <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
-                            <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
-                              Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage(m.id)} style={{ display:"none" }}/>
-                            </label>
-                            {images[m.id] && (
-                              <button onClick={()=>clearImage(m.id)} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>Bild löschen</button>
-                            )}
-                          </div>
-                          {/* KEIN Prompt-Details-Block */}
-                        </div>
-                      </aside>
-
-                      <main style={{ gridColumn:"span 8 / span 8" }}>
-                        <article className="avoid-break" style={cardMainStyle}>
-                          <h4 style={{ fontSize:18, fontWeight:600 }}>{m.title} – 2 Portionen</h4>
-                          <div style={{ fontSize:10, opacity:.8 }}>Nähr-Ziel: {m.target}</div>
-                          <div style={{ marginTop:8, display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12 }}>
-                            <div>
-                              <div style={{ fontSize:12, fontWeight:600 }}>Zutaten (g/ml)</div>
-                              <ul style={{ listStyle:"disc", paddingLeft:20, fontSize:12, marginTop:4 }}>
-                                {m.ingredients.map((it)=> <li key={it}>{it}</li>)}
-                              </ul>
-                            </div>
-                            <div>
-                              <div style={{ fontSize:12, fontWeight:600 }}>Zubereitung</div>
-                              <ol style={{ listStyle:"decimal", paddingLeft:20, fontSize:12, marginTop:4 }}>
-                                {m.steps.map((st)=> <li key={st}>{st}</li>)}
-                              </ol>
-                            </div>
-                          </div>
-                          <div style={{ marginTop:8, fontSize:12 }}>
-                            <p><span style={{ fontWeight:600 }}>Hinweise:</span> {m.checks}</p>
-                            <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Austausche:</span> {m.swaps}</p>
-                            <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Beilage:</span> {m.side}</p>
-                            {showMetformin(m) && (<p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>)}
-                          </div>
-                          <div style={{ marginTop:8, fontSize:10, opacity:.7 }}>Inspiration: Just One Cookbook · My Korean Kitchen · Made With Lau · The Woks of Life (mild, salzarm adaptiert).</div>
-                        </article>
-                      </main>
-                    </div>
-                  ))}
+      {/* Seiteninhalt: Panel links (≤1/3), Rezept rechts (≥2/3) */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(12,minmax(0,1fr))", gap:24 }}>
+        <aside style={{ gridColumn:"span 4 / span 4" }}>
+          <div style={cardPanelStyle}>
+            <div style={{ ...imageFrameStyle, overflow:"hidden", aspectRatio:"4/3", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              {images[m.id] ? (
+                <img src={images[m.id]} alt={m.title} style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+              ) : (
+                <div style={{ textAlign:"center", opacity:.7, fontSize:12 }}>
+                  <div style={{ fontWeight:600 }}>Panel (Illustration einfügen)</div>
+                  <div style={{ marginTop:4 }}>{m.title}</div>
                 </div>
+              )}
+            </div>
+
+            {/* Upload-Buttons (nur On-Screen) */}
+            <div className="print:hidden" style={{ marginTop:8, display:"flex", gap:8, alignItems:"center" }}>
+              <label className="px-2 py-1 rounded-xl text-white cursor-pointer" style={{ backgroundColor: COLORS.amber, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
+                Bild auswählen<input type="file" accept="image/*" className="hidden" onChange={onPickImage(m.id)} style={{ display:"none" }}/>
+              </label>
+              {images[m.id] && (
+                <button onClick={()=>clearImage(m.id)} className="px-2 py-1 rounded-xl" style={{ backgroundColor: COLORS.white, border:`1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow }}>
+                  Bild löschen
+                </button>
+              )}
+            </div>
+          </div>
+        </aside>
+
+        <main style={{ gridColumn:"span 8 / span 8" }}>
+          <article className="avoid-break" style={cardMainStyle}>
+            <h4 style={{ fontSize:18, fontWeight:600 }}>{m.title} – 2 Portionen</h4>
+            <div style={{ fontSize:10, opacity:.8 }}>Nähr-Ziel: {m.target}</div>
+
+            <div style={{ marginTop:8, display:"grid", gridTemplateColumns:"repeat(2,minmax(0,1fr))", gap:12 }}>
+              <div>
+                <div style={{ fontSize:12, fontWeight:600 }}>Zutaten (g/ml)</div>
+                <ul style={{ listStyle:"disc", paddingLeft:20, fontSize:12, marginTop:4 }}>
+                  {m.ingredients.map((it)=> <li key={it}>{it}</li>)}
+                </ul>
               </div>
-            ))}
+              <div>
+                <div style={{ fontSize:12, fontWeight:600 }}>Zubereitung</div>
+                <ol style={{ listStyle:"decimal", paddingLeft:20, fontSize:12, marginTop:4 }}>
+                  {m.steps.map((st)=> <li key={st}>{st}</li>)}
+                </ol>
+              </div>
+            </div>
+
+            <div style={{ marginTop:8, fontSize:12 }}>
+              <p><span style={{ fontWeight:600 }}>Hinweise:</span> {m.checks}</p>
+              <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Austausche:</span> {m.swaps}</p>
+              <p style={{ marginTop:4 }}><span style={{ fontWeight:600 }}>Beilage:</span> {m.side}</p>
+              {showMetformin(m) && (<p style={{ marginTop:4, fontWeight:600 }}>Metformin: mit der Mahlzeit einnehmen.</p>)}
+            </div>
+
+            <div style={{ marginTop:8, fontSize:10, opacity:.7 }}>
+              Inspiration: Just One Cookbook · My Korean Kitchen · Made With Lau · The Woks of Life (mild, salzarm adaptiert).
+            </div>
+          </article>
+        </main>
+      </div>
+    </div>
+  </div>
+))}
           </div>
 
           {hrefKB && (
