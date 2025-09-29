@@ -1,4 +1,5 @@
-import React from 'react';
+// src/planLoader.ts
+import type React from 'react';
 
 export type PlanMeta = { id?: string; title?: string; startDate?: string };
 type PlanModule = { default: React.ComponentType; meta?: PlanMeta };
@@ -12,7 +13,14 @@ function dateFrom(path: string, meta?: PlanMeta) {
   return meta?.startDate ?? (path.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? '1970-01-01');
 }
 
-export const plans = Object.entries(modules)
+export type PlanIndexItem = {
+  id: string;
+  startDate: string;
+  title: string;
+  Component: React.ComponentType;
+};
+
+export const plans: PlanIndexItem[] = Object.entries(modules)
   .map(([p, m]) => ({
     id: idFrom(p, m.meta),
     startDate: dateFrom(p, m.meta),
