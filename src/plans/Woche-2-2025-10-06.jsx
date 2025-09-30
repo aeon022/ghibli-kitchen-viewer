@@ -32,6 +32,25 @@ const mealLabel = (id) => {
   return part === "f" ? "Frühstück" : part === "m" ? "Mittag" : "Abendessen";
 };
 
+// Zusätzliche Titel für Tageszeit (Morgen/Mittag/Abend) und Wochentag
+const mealTitle = (id) => {
+  const part = id.split("-")[1];
+  return part === "f" ? "Morgen" : part === "m" ? "Mittag" : "Abend";
+};
+
+const dayLabel = (id) => {
+  const d = id.split("-")[0];
+  return (
+    d === "mo" ? "Montag" :
+    d === "di" ? "Dienstag" :
+    d === "mi" ? "Mittwoch" :
+    d === "do" ? "Donnerstag" :
+    d === "fr" ? "Freitag" :
+    d === "sa" ? "Samstag" :
+    "Sonntag"
+  );
+};
+
 const buildPrompt = (header, specific) => `${header}\n${specific}`;
 
 // --------- DATA (21 Rezepte) ----------
@@ -40,6 +59,7 @@ const DATA = [
   {
     id: "mo-f",
     title: "Reis-Congee (白粥 / Zhou)",
+    desc: "Chinesischer Reisbrei aus der Hausmannskost, sehr bekömmlich; oft zum Frühstück. Inspiriert von Made With Lau & The Woks of Life.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 20–30 g p. P.",
     ingredients: [
       "Jasminreis (roh) 120 g",
@@ -66,6 +86,7 @@ const DATA = [
   {
     id: "mo-m",
     title: "Udon-Nudelsuppe mit Gemüse (うどん)",
+    desc: "Sanfte japanische Udon in klarer Brühe mit weißem Fisch – Alltagsküche. Inspiriert von Just One Cookbook.",
     target: "≈80–90 g KH gesamt (2 P.) · Protein 20–30 g p. P.",
     ingredients: [
       "Udon (frisch) 400 g",
@@ -91,6 +112,7 @@ const DATA = [
   {
     id: "mo-a",
     title: "Sanft geschmorter Tofu mit Shiitake (豆腐香菇煮)",
+    desc: "Leicht gebundener chinesischer Tofu-Pilz-Schmorstil, sehr mild. Inspiriert von Omnivore’s Cookbook.",
     target: "≈65–75 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Seidentofu 400 g",
@@ -119,6 +141,7 @@ const DATA = [
   {
     id: "di-f",
     title: "Miso-Suppe mit Ei (味噌汁＋卵全熟)",
+    desc: "Klassische Misosuppe mit hartem Ei und Tofu; weißes Miso für Milde. Inspiriert von maff.go.jp & Just One Cookbook.",
     target: "≈60–70 g KH gesamt (2 P.) · Protein 20–30 g p. P.",
     ingredients: [
       "Milde Dashi-Brühe 900 ml",
@@ -143,6 +166,7 @@ const DATA = [
   {
     id: "di-m",
     title: "Hühner-Reisbrei mit Kürbis (南瓜鸡粥)",
+    desc: "Sämiger Congee mit Kürbis aus der südchinesischen Hausküche. Inspiriert von Red House Spice.",
     target: "≈75–85 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Rundkornreis (roh) 110 g",
@@ -168,6 +192,7 @@ const DATA = [
   {
     id: "di-a",
     title: "Japanischer Lachs-Eintopf (石狩鍋・mild)",
+    desc: "An Ishikari-nabe angelehnt – Lachs mit Miso-Brühe, hier sehr mild. Inspiriert von Just One Cookbook.",
     target: "≈65–75 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Lachsfilet 260 g",
@@ -194,6 +219,7 @@ const DATA = [
   {
     id: "mi-f",
     title: "Warmer Reisbrei mit Birne & Sesam (お粥)",
+    desc: "Japanisch inspirierter Okayu mit Frucht – sanft und cremig. Inspiriert von market/k_ryouri.",
     target: "≈65–75 g KH gesamt (2 P.) · Protein 20–25 g p. P.",
     ingredients: [
       "Rundkornreis (roh) 100 g",
@@ -218,6 +244,7 @@ const DATA = [
   {
     id: "mi-m",
     title: "Milder Tori-Zosui (鶏雑炊) – Reis-Eintopf",
+    desc: "Zosui ist ein japanischer Reis-Eintopf aus Restreis und Dashi mit Ei. Inspiriert von Just One Cookbook.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Gekochter Reis 300 g",
@@ -243,6 +270,7 @@ const DATA = [
   {
     id: "mi-a",
     title: "Koreanischer Kabeljau-Schmortopf (대구맑은탕, mild)",
+    desc: "Klare koreanische Fischsuppe ohne Chili – magenfreundlich. Inspiriert von My Korean Kitchen.",
     target: "≈60–70 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Kabeljaufilet 260 g",
@@ -270,6 +298,7 @@ const DATA = [
   {
     id: "do-f",
     title: "Gedämpfte Eiermilch mit Garnelen (蒸蛋, mild)",
+    desc: "Seidiger chinesischer Eierstich (Zheng Dan) mit gegarten Garnelen. Inspiriert von The Woks of Life.",
     target: "≈60–70 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Eier 4 Stück",
@@ -294,6 +323,7 @@ const DATA = [
   {
     id: "do-m",
     title: "Jjigae mit weichem Tofu & Gemüse (순한 순두부찌개)",
+    desc: "Sanfte Version des koreanischen Sundubu-Jjigae ohne Schärfe. Inspiriert von Seon Kyoung Longest.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Weicher Tofu (Sundubu) 400 g",
@@ -319,6 +349,7 @@ const DATA = [
   {
     id: "do-a",
     title: "Hühner-Schmorgericht mit Daikon (大根鶏の煮物)",
+    desc: "Japanisches Nimono – Huhn und Daikon sanft geschmort in Dashi. Inspiriert von market/k_ryouri.",
     target: "≈65–75 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Hähnchenschenkel ohne Haut 300 g",
@@ -345,6 +376,7 @@ const DATA = [
   {
     id: "fr-f",
     title: "Warme Sojamilch-Hirse-Suppe (豆乳ときび粥)",
+    desc: "Japanisch-angehauchter Frühstücksbrei mit Hirse und Sojamilch. Eigene Ausarbeitung, angelehnt an Okayu-Technik.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 20–25 g p. P.",
     ingredients: [
       "Hirse (roh) 90 g",
@@ -369,6 +401,7 @@ const DATA = [
   {
     id: "fr-m",
     title: "Gedämpfter Wolfsbarsch mit Ingwer (清蒸鲈鱼, mild)",
+    desc: "Kantonesischer Klassiker: Fisch schonend gedämpft mit Ingwer & Soja. Inspiriert von Made With Lau.",
     target: "≈60–70 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Wolfsbarschfilet 260 g",
@@ -393,6 +426,7 @@ const DATA = [
   {
     id: "fr-a",
     title: "Tofu-Gemüse-Nimono (豆腐と野菜の煮物)",
+    desc: "Hausgemachtes japanisches Schmorgericht mit Tofu und Gemüse. Inspiriert von Just One Cookbook.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Fester Tofu 350 g",
@@ -419,6 +453,7 @@ const DATA = [
   {
     id: "sa-f",
     title: "Zosui mit Lachsflocken (鮭雑炊)",
+    desc: "Wärmender Reis-Eintopf mit Lachsflocken – sehr bekömmlich. Inspiriert von Just One Cookbook.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Gekochter Reis 280 g",
@@ -443,6 +478,7 @@ const DATA = [
   {
     id: "sa-m",
     title: "Leichte Minestrone (IT, mild)",
+    desc: "Italienische Gemüsesuppe ohne Tomate/Essig, vollkornbetont. Allgemeine Küchenpraxis; sanft angepasst.",
     target: "≈70–85 g KH gesamt (2 P.) · Protein 20–30 g p. P.",
     ingredients: [
       "Vollkorn-Maccheroni 120 g (roh)",
@@ -467,6 +503,7 @@ const DATA = [
   {
     id: "sa-a",
     title: "Gedämpftes Hühnerfilet mit Reis & Karotte (清蒸鸡配饭)",
+    desc: "Chinesisch inspiriertes, sehr mildes Dampfgericht mit Brühe. Inspiriert von The Woks of Life.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Hühnerbrust 280 g",
@@ -493,6 +530,7 @@ const DATA = [
   {
     id: "so-f",
     title: "Hafer-Reis-Porridge mit Banane (穀粥)",
+    desc: "Getreide-Porridge mit Banane, an japanischen Okayu angelehnt. Eigene Ausarbeitung.",
     target: "≈70–80 g KH gesamt (2 P.) · Protein 20–25 g p. P.",
     ingredients: [
       "Haferflocken zart 80 g",
@@ -517,6 +555,7 @@ const DATA = [
   {
     id: "so-m",
     title: "Seelachs-Tofu-Topf mit Reisnudeln (鱼豆腐汤)",
+    desc: "Chinesisch beeinflusster Leichttopf mit Reisnudeln, Fisch & Tofu. Inspiriert von Omnivore’s Cookbook.",
     target: "≈80–90 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Reisnudeln (breit) 160 g (roh)",
@@ -541,6 +580,7 @@ const DATA = [
   {
     id: "so-a",
     title: "Chawanmushi-Reisschale (茶碗蒸し＋ご飯)",
+    desc: "Japanischer Eierstich (Chawanmushi) komplett gestockt, mit Reis. Inspiriert von Just One Cookbook.",
     target: "≈60–70 g KH gesamt (2 P.) · Protein 25–35 g p. P.",
     ingredients: [
       "Eier 4 Stück",
@@ -780,7 +820,13 @@ function RecipeCard({ r }) {
           </div>
         </aside>
         <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
+          <div style={{ fontSize: 14, color: COLORS.neutral, marginBottom: 6 }}>
+            {dayLabel(r.id)} – {mealTitle(r.id)}
+          </div>
           <h2 style={{ fontSize: 24, marginTop: 0, color: COLORS.indigo }}>{r.title}</h2>
+          <div style={{ fontSize: 13, color: COLORS.neutral, margin: '6px 0 10px' }}>
+            <b>Kurzbeschreibung:</b> {r.desc}
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>Zutaten (2 Personen)</h3>
@@ -825,9 +871,9 @@ function Cookbook() {
             <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, fontSize: 14 }}>
               {DATA.map((r) => (
                 <div key={r.id} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG70 }}>
-                  <div style={{ fontWeight: 600, color: COLORS.sky }}>{r.id.toUpperCase()}</div>
+                  <div style={{ fontWeight: 600, color: COLORS.sky }}>{dayLabel(r.id)}</div>
                   <div>{r.title}</div>
-                  <div style={{ fontSize: 12, color: COLORS.neutral }}>{mealLabel(r.id)} · {r.remind ? "Metformin-Reminder" : "ohne Reminder"}</div>
+                  <div style={{ fontSize: 12, color: COLORS.neutral }}>{mealTitle(r.id)} · {r.remind ? "Metformin-Reminder" : "ohne Reminder"}</div>
                 </div>
               ))}
             </div>
