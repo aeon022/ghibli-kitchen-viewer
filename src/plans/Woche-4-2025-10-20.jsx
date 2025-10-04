@@ -692,21 +692,6 @@ function buildListSummary() {
 }
 const LIST_SUMMARY = buildListSummary();
 
-<<<<<<< HEAD
-// --------- Export helpers ----------
-async function ensureScript(src) {
-  if (document.querySelector(`script[src="${src}"]`)) return;
-  await new Promise((resolve, reject) => {
-    const s = document.createElement("script");
-    s.src = src; s.async = true; s.onload = () => resolve(); s.onerror = () => reject(new Error("Script load failed"));
-    document.head.appendChild(s);
-  });
-}
-
-import { buildEmbedCss } from "../utils/embedCss";
-
-=======
->>>>>>> simplified-chinese
 // ---------- persistence ----------
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
 const readLocalImage = (key) => localStorage.getItem(key) || "";
