@@ -45,7 +45,7 @@ PDF/HTML-Export
 - HTML-Export: eigenständige .html mit eingebettetem CSS (gleiche Farben/Seitenregeln) erstellen und als Download anbieten.
 
 Gesundheits- & Küchenregeln (aktualisiert)
-- Diabetes (frühes Stadium; Metformin 3× täglich): pro Mahlzeit (2 Pers.) 60–90 g KH gesamt (≈30–45 g p. P.), ballaststoffbetont; Protein 20–40 g p. P. Metformin: reine Erinnerung „mit der Mahlzeit“ (kein Med-Rat).
+- Diabetes (frühes Stadium; Metformin 2× täglich (früh und abend)): pro Mahlzeit (2 Pers.) 60–90 g KH gesamt (≈30–45 g p. P.), ballaststoffbetont; Protein 20–40 g p. P. Metformin: reine Erinnerung „mit der Mahlzeit“ (kein Med-Rat).
 - Schwangerschaft: nichts Rohes; alles durchgaren (Eier vollständig gestockt); quecksilberarme Fische (Lachs/Kabeljau/Seelachs/Wolfsbarsch); Hygiene; Sojasauce natriumarm; Jod (Wakame/Kombu) sparsam.
 - Gastritis:
   - Nur wenn der Nutzer explizit „gastritis-konform“ anfordert → streng: Chili/Schärfe, stark Fettiges, Zitronen/Essig/zu saure Tomaten, Alkohol, Kaffee, Kohlensäure meiden; Dämpfen/Sieden/Schmoren/sanftes Dünsten; Zwiebel/Knoblauch sparsam & gut gegart; milde Brühen; wenig Öl; warme Speisen.
