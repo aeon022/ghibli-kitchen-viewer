@@ -65,7 +65,7 @@ const DATA = [
     id: "mo-f",
     title: "Reisbrei mit Lachs & Seidentofu (お粥)",
     desc: "Japanischer Okayu – sanfter Reisbrei mit gedämpftem Lachs und Seidentofu; inspiriert von Just One Cookbook.",
-    story: "Als der Topf zu singen begann, stiegen Dampfwölkchen auf und malten kleine Wellen an die Küchenwand – Meeresgrüße für den Lachsgeist, der heute müde war und eine weiche Reiswolke suchte. Ein winziger Tofuwächter schwebte daneben und versprach, alles mild und freundlich zu halten. So entstand ein Frühstück, das wie ein ruhiger Hafen schmeckt.",
+    story: "Okayu stammt aus Japan und wird traditionell zum Frühstück oder bei Erkältungen gegessen. Besonders beliebt in der kühlen Jahreszeit – perfekt für ruhige Wintermorgen und sanfte Starts in den Tag.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -91,7 +91,7 @@ const DATA = [
     id: "mo-m",
     title: "Mildes Bibimbap (비빔밥) – Chili optional",
     desc: "Koreanische Reisschale mit Gemüse und Rind; Chili separat optional – inspiriert von My Korean Kitchen.",
-    story: "In der Schüssel lag ein kleiner Gemüsegarten, in dem Spinatblätter wie winzige Fähnchen wehten. Ein freundlicher Reiskobold ordnete alles im Kreis, damit das Rind seinen Platz in der Mitte finde – ein stiller Wächter mit warmem Herz. Wenn die Sonne durchs Fenster fiel, glitzerte das Eigelb wie ein goldener Talisman (heute fest gebraten, damit es alle schützen kann).",
+    story: "Bibimbap hat seine Wurzeln in Korea und ist ein Alltagsgericht für jede Saison. Warm serviert ist es ideal für Mittagspausen und ausgewogene Feierabend-Bowls ohne Schärfe.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
     ingredients: [
       "Vollkornreis (roh) 90 g",
@@ -118,7 +118,7 @@ const DATA = [
     id: "mo-a",
     title: "Mildes Mapo-Tofu (麻婆豆腐) – Chili optional",
     desc: "Chinesischer Klassiker in milder, miso-basierter Sauce; Chili optional separat – inspiriert von Omnivore’s Cookbook.",
-    story: "Auf dem Herd blubberte eine sanfte Lava – nicht feurig, sondern tröstlich wie eine warme Decke. Darin schaukelten Tofuwürfel wie kleine Häuschen eines Dorfes, das gerade von Regen ruhte. Shiitake erzählten Geschichten vom Wald, und die Sauce versprach: Heute kann jeder friedlich schlafen.",
+    story: "Mapo-Tofu stammt aus Sichuan; diese milde Hausmannskost-Version ist in vielen Regionen Chinas beliebt. Ein unkompliziertes Feierabendrezept – angenehm wärmend, ohne Schärfe.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Tofu fest 400 g",
@@ -148,7 +148,7 @@ const DATA = [
     id: "di-f",
     title: "Lachs-Onigiri & Miso-Suppe (おにぎり・味噌汁)",
     desc: "Reisbälle mit gekochtem Lachs und milde Misosuppe; inspiriert von Just One Cookbook.",
-    story: "Zwei mutige Reisbälle rollten über das Frühstücksbrett – kleine Reisritter mit Nori-Mänteln. Im Inneren trugen sie eine warme Lachsflamme, die selbst graue Wolken vertreiben konnte. In der Schale daneben summte eine Miso-Quelle, in der Tofu-Würfel wie Boote schaukelten.",
+    story: "Onigiri gehören zur japanischen Bento-Kultur und sind das ganze Jahr über beliebt. Zusammen mit Misosuppe ein leichtes Frühstück oder Snack – ideal für unterwegs und milde Morgen.",
     target: "≈78 g KH gesamt (2 P.) · Protein ≈27 g p. P.",
     ingredients: [
       "Sushi-Reis (roh) 100 g",
@@ -175,7 +175,7 @@ const DATA = [
     id: "di-m",
     title: "Reisnudelpfanne mit Hähnchen (河粉)",
     desc: "Chinesische Wokpfanne, mild und gemüsebetont; inspiriert von The Woks of Life.",
-    story: "Breite Nudeln legten sich wie helle Wege in die Pfanne, und das Hähnchen lief darauf spazieren – vorsichtig, damit die Paprikalaternen nicht umfallen. Der Wok atmete leise, als würde er Wolken pusten. Als alles fertig war, blieb ein Duft zurück, der an Marktplatz und Sommerregen erinnerte.",
+    story: "Angelehnt an kantonesische Ho-Fun-Gerichte aus Südchina. Ein schnelles Pfannengericht für jede Jahreszeit – ideal, wenn es fix gehen soll und trotzdem ausgewogen bleibt.",
     target: "≈74 g KH gesamt (2 P.) · Protein ≈39 g p. P.",
     ingredients: [
       "Reisnudeln (trocken) 80 g",
@@ -202,7 +202,7 @@ const DATA = [
     id: "di-a",
     title: "Doenjang-Jjigae mit Gerste (된장찌개)",
     desc: "Koreanischer Sojabohnen-Eintopf, herzhaft-mild; inspiriert von Seon Kyoung Longest.",
-    story: "In einem kleinen Topf wohnt eine Suppenoma, die jedes Gemüse zuerst fragt, wie sein Tag war. Zucchini erzählt vom Gartenzaun, Kartoffel von der Erde, und die Bohnenpaste nickt weise. Wenn am Ende die Gerste anklopft, wird die Suppe still – bereit für einen langen, freundlichen Abend.",
+    story: "Doenjang-Jjigae ist ein koreanischer Alltags-Eintopf, besonders beliebt in Herbst und Winter. Kräftig, aber mild – perfekt für gemütliche Abende.",
     target: "≈86 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Doenjang 30 g",
@@ -232,7 +232,7 @@ const DATA = [
     id: "mi-f",
     title: "Kürbis-Juk mit Tofu & Edamame (단호박죽)",
     desc: "Samtiger Kürbisreisbrei, proteinreich; inspiriert von Mom’s Korean Recipes.",
-    story: "Ein Kürbis mit Sonnenlicht im Bauch rollte in die Küche und kicherte, als das Messer leise durch seine Schale sang. Der Topf flüsterte Zauberworte, bis alles goldig wurde. Tofu und Edamame setzten sich dazu wie gute Freunde, die pünktlich zum Märchen erscheinen.",
+    story: "Dieser Reisbrei kommt aus Korea und nutzt saisonalen Kürbis im Herbst. Mild und cremig – ideal für kühle Morgen oder leichte Abendmahlzeiten.",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
       "Kürbis (Kabocha/Hokkaido) 400 g",
@@ -258,7 +258,7 @@ const DATA = [
     id: "mi-m",
     title: "Udon-Suppe mit Huhn & Brokkoli (うどん)",
     desc: "Japanische Nudelsuppe, klar und mild; inspiriert von Just One Cookbook.",
-    story: "Die Udon-Schlangen spielten im klaren Teich fangen, während Brokkoli wie kleine Bäume am Ufer standen. Ein Huhn mit warmem Mantel hüpfte hinzu, und die Brühe wurde ein Waldweg in den Morgen. Wer daraus trinkt, hört für einen Moment den Wind in Bambusblättern.",
+    story: "Leichte Udon-Brühen sind in Japan ganzjährig beliebt, besonders in den kühlen Monaten. Eine sanfte, sättigende Mittagsoption ohne Schärfe.",
     target: "≈79 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
     ingredients: [
       "Udon (trocken) 110 g",
@@ -284,7 +284,7 @@ const DATA = [
     id: "mi-a",
     title: "Gedämpfter Kabeljau mit Ingwer (清蒸鳕鱼) & Reis",
     desc: "Chinesisch dämpfen – zart & bekömmlich; inspiriert von Made With Lau.",
-    story: "Der Kabeljau legte sich auf Ingwerwolken, als ginge er schlafen. Frühlingszwiebeln schrieben grüne Gedichte an den Rand der Schale. Wenn der Deckel sich hebt, ist es, als ob ein leiser Morgen hereinspaziert.",
+    story: "Das sanfte Dämpfen ist ein Klassiker der kantonesischen Küche. Ein leichtes, schonendes Abendessen – ideal, wenn es bekömmlich sein soll.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Kabeljaufilet 320 g",
@@ -312,7 +312,7 @@ const DATA = [
     id: "do-f",
     title: "Tamagoyaki & Misosuppe mit kleinem Reis (卵焼き・味噌汁)",
     desc: "Japanisches Frühstück mit vollständig gestocktem Omelett; inspiriert von Just One Cookbook.",
-    story: "Das Ei legte sich in Schichten, wie ein gelber Schal, der mehrmals um den Morgen gewickelt wird. In der Schale gegenüber schlief die Brühe und träumte von Wakame, das mit den Wellen tanzte. Wer einen Bissen nimmt, hört ein leises ‚Guten Tag‘ aus der Pfanne.",
+    story: "Tamagoyaki ist ein japanischer Frühstücksklassiker und beliebt in Bento-Boxen. Mit Misosuppe ein ausgewogener, milder Start in jeden Tag.",
     target: "≈62 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Eier 4 Stück",
@@ -339,7 +339,7 @@ const DATA = [
     id: "do-m",
     title: "Tomaten-Rührei (番茄炒蛋) mit Tofu & Reis",
     desc: "Chinesisches Hausgericht, mild-säuerlich; inspiriert von The Woks of Life.",
-    story: "Tomaten rollten wie neugierige Sonnen in die Pfanne und tuschelten mit der Zwiebel. Das Ei kam dazu, breitete sich schützend aus und ließ weiche Wolken entstehen. Zwischen den Bissen blitzt Sommer auf, selbst im kühlen Zimmer.",
+    story: "Fànqié Chǎo Dàn ist ein bekanntes chinesisches Hausmannskost-Gericht, besonders mit reifen Sommer-Tomaten. In milder Form ein schneller Klassiker für jeden Wochentag.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -365,7 +365,7 @@ const DATA = [
     id: "do-a",
     title: "Bulgogi-Style Pute (불고기) & Vollkornreis – mild",
     desc: "Koreanisch inspiriertes Pfannengericht; mild, Chili optional separat – inspiriert von Maangchi.",
-    story: "Eine kleine Birne flüsterte Süße in die Marinade, und die Zwiebel nickte zustimmend. Als die Pute die Pfanne betrat, knisterte die Luft wie Lagerfeuer ohne Funken. Am Ende roch die Küche nach Abendmarkt und neuen Geschichten.",
+    story: "Bulgogi stammt aus Korea; die Pfannenvariante ist ganzjährig beliebt. Mild mariniert und kurz gebraten – ideal für familienfreundliche Abendessen ohne Schärfe.",
     target: "≈80 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Putenbrust 250 g",
@@ -395,7 +395,7 @@ const DATA = [
     id: "fr-f",
     title: "Hühner-Congee (鸡肉粥)",
     desc: "Chinesischer Reisbrei mit zartem Huhn – sanft & wärmend; inspiriert von The Woks of Life.",
-    story: "Der Reis summte ein Regendlied, ganz leise, als würde der Himmel probieren. Hühnerwürfel stiegen auf und ab wie kleine Bojen, und Ingwer malte warme Kreise. Wer den Löffel taucht, merkt: Die Zeit geht hier ein Stückchen langsamer.",
+    story: "Congee ist in Südchina und Südostasien ein klassisches Frühstück und Nachtessen. Wärmend und leicht – ideal für Regentage und ruhige Morgen.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -421,7 +421,7 @@ const DATA = [
     id: "fr-m",
     title: "Leichte Minestrone (IT) mit Tofu",
     desc: "Italienischer Gemüseeintopf, lange geköchelt und mild.",
-    story: "Über dem Herd wehte ein kleiner italienischer Wind, der nach Gartenpfaden roch. Karotten klapperten wie Kiesel, Sellerie lächelte knusprig, und die Bohnen erzählten von Sommerabenden. Am Ende setzte sich ein Tofuwürfel wie ein Reisender dazu und sagte: ‚Hier bleib ich.‘",
+    story: "Minestrone ist eine italienische Gemüsesuppe, häufig im Spätsommer bis Herbst. Diese leichte Variante passt zu entspannten Abenden und wärmt ohne zu beschweren.",
     target: "≈69 g KH gesamt (2 P.) · Protein ≈39 g p. P.",
     ingredients: [
       "Vollkornpasta (trocken) 60 g",
@@ -450,7 +450,7 @@ const DATA = [
     id: "fr-a",
     title: "Gebackener Lachs Teriyaki (照り焼き) mit Brokkoli & Reis",
     desc: "Japanisch inspiriert, natriumarme Sauce, im Ofen gegart; inspiriert von Just One Cookbook.",
-    story: "Der Lachs zog seinen Glanzmantel an, als die Sauce ihn höflich bat, zu tanzen. Brokkolikronen nickten im Takt, und der Reis trommelte ganz leise. Wenn die Tür des Ofens aufgeht, verbeugt sich die Küche.",
+    story: "Teriyaki ist eine japanische Zubereitungsart für schnelle Alltagsgerichte. Aus dem Ofen besonders unkompliziert – ideal für kühlere Abende mit wenig Aufwand.",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Lachsfilet 320 g",
@@ -478,7 +478,7 @@ const DATA = [
     id: "sa-f",
     title: "Yudofu-Schale (湯豆腐) mit kleinem Reis",
     desc: "Japanischer Tofu im heißen Sud, sehr bekömmlich.",
-    story: "Tofuwürfel trieben wie schneeweiße Inseln in einer heißen Quelle. Lauch stand Wache am Rand, und der Dampf strich allen sanft durchs Haar. Ein Frühstück, das sagt: ‚Setz dich. Ich halte dich warm.‘",
+    story: "Yudofu ist eine Spezialität aus Kyoto und wird traditionell im Winter serviert. Leicht, warm und beruhigend – ideal für ruhige Wochenendmorgen.",
     target: "≈62 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Tofu fest 400 g",
@@ -504,7 +504,7 @@ const DATA = [
     id: "sa-m",
     title: "Japchae mit Rind & Gemüse (잡채) – mild",
     desc: "Koreanische Glasnudeln mit viel Gemüse; mild, Chili optional separat – inspiriert von Maangchi.",
-    story: "Glasnudeln leuchteten wie Flusslichter, die in der Pfanne vorbeiziehen. Paprika, Spinat und Pilze tanzten mit, und die Rindstreifen spielten die Melodie. Sobald Sesam duftet, weiß man: Das Fest beginnt.",
+    story: "Japchae ist in Korea ein Festtagsgericht, wird aber auch im Alltag gern gegessen. Lauwarm oder bei Zimmertemperatur – perfekt für Buffets, Picknicks und Wochenendessen.",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Glasnudeln (Süßkartoffel, trocken) 80 g",
@@ -532,7 +532,7 @@ const DATA = [
     id: "sa-a",
     title: "Shiitake-Hähnchen-Schmorgericht (香菇鸡) & kleiner Reis",
     desc: "Chinesisches Schmorgericht – zart und aromatisch; inspiriert von Red House Spice.",
-    story: "Unter dem Deckel wohnt der Duft der Nacht: Shiitake tragen Samthüte, und das Hähnchen erzählt von Pfaden im Wald. Die Brühe lauscht, wird dunkler und runder – und wenn man sie probiert, knistert irgendwo ein Lagerfeuer im Herzen.",
+    story: "Diese milde Schmorpfanne ist klassische chinesische Hausküche und passt gut in Herbst und Winter. Aromenreich und dennoch bekömmlich – ideal für Sonntagsessen im kleinen Kreis.",
     target: "≈62 g KH gesamt (2 P.) · Protein ≈33 g p. P.",
     ingredients: [
       "Hähnchenschenkel (ohne Haut) 300 g",
@@ -560,7 +560,7 @@ const DATA = [
     id: "so-f",
     title: "Reisbrei mit Apfel & Tofuwürfeln (お粥)",
     desc: "Sanfter Süß-Reisbrei mit fruchtiger Note; inspiriert von Okayu.",
-    story: "Ein Apfel fiel in einen klaren, warmen See und zeichnete helle Kreise auf die Oberfläche. Reis schwamm wie kleine Sterne, Tofu wie weiße Wolken. Der Morgen roch nach Zimt und Geschichten, die man beim ersten Löffel glaubt.",
+    story: "Inspiriert von japanischem Okayu, hier leicht süß mit Apfel. Passt gut zur Apfelernte und ist ein sanftes, warmes Frühstück für kühle Tage.",
     target: "≈80 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
       "Reis (roh) 80 g",
@@ -584,7 +584,7 @@ const DATA = [
     id: "so-m",
     title: "Klarer Nudeltopf mit Pute (清汤面)",
     desc: "Chinesisch inspiriert, klare Brühe und zarte Pute; inspiriert von Made With Lau.",
-    story: "Die Brühe war so durchsichtig wie Morgentau auf einem Fensterbrett. Zwischen Pak Choi-Blättern glitten die Nudeln wie neugierige Fische, und die Pute legte sich still dazu. Ein Löffel davon, und der Tag richtet sich von selbst auf.",
+    story: "Klare Nudelsuppen sind in China ein beliebtes Alltagsgericht – besonders in der Erkältungszeit. Leicht und schnell: ideal fürs Mittagsessen.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Weizennudeln (trocken) 100 g",
@@ -610,7 +610,7 @@ const DATA = [
     id: "so-a",
     title: "Seelachs-Jorim – mild geschmort (명태조림) & Reis",
     desc: "Koreanischer Schmor-Fisch mit Rettich; mild, Chili optional separat.",
-    story: "Rettich legte helle Ringe wie Jahresringe eines freundlichen Baums, und der Seelachs ruhte dazwischen wie in einer warmen Höhle. Die Sauce murmelte und wurde tiefer, bis alles leise glänzte. Draußen zog ein Wind vorbei – drinnen blieb es still und gut.",
+    story: "Jorim-Gerichte kommen aus Korea und werden oft in den kühleren Monaten zubereitet. Mit mildem Rettich und Seelachs ein sanftes Alltagsgericht für den Abend.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Seelachsfilet (Alaska Pollock) 320 g",
@@ -806,8 +806,8 @@ function RecipeCard({ r }) {
             {dayLabel(r.id)} – {mealTitle(r.id)}
           </div>
           <h2 style={{ marginTop: 0 }}>{r.title}</h2>
-          {/* Kurze Ghibli-Story / Herkunft direkt unter der Rezeptüberschrift (eigenständig zur Seitenleiste) */}
-          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral }}>{r.story}</p>
+          {/* Sachliche Herkunft/Anlass-Story in kleinerer Schrift */}
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{r.story}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>Zutaten (2 Personen)</h3>
@@ -924,7 +924,6 @@ export default function Woche4_2025_10_20() {
     </div>
   );
 }
-
 // ---------- Tests ----------
 function Tests() {
   try {
