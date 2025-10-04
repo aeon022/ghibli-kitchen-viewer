@@ -1,5 +1,6 @@
 // Datei: Woche-2-2025-10-06.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { exportPDFById, exportHTMLById } from "../utils/exporters";
 
 export const meta = { title: "Woche 2", startDate: "2025-10-06", id: "woche-2-2025-10-06" };
 const FILE_BASE = "Woche 2 2025-10-06";
@@ -724,53 +725,6 @@ async function ensureScript(src) {
     s.onerror = rej;
     document.head.appendChild(s);
   });
-}
-
-async function exportPDF(targetId, filename, orientation) {
-  await ensureScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-  const element = document.getElementById(targetId);
-  if (!element) return;
-
-  const optPrimary = {
-    margin: [12, 12, 12, 12],
-    filename,
-    pagebreak: { mode: ["css", "legacy"], after: [".page"], avoid: [".avoid-break"] },
-    image: { type: "jpeg", quality: 0.96 },
-    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: true, foreignObjectRendering: false },
-    jsPDF: { unit: "pt", format: "a4", orientation },
-  };
-
-  const optFallback = {
-    ...optPrimary,
-    html2canvas: { scale: 2, useCORS: true, background: COLORS.pageBg, letterRendering: false, foreignObjectRendering: true },
-    pagebreak: { mode: ["css"], after: [".page"] },
-  };
-
-  const worker = window.html2pdf().set(optPrimary).from(element);
-  try {
-    const blob = await worker.outputPdf("blob");
-    if (blob.size < 50000) {
-      await window.html2pdf().set(optFallback).from(element).save();
-    } else {
-      await window.html2pdf().set(optPrimary).from(element).save();
-    }
-  } catch (e) {
-    await window.html2pdf().set(optFallback).from(element).save();
-  }
-}
-
-function exportHTML(targetId, filename) {
-  const node = document.getElementById(targetId);
-  if (!node) return;
-  const css = getEmbedCss();
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${filename}</title><style>${css}</style></head><body style="background:${COLORS.pageBg}">${node.innerHTML}</body></html>`;
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${filename}.html`;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function getEmbedCss() {

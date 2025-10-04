@@ -1,6 +1,7 @@
 // Datei: Woche-4-2025-10-20.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { exportPDFById, exportHTMLById } from "../utils/exporters";
 
 export const meta = { title: "Woche 4", startDate: "2025-10-20", id: "woche-4-2025-10-20" };
 const FILE_BASE = "Woche 4 2025-10-20";
@@ -711,55 +712,10 @@ async function ensureScript(src) {
     document.head.appendChild(s);
   });
 }
-async function exportPDF(targetId, filename, orientation) {
-  await ensureScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-  const element = document.getElementById(targetId);
-  if (!element) return { ok: false, blobUrl: "" };
-  const common = {
-    margin: [12, 12, 12, 12],
-    filename,
-    pagebreak: { mode: ["css", "legacy"], after: [".page"], avoid: [".avoid-break"] },
-    jsPDF: { unit: "pt", format: "a4", orientation },
-  };
-  // Pass 1
-  const opt1 = {
-    ...common,
-    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: true, foreignObjectRendering: false },
-  };
-  const blobUrl1 = await window.html2pdf().set(opt1).from(element).outputPdf("bloburl");
-  let blob = null;
-  try { blob = await fetch(blobUrl1).then((r) => r.blob()); } catch (_) {}
-  if (blob && blob.size > 50 * 1024) {
-    return { ok: true, blobUrl: blobUrl1 };
-  }
-  // Fallback
-  const opt2 = {
-    ...common,
-    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: false, foreignObjectRendering: true },
-    pagebreak: { mode: ["css"], after: [".page"] },
-  };
-  const blobUrl2 = await window.html2pdf().set(opt2).from(element).outputPdf("bloburl");
-  return { ok: true, blobUrl: blobUrl2 || blobUrl1 || "" };
-}
-function exportHTML(targetId, filename) {
-  const node = document.getElementById(targetId);
-  if (!node) return "";
-  const css = getEmbedCss();
-  const html = `<!doctype html><html><head><meta charset="utf-8"/><title>${filename}</title><style>${css}</style></head><body style="background:${COLORS.pageBg}">${node.innerHTML}</body></html>`;
-  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  return url;
-}
-function getEmbedCss() {
-  return `
-  @page { size: A4; margin: 10pt; }
-  * { box-sizing: border-box; }
-  body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica Neue, Arial; color:${COLORS.text}; }
-  .page { page-break-after: always; background: ${COLORS.pageBg}; }
-  .avoid-break { break-inside: avoid; }
-  .print\\:hidden { display: none !important; }
-  `;
-}
+
+import { buildEmbedCss } from "../utils/embedCss";
+const css = buildEmbedCss({ pageBg: COLORS.pageBg, text: COLORS.text });
+const url = exportHTMLById(id, name, css, COLORS.pageBg);
 
 // ---------- persistence ----------
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
@@ -918,7 +874,12 @@ export default function Woche4_2025_10_20() {
     const isCook = tab === "kochbuch";
     const id = isCook ? "cookbook-root" : "list-root";
     const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
-    const res = await exportPDF(id, name, isCook ? "landscape" : "portrait");
+    const res = await exportPDFById(id, name, isCook ? "landscape" : "portrait", {
+        pageBg: COLORS.pageBg,
+        after: [".page"],
+        avoid: [".avoid-break"],
+});
+
     if (res?.blobUrl) {
       setPdfLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: res.blobUrl }));
     }
@@ -927,7 +888,8 @@ export default function Woche4_2025_10_20() {
     const isCook = tab === "kochbuch";
     const id = isCook ? "cookbook-root" : "list-root";
     const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
-    const url = exportHTML(id, name);
+    const css = getEmbedCss(); // deine bestehende CSS-Embed-Funktion
+    const url = exportHTMLById(id, name, css, COLORS.pageBg);
     if (url) setHtmlLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: url }));
   };
 

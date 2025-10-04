@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { exportPDFById, exportHTMLById } from "../utils/exporters";
 
 /**
  * GhibliKitchen – Woche 1 (CN/JP/KR) – JSX Edition
