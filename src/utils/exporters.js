@@ -1,6 +1,6 @@
 // src/utils/exporters.js
 
-// Lädt ein externes Script einmalig (für html2pdf.js)
+// Externes Script nur einmal laden (für html2pdf.js)
 export async function ensureScript(src) {
   if (document.querySelector(`script[src="${src}"]`)) return;
   await new Promise((resolve, reject) => {
@@ -13,14 +13,14 @@ export async function ensureScript(src) {
   });
 }
 
-// Wartet (falls verfügbar) auf geladene Webfonts – wichtig für CJK
+// Warten, bis Webfonts geladen sind (wichtig für CJK)
 export async function waitFonts() {
   if (document.fonts?.ready) {
     await document.fonts.ready;
   }
 }
 
-// PDF-Export per Element-ID (mit Pass 1 & Fallback-Strategie)
+// PDF-Export über Element-ID (Pass 1 + Fallback-Strategie)
 export async function exportPDFById(targetId, filename, orientation, opts = {}) {
   const {
     pageBg = "#FFFFFF",
@@ -42,7 +42,7 @@ export async function exportPDFById(targetId, filename, orientation, opts = {}) 
     jsPDF: { unit: "pt", format: "a4", orientation },
   };
 
-  // Pass 1 – hohe Qualität, kein foreignObject
+  // Pass 1
   const opt1 = {
     ...common,
     html2canvas: {
@@ -53,18 +53,15 @@ export async function exportPDFById(targetId, filename, orientation, opts = {}) 
       foreignObjectRendering: false,
     },
   };
-
   const blobUrl1 = await window.html2pdf().set(opt1).from(el).outputPdf("bloburl");
 
-  // Blob prüfen (Fallback, wenn zu klein)
   let blob = null;
-  try { blob = await fetch(blobUrl1).then(r => r.blob()); } catch { /* noop */ }
-
+  try { blob = await fetch(blobUrl1).then((r) => r.blob()); } catch {}
   if (blob && blob.size > 50 * 1024) {
     return { ok: true, blobUrl: blobUrl1 };
   }
 
-  // Pass 2 – Fallback: foreignObjectRendering an
+  // Fallback
   const opt2 = {
     ...common,
     pagebreak: { mode: ["css"], after },
@@ -76,12 +73,11 @@ export async function exportPDFById(targetId, filename, orientation, opts = {}) 
       foreignObjectRendering: true,
     },
   };
-
   const blobUrl2 = await window.html2pdf().set(opt2).from(el).outputPdf("bloburl");
   return { ok: true, blobUrl: blobUrl2 || blobUrl1 || "" };
 }
 
-// HTML-Export per Element-ID (Standalone HTML mit eingebettetem CSS)
+// HTML-Export über Element-ID (Standalone HTML mit eingebettetem CSS)
 export function exportHTMLById(targetId, filename, embedCss = "", pageBg = "#FFFFFF") {
   const node = document.getElementById(targetId);
   if (!node) return "";
@@ -96,12 +92,8 @@ export function exportHTMLById(targetId, filename, embedCss = "", pageBg = "#FFF
   return URL.createObjectURL(blob);
 }
 
-// Kleiner Helfer für HTML-Titel
 function escapeHtml(s = "") {
-  return s.replace(/[&<>"']/g, (m) => (
-    m === "&" ? "&amp;" :
-    m === "<" ? "&lt;"  :
-    m === ">" ? "&gt;"  :
-    m === '"' ? "&quot;": "&#39;"
-  ));
+  return s.replace(/[&<>"']/g, (m) =>
+    m === "&" ? "&amp;" : m === "<" ? "&lt;" : m === ">" ? "&gt;" : m === '"' ? "&quot;" : "&#39;"
+  );
 }
