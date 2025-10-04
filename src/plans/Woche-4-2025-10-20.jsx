@@ -1,5 +1,6 @@
 // Datei: Woche-4-2025-10-20.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
 
 export const meta = { title: "Woche 4", startDate: "2025-10-20", id: "woche-4-2025-10-20" };
 const FILE_BASE = "Woche 4 2025-10-20";
@@ -65,7 +66,7 @@ const DATA = [
     id: "mo-f",
     title: "Reisbrei mit Lachs & Seidentofu (お粥)",
     desc: "Japanischer Okayu – sanfter Reisbrei mit gedämpftem Lachs und Seidentofu; inspiriert von Just One Cookbook.",
-    story: "Okayu stammt aus Japan und wird traditionell zum Frühstück oder bei Erkältungen gegessen. Besonders beliebt in der kühlen Jahreszeit – perfekt für ruhige Wintermorgen und sanfte Starts in den Tag.",
+    story: "Okayu stammt aus Japan und wird traditionell zum Frühstück oder bei Erkältungen gegessen. Besonders beliebt in der kühlen Jahreszeit – ideal für ruhige Wintermorgen und sanfte Starts.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -91,7 +92,7 @@ const DATA = [
     id: "mo-m",
     title: "Mildes Bibimbap (비빔밥) – Chili optional",
     desc: "Koreanische Reisschale mit Gemüse und Rind; Chili separat optional – inspiriert von My Korean Kitchen.",
-    story: "Bibimbap hat seine Wurzeln in Korea und ist ein Alltagsgericht für jede Saison. Warm serviert ist es ideal für Mittagspausen und ausgewogene Feierabend-Bowls ohne Schärfe.",
+    story: "Bibimbap hat seine Wurzeln in Korea und ist ein Alltagsgericht für jede Saison. Warm serviert ist es ideal für Mittage und ausgewogene Feierabend-Bowls ohne Schärfe.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
     ingredients: [
       "Vollkornreis (roh) 90 g",
@@ -713,37 +714,41 @@ async function ensureScript(src) {
 async function exportPDF(targetId, filename, orientation) {
   await ensureScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
   const element = document.getElementById(targetId);
-  if (!element) return;
-  const optPrimary = {
+  if (!element) return { ok: false, blobUrl: "" };
+  const common = {
     margin: [12, 12, 12, 12],
     filename,
     pagebreak: { mode: ["css", "legacy"], after: [".page"], avoid: [".avoid-break"] },
-    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: true, foreignObjectRendering: false },
     jsPDF: { unit: "pt", format: "a4", orientation },
   };
-  const blobUrl = await window.html2pdf().set(optPrimary).from(element).outputPdf("bloburl");
-  const ok = blobUrl && (await fetch(blobUrl).then((r) => r.blob())).size > 50 * 1024;
-  if (!ok) {
-    const opt2 = {
-      ...optPrimary,
-      html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: false, foreignObjectRendering: true },
-      pagebreak: { mode: ["css"], after: [".page"] },
-    };
-    await window.html2pdf().set(opt2).from(element).save(filename);
-  } else {
-    const a = document.createElement("a");
-    a.href = blobUrl; a.download = filename; a.click();
+  // Pass 1
+  const opt1 = {
+    ...common,
+    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: true, foreignObjectRendering: false },
+  };
+  const blobUrl1 = await window.html2pdf().set(opt1).from(element).outputPdf("bloburl");
+  let blob = null;
+  try { blob = await fetch(blobUrl1).then((r) => r.blob()); } catch (_) {}
+  if (blob && blob.size > 50 * 1024) {
+    return { ok: true, blobUrl: blobUrl1 };
   }
+  // Fallback
+  const opt2 = {
+    ...common,
+    html2canvas: { scale: 3, useCORS: true, background: COLORS.pageBg, letterRendering: false, foreignObjectRendering: true },
+    pagebreak: { mode: ["css"], after: [".page"] },
+  };
+  const blobUrl2 = await window.html2pdf().set(opt2).from(element).outputPdf("bloburl");
+  return { ok: true, blobUrl: blobUrl2 || blobUrl1 || "" };
 }
 function exportHTML(targetId, filename) {
   const node = document.getElementById(targetId);
-  if (!node) return;
+  if (!node) return "";
   const css = getEmbedCss();
   const html = `<!doctype html><html><head><meta charset="utf-8"/><title>${filename}</title><style>${css}</style></head><body style="background:${COLORS.pageBg}">${node.innerHTML}</body></html>`;
   const blob = new Blob([html], { type: "text/html;charset=utf-8" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = `${filename}.html`; a.click(); URL.revokeObjectURL(url);
+  return url;
 }
 function getEmbedCss() {
   return `
@@ -904,7 +909,28 @@ function GroceryList() {
 // ---------- Main ----------
 export default function Woche4_2025_10_20() {
   const [tab, setTab] = useState("kochbuch");
+  const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
+  const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
+
   useEffect(() => { Tests(); }, []);
+
+  const doPDF = async () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
+    const res = await exportPDF(id, name, isCook ? "landscape" : "portrait");
+    if (res?.blobUrl) {
+      setPdfLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: res.blobUrl }));
+    }
+  };
+  const doHTML = () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
+    const url = exportHTML(id, name);
+    if (url) setHtmlLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: url }));
+  };
+
   return (
     <div style={{ background: COLORS.pageBg, minHeight: "100vh", padding: 16 }}>
       <div className="print:hidden" style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
@@ -913,17 +939,34 @@ export default function Woche4_2025_10_20() {
           <button onClick={() => setTab("einkauf")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="einkauf"?COLORS.indigo:COLORS.white, color: tab==="einkauf"?"#fff":COLORS.text }}>Einkaufsliste</button>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={() => exportPDF(tab==="kochbuch" ? "cookbook-root" : "list-root", `${FILE_BASE} – ${tab}`, tab==="kochbuch" ? "landscape" : "portrait")} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>PDF erzeugen</button>
-          <button onClick={() => exportHTML(tab==="kochbuch" ? "cookbook-root" : "list-root", `${FILE_BASE} – ${tab}`)} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>HTML exportieren</button>
+          <button onClick={doPDF} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>PDF erzeugen</button>
+          <button onClick={doHTML} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>HTML exportieren</button>
           <button onClick={() => window.print()} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>Drucken</button>
         </div>
       </div>
 
       <div style={{ display: tab === "kochbuch" ? "block" : "none" }}><Cookbook /></div>
       <div style={{ display: tab === "einkauf" ? "block" : "none" }}><GroceryList /></div>
+
+      {/* Download-Links unter dem jeweiligen Tab-Inhalt */}
+      <div className="print:hidden" style={{ marginTop: 12 }}>
+        {tab === "kochbuch" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.kochbuch ? <a href={pdfLink.kochbuch} download={`${FILE_BASE} – kochbuch.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>📄 PDF herunterladen (Kochbuch)</a> : null}
+            {htmlLink.kochbuch ? <a href={htmlLink.kochbuch} download={`${FILE_BASE} – kochbuch.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>🌐 HTML herunterladen (Kochbuch)</a> : null}
+          </div>
+        )}
+        {tab === "einkauf" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.einkauf ? <a href={pdfLink.einkauf} download={`${FILE_BASE} – einkauf.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>📄 PDF herunterladen (Einkaufsliste)</a> : null}
+            {htmlLink.einkauf ? <a href={htmlLink.einkauf} download={`${FILE_BASE} – einkauf.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>🌐 HTML herunterladen (Einkaufsliste)</a> : null}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
 // ---------- Tests ----------
 function Tests() {
   try {
@@ -947,3 +990,13 @@ function Tests() {
     console.error("[GhibliKitchen] Tests failed:", e);
   }
 }
+
+// ---------- Mount (Pflicht) ----------
+const mountNode = document.getElementById("root") || (() => {
+  const d = document.createElement("div");
+  d.id = "root";
+  document.body.appendChild(d);
+  return d;
+})();
+const root = createRoot(mountNode);
+root.render(<Woche4_2025_10_20 />);
