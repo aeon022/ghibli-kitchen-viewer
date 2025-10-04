@@ -58,7 +58,7 @@ const mealLabel = (id) => {
   return part === "f" ? "Frühstück" : part === "m" ? "Mittag" : "Abendessen";
 };
 
-// ---------- DATA (21 Rezepte, Woche 4, Woche-3-Format) ----------
+// ---------- DATA (21 Rezepte, Woche 4, NON-STRICT / Woche-3-Format) ----------
 const DATA = [
   // Montag
   {
@@ -88,8 +88,8 @@ const DATA = [
   },
   {
     id: "mo-m",
-    title: "Mildes Bibimbap (비빔밥) ohne Schärfe",
-    desc: "Koreanische Reisschale mit Gemüse und Rind, Schärfe separat; inspiriert von My Korean Kitchen.",
+    title: "Mildes Bibimbap (비빔밥) – Chili optional",
+    desc: "Koreanische Reisschale mit Gemüse und Rind; Chili separat optional – inspiriert von My Korean Kitchen.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
     ingredients: [
       "Vollkornreis (roh) 90 g",
@@ -110,12 +110,12 @@ const DATA = [
     swaps: "Rinderhack ↔ Putenhack; Vollkornreis ↔ Sushireis",
     side: "Chili separat in Minischälchen.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Colorful bibimbap bowl, brown rice, sautéed spinach carrots shiitake, fully cooked egg, no chili"),
+    prompt: buildPrompt(PROMPT_HEADER, "Colorful bibimbap bowl, brown rice, sautéed spinach carrots shiitake, fully cooked egg, no chili on top"),
   },
   {
     id: "mo-a",
-    title: "Mildes Mapo-Tofu (麻婆豆腐) – ohne Schärfe",
-    desc: "Chinesischer Klassiker in milder, miso-basierter Sauce; inspiriert von Omnivore’s Cookbook.",
+    title: "Mildes Mapo-Tofu (麻婆豆腐) – Chili optional",
+    desc: "Chinesischer Klassiker in milder, miso-basierter Sauce; Chili optional separat – inspiriert von Omnivore’s Cookbook.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Tofu fest 400 g",
@@ -133,7 +133,7 @@ const DATA = [
       "Brühe mit Miso/Sojasauce erhitzen; Tofu 4–5 Min. ziehen lassen.",
       "Mit Stärke leicht binden, über Reis servieren.",
     ],
-    checks: "Gastritis ✓ ohne Schärfe · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
+    checks: "Gastritis ✓ mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
     swaps: "Brauner Reis ↔ weißer Reis; Miso ↔ milde Bohnenpaste",
     side: "Gedünsteter Pak Choi.",
     remind: true,
@@ -353,7 +353,7 @@ const DATA = [
   {
     id: "do-a",
     title: "Bulgogi-Style Pute (불고기) & Vollkornreis – mild",
-    desc: "Koreanisch inspiriertes Pfannengericht ohne Schärfe; inspiriert von Maangchi.",
+    desc: "Koreanisch inspiriertes Pfannengericht; mild, Chili optional separat – inspiriert von Maangchi.",
     target: "≈80 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Putenbrust 250 g",
@@ -487,7 +487,7 @@ const DATA = [
   {
     id: "sa-m",
     title: "Japchae mit Rind & Gemüse (잡채) – mild",
-    desc: "Koreanische Glasnudeln mit viel Gemüse, ohne Schärfe; inspiriert von Maangchi.",
+    desc: "Koreanische Glasnudeln mit viel Gemüse; mild, Chili optional separat – inspiriert von Maangchi.",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Glasnudeln (Süßkartoffel, trocken) 80 g",
@@ -589,7 +589,7 @@ const DATA = [
   {
     id: "so-a",
     title: "Seelachs-Jorim – mild geschmort (명태조림) & Reis",
-    desc: "Koreanischer Schmor-Fisch mit Rettich, ohne Schärfe.",
+    desc: "Koreanischer Schmor-Fisch mit Rettich; mild, Chili optional separat.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Seelachsfilet (Alaska Pollock) 320 g",
@@ -606,7 +606,7 @@ const DATA = [
       "Seelachs 8–10 Min. mild schmoren.",
       "Mit Sesamöl abrunden; mit Reis servieren.",
     ],
-    checks: "Gastritis ✓ geschmort, nicht scharf · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Seelachs durchgegart, quecksilberarm",
+    checks: "Gastritis ✓ geschmort, mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Seelachs durchgegart, quecksilberarm",
     swaps: "Seelachs ↔ Kabeljau; Reis ↔ Vollkornreis",
     side: "Gedämpfter Spinat.",
     remind: true,
@@ -657,7 +657,7 @@ function accumulateList(data) {
       };
       const nLower = n.toLowerCase();
       if (groupMap.protein.some((w) => nLower.includes(w.toLowerCase()))) add("protein");
-      else if (groupMap.staple.some((w) => nLower.includes(w.toLowerCase()))) add("staple");
+      else if (groupMap.staple.some((w) => nLower.includes(w.toLowerCase()))) add("staple";
       else if (groupMap.veg.some((w) => nLower.includes(w.toLowerCase()))) add("veg");
       else if (groupMap.season.some((w) => nLower.includes(w.toLowerCase()))) add("season");
     })
@@ -780,6 +780,10 @@ function RecipeCard({ r }) {
           </div>
         </aside>
         <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
+          {/* Wochentag-Überschrift über dem Hauptrezept (wie Woche 3) */}
+          <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
+            {dayLabel(r.id)} – {mealTitle(r.id)}
+          </div>
           <h2 style={{ marginTop: 0 }}>{r.title}</h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
@@ -795,6 +799,10 @@ function RecipeCard({ r }) {
               </ol>
               <div style={{ marginTop: 6, fontSize: 12 }}><b>Austausche:</b> {r.swaps}</div>
             </section>
+          </div>
+          {/* Zusätzlicher Alternativen-Block unter dem Rezept (wie Woche 3) */}
+          <div style={{ marginTop: 10, padding: "8px 10px", background: COLORS.panelBG70, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 13 }}>
+            <b>Alternativen:</b> {r.swaps}
           </div>
         </main>
       </div>
@@ -813,7 +821,7 @@ function Cookbook() {
           <div style={{ flex: 1, ...cardPanelStyle }}>
             <h1 style={{ margin: 0, color: COLORS.emerald }}>{UI_TITLES.main}</h1>
             <p style={{ marginTop: 6, color: COLORS.neutral }}>
-              Woche ab {meta.startDate} – CN/JP/KR dominiert, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: 60–90 g KH pro Mahlzeit (2 P.).
+              Woche ab {meta.startDate} – <b>Modus: Non-Strict (balanced)</b>; CN/JP/KR dominiert, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: 60–90 g KH pro Mahlzeit (2 P.).
             </p>
             <ImageUpload storageKey={getImageKey("cover")} label="Cover-Bild hochladen" />
           </div>
