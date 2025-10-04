@@ -714,8 +714,6 @@ async function ensureScript(src) {
 }
 
 import { buildEmbedCss } from "../utils/embedCss";
-const css = buildEmbedCss({ pageBg: COLORS.pageBg, text: COLORS.text });
-const url = exportHTMLById(id, name, css, COLORS.pageBg);
 
 // ---------- persistence ----------
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
