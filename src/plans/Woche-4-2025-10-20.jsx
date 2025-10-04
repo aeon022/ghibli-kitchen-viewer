@@ -80,7 +80,7 @@ const DATA = [
       "Lachs über dem Brei 8–10 Min. dämpfen, zerpflücken.",
       "Tofu zugeben, mit Ingwer/Sojasauce mild abschmecken, Lauchgrün kurz ziehen lassen.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Fisch durchgegart, quecksilberarm",
+    checks: "Gastritis – mild & warm · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Fisch durchgegart, quecksilberarm",
     swaps: "Seidentofu ↔ fester Tofu; Lachs ↔ Kabeljau; Alternative Rezepte: Gyudon (牛丼, mageres Rind) oder Buta no Shōgayaki (豚の生姜焼き, mageres Schwein) – mit kleinem Reisanteil.",
     side: "Warmer Gerstentee.",
     remind: true,
@@ -106,7 +106,7 @@ const DATA = [
       "Hack krümelig und vollständig durchgaren; mild würzen.",
       "Alles anrichten, Eier vollständig braten (Eigelb fest).",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest, Fleisch durchgegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest, Fleisch durchgegart",
     swaps: "Rinderhack ↔ Putenhack; Vollkornreis ↔ Sushireis; Alternative Rezepte: Gyudon (Rind, mild) oder Butadon (豚丼, Schwein) – Sauce natriumarm.",
     side: "Chili separat in Minischälchen.",
     remind: false,
@@ -133,7 +133,7 @@ const DATA = [
       "Brühe mit Miso/Sojasauce erhitzen; Tofu 4–5 Min. ziehen lassen.",
       "Mit Stärke leicht binden, über Reis servieren.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
     swaps: "Brauner Reis ↔ weißer Reis; Miso ↔ milde Bohnenpaste; Alternative Rezepte: Mapo mit magerem Schweinehack (ohne Chili) oder Rind-Tofu-Pfanne (mild).",
     side: "Gedünsteter Pak Choi.",
     remind: true,
@@ -161,7 +161,7 @@ const DATA = [
       "Miso in heißem Wasser lösen (nicht kochen), Tofu/Wakame kurz ziehen lassen.",
       "Mit wenig Sojasauce abschmecken.",
     ],
-    checks: "Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Lachs durchgegart, Wakame sparsam",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Lachs durchgegart, Wakame sparsam",
     swaps: "Sushi-Reis ↔ Vollkornreis; Lachs ↔ Seelachs; Alternative Rezepte: Buta Soboro Don (Schweinehack-Reisschale, mild) oder Gyudon (Rind, mager).",
     side: "Milder grüner Tee (optional koffeinfrei).",
     remind: true,
@@ -187,8 +187,8 @@ const DATA = [
       "Hähnchenstreifen in wenig Öl vollständig garen.",
       "Gemüse zufügen, mild würzen und schwenken.",
     ],
-    checks: "Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Reisnudeln ↔ Udon; Hähnchen ↔ Tofu; Alternative Rezepte: Pho Xao Bo (vietn. Rind-Reisnudelpfanne, mild) oder Schweinefilet-Pfanne mit Pak Choi (mild).",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Huhn durchgegart",
+    swaps: "Reisnudeln ↔ Udon; Hähnchen ↔ Tofu; Alternative Rezepte: Pho Xao Bo (Rind-Reisnudelpfanne, mild) oder Schweinefilet-Pfanne mit Pak Choi (mild).",
     side: "Gurkenscheiben natur.",
     remind: false,
     prompt: buildPrompt(PROMPT_HEADER, "Stir-fried rice noodles with chicken and colorful vegetables, light sauce, no chili"),
@@ -214,8 +214,8 @@ const DATA = [
       "Tofuwürfel zugeben und ziehen lassen.",
       "Gerste separat garen und dazu reichen.",
     ],
-    checks: "Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Gerste ↔ Reis; Tofu ↔ Putenbrust; Alternative Rezepte: Tonjiru (豚汁, japanische Schweinemiso-Suppe, mild) oder Sukiyaki-Style Rind-Gemüse-Topf (zuckerarm).",
+    checks: "Gastritis – herzhaft, nicht scharf · Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Gerste ↔ Reis; Tofu ↔ Putenbrust; Alternative Rezepte: Tonjiru (豚汁, Schweinemiso-Suppe, mild) oder Sukiyaki-Style Rind-Gemüse-Topf (zuckerarm).",
     side: "Mildes Gurken-Pickle (ohne Schärfe).",
     remind: true,
     prompt: buildPrompt(PROMPT_HEADER, "Korean soybean stew with tofu and vegetables in a clay pot, side of barley"),
@@ -241,7 +241,7 @@ const DATA = [
       "Pürieren; Tofu/Edamame 3–4 Min. ziehen lassen.",
       "Mild abschmecken.",
     ],
-    checks: "Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
+    checks: "Gastritis – weich & warm · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
     swaps: "Edamame ↔ weiße Bohnen; Tofu ↔ Hähnchenwürfel; Alternative Rezepte: Gyudon (Rind, mager) oder Buta no Shōgayaki (Schwein, mager).",
     side: "Warmer Reis- oder Gerstentee.",
     remind: true,
@@ -266,7 +266,7 @@ const DATA = [
       "Hähnchen 6–8 Min. gar ziehen; Gemüse 3–4 Min. mitgaren.",
       "Udon separat kochen, abspülen und zugeben.",
     ],
-    checks: "Diabetes ✓ – ≈79 g KH · Schwangerschaft ✓ Huhn durchgegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈79 g KH · Schwangerschaft ✓ Huhn durchgegart",
     swaps: "Udon ↔ Soba; Hähnchen ↔ Tofu; Alternative Rezepte: Niku Udon (Rind) oder Buta Udon (Schwein), jeweils mild.",
     side: "Kleine Schale Gurke.",
     remind: false,
@@ -291,7 +291,7 @@ const DATA = [
       "Sojasauce + Brühe erhitzen, über Fisch geben; Sesamöl dazu.",
       "Reis garen und servieren.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Kabeljau durchgegart, quecksilberarm",
+    checks: "Gastritis – gedämpft · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Kabeljau durchgegart, quecksilberarm",
     swaps: "Kabeljau ↔ Seelachs; Reis ↔ Vollkornreis; Alternative Rezepte: Buta no Shōgayaki (Schweine-Ingwer-Pfanne) oder Rinderstreifen mit Ingwer, jeweils mild.",
     side: "Gedünsteter Brokkoli.",
     remind: true,
@@ -319,7 +319,7 @@ const DATA = [
       "Misosuppe ansetzen; Tofu/Wakame kurz ziehen lassen.",
       "Mit Frühlingszwiebel servieren.",
     ],
-    checks: "Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ Eier vollständig gestockt",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ Eier vollständig gestockt",
     swaps: "Reis ↔ Vollkornreis; Tofu ↔ Hähnchenwürfel; Alternative Rezepte: Niku Udon (Rind, mild) als herzhaftes Frühstück.",
     side: "Warmer Grüntee (koffeinarm).",
     remind: true,
@@ -344,7 +344,7 @@ const DATA = [
       "Tomaten mit Zwiebel sanft schmoren; Tofu zugeben.",
       "Mild abschmecken, mit Reis servieren.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest",
+    checks: "Gastritis – milde Säure, gut geschmort · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest",
     swaps: "Tofu ↔ Putenbrustwürfel; Reis ↔ Vollkornreis; Alternative Rezepte: Qingjiao-Rousi (青椒肉丝, Schweinefilet-Paprika, mild) oder Rind-Paprika-Pfanne (mild).",
     side: "Gedämpfter Pak Choi.",
     remind: false,
@@ -371,7 +371,7 @@ const DATA = [
       "In wenig Öl zügig durchgaren.",
       "Gemüse kurz mitgaren, mit Reis servieren.",
     ],
-    checks: "Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Pute durchgegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Pute durchgegart",
     swaps: "Pute ↔ Hähnchen; Vollkornreis ↔ Reis; Alternative Rezepte: Bulgogi mit Rind (mager) oder mildes Schweine-Bulgogi (ohne Schärfe).",
     side: "Salatgurke natur.",
     remind: true,
@@ -398,7 +398,7 @@ const DATA = [
       "Hähnchen fein würfeln, 8–10 Min. mitgaren bis durch.",
       "Mild abschmecken, Lauchgrün zugeben.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Huhn durchgegart",
+    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Huhn durchgegart",
     swaps: "Hähnchen ↔ Tofu; Karotte ↔ Kürbis; Alternative Rezepte: Schweine-Congee (mageres Schwein) oder Rind-Congee (mageres Rind), jeweils mild.",
     side: "Warmer Kräutertee.",
     remind: true,
@@ -426,7 +426,7 @@ const DATA = [
       "Tofu/Bohnen zugeben, 5 Min. ziehen lassen.",
       "Pasta separat kochen, zum Schluss einrühren.",
     ],
-    checks: "Diabetes ✓ – ≈69 g KH · Schwangerschaft ✓ pasteurisierter Käse optional",
+    checks: "Gastritis – lange geköchelt · Diabetes ✓ – ≈69 g KH · Schwangerschaft ✓ pasteurisierter Käse optional",
     swaps: "Tofu ↔ Hähnchenwürfel; Vollkornpasta ↔ Gerste; Alternative Rezepte: Yasai-Itame mit Schweinefilet (mild) oder Rind-Gemüse-Pfanne (mild).",
     side: "Kräutertee (warm).",
     remind: false,
@@ -451,7 +451,7 @@ const DATA = [
       "Lachs bestreichen; 12–14 Min. bei 200 °C backen.",
       "Reis und gedämpften Brokkoli servieren.",
     ],
-    checks: "Diabetes ✓ – ≈75 g KH (Süße minimal) · Schwangerschaft ✓ Lachs durchgegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈75 g KH (Süße minimal) · Schwangerschaft ✓ Lachs durchgegart",
     swaps: "Reis ↔ Vollkornreis; Brokkoli ↔ Pak Choi; Alternative Rezepte: Buta no Shōgayaki (Schwein, mild) oder Teriyaki-Rinderstreifen (mager).",
     side: "Warmer Grüntee.",
     remind: true,
@@ -478,7 +478,7 @@ const DATA = [
       "Lauch/Spinat kurz mitgaren.",
       "Mit wenig Sojasauce servieren; Reis separat.",
     ],
-    checks: "Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ vollständig gegart",
+    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ vollständig gegart",
     swaps: "Reis ↔ Vollkornreis; Spinat ↔ Pak Choi; Alternative Rezepte: Niku Udon (Rind, mild) oder Buta Udon (Schwein, mild).",
     side: "Wasser oder Gerstentee.",
     remind: true,
@@ -505,7 +505,7 @@ const DATA = [
       "Fleisch/Gemüse in wenig Öl gar braten, würzen.",
       "Nudeln untermischen, kurz erwärmen.",
     ],
-    checks: "Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ Fleisch durchgegart",
+    checks: "Gastritis – mild gewürzt · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ Fleisch durchgegart",
     swaps: "Rind ↔ Tofu; Glasnudeln ↔ Reisnudeln; Alternative Rezepte: Japchae mit Schweinefilet (mild) oder Chow Fun mit Rind (mild).",
     side: "Sesam-Gurkenscheiben (mild).",
     remind: false,
@@ -530,7 +530,7 @@ const DATA = [
       "Shiitake/Karotte zugeben, 20–25 Min. schmoren.",
       "Mit Reis servieren.",
     ],
-    checks: "Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ Hähnchen durchgegart",
+    checks: "Gastritis – geschmort, mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ Hähnchen durchgegart",
     swaps: "Hähnchen ↔ Tofu; Reis ↔ Vollkornreis; Alternative Rezepte: Schweinefilet-Schmorpfanne mit Shiitake (mild) oder Rind-Schmorpfanne (mager).",
     side: "Gedämpfter Pak Choi oder Brokkoli.",
     remind: true,
@@ -555,8 +555,8 @@ const DATA = [
       "Apfelwürfel 5 Min. ziehen lassen.",
       "Tofuwürfel zugeben, mild abschmecken.",
     ],
-    checks: "Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Apfel ↔ Birne; Tofu ↔ Skyr (pasteurisiert); Alternative Rezepte: Milchreis light mit Rind- oder Schweinefilet-Beilage ist unüblich – besser Gyudon/Butadon als separates Gericht.",
+    checks: "Gastritis – mild & warm · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Apfel ↔ Birne; Tofu ↔ Skyr (pasteurisiert); Alternative Rezepte: Statt süßem Brei besser Gyudon/Butadon als herzhaftes Alternativgericht.",
     side: "Warmer Kräutertee.",
     remind: true,
     prompt: buildPrompt(PROMPT_HEADER, "Creamy rice porridge with small apple cubes and tofu, neutral bowl, steam"),
@@ -580,7 +580,7 @@ const DATA = [
       "Gemüse 3–4 Min. mitgaren.",
       "Nudeln kochen, abspülen, zugeben und mild würzen.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Pute durchgegart",
+    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Pute durchgegart",
     swaps: "Weizennudeln ↔ Reisnudeln; Pute ↔ Tofu; Alternative Rezepte: Niku Udon (Rind, klar) oder Buta Udon (Schwein, klar).",
     side: "Lauwarmes Wasser.",
     remind: false,
@@ -606,7 +606,7 @@ const DATA = [
       "Seelachs 8–10 Min. mild schmoren.",
       "Mit Sesamöl abrunden; mit Reis servieren.",
     ],
-    checks: "Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Seelachs durchgegart, quecksilberarm",
+    checks: "Gastritis – geschmort, mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Seelachs durchgegart, quecksilberarm",
     swaps: "Seelachs ↔ Kabeljau; Reis ↔ Vollkornreis; Alternative Rezepte: Buta no Shōgayaki (Schwein, mild) oder Rinderstreifen-Schmorgericht (mild).",
     side: "Gedämpfter Spinat.",
     remind: true,
@@ -785,6 +785,8 @@ function RecipeCard({ r }) {
             {dayLabel(r.id)} – {mealTitle(r.id)}
           </div>
           <h2 style={{ marginTop: 0 }}>{r.title}</h2>
+          {/* Kurze Geschichte / Herkunft direkt unter der Rezeptüberschrift */}
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral }}>{r.desc}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>Zutaten (2 Personen)</h3>
@@ -797,13 +799,10 @@ function RecipeCard({ r }) {
               <ol className="avoid-break" style={{ paddingLeft: 18 }}>
                 {r.steps.map((s, i) => <li key={i} style={{ marginBottom: 4 }}>{s}</li>)}
               </ol>
-              <div style={{ marginTop: 6, fontSize: 12 }}><b>Austausche:</b> {r.swaps}</div>
+              <div style={{ marginTop: 6, fontSize: 12 }}><b>Austausche & Alternativen:</b> {r.swaps}</div>
             </section>
           </div>
-          {/* Zusätzlicher Alternativen-Block unter dem Rezept (wie Woche 3) */}
-          <div style={{ marginTop: 10, padding: "8px 10px", background: COLORS.panelBG70, border: `1px solid ${COLORS.border}`, borderRadius: 12, fontSize: 13 }}>
-            <b>Alternativen:</b> {r.swaps}
-          </div>
+          {/* (Zusätzlicher Alternativen-Block entfällt; alles zusammengeführt) */}
         </main>
       </div>
     </div>
