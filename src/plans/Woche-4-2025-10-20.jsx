@@ -657,7 +657,7 @@ function accumulateList(data) {
       };
       const nLower = n.toLowerCase();
       if (groupMap.protein.some((w) => nLower.includes(w.toLowerCase()))) add("protein");
-      else if (groupMap.staple.some((w) => nLower.includes(w.toLowerCase()))) add("staple";
+      else if (groupMap.staple.some((w) => nLower.includes(w.toLowerCase()))) add("staple");
       else if (groupMap.veg.some((w) => nLower.includes(w.toLowerCase()))) add("veg");
       else if (groupMap.season.some((w) => nLower.includes(w.toLowerCase()))) add("season");
     })
