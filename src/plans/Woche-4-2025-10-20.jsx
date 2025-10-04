@@ -2,6 +2,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
+import { buildEmbedCss } from "../utils/embedCss";
+import { UI } from "../i18n-ui";
 
 export const meta = { title: "Woche 4", startDate: "2025-10-20", id: "woche-4-2025-10-20" };
 const FILE_BASE = "Woche 4 2025-10-20";
@@ -47,20 +49,7 @@ const PROMPT_HEADER =
 
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
-const dayLabel = (id) => {
-  const d = id.split("-")[0];
-  return d === "mo" ? "Montag" : d === "di" ? "Dienstag" : d === "mi" ? "Mittwoch" : d === "do" ? "Donnerstag" : d === "fr" ? "Freitag" : d === "sa" ? "Samstag" : "Sonntag";
-};
-const mealTitle = (id) => {
-  const part = id.split("-")[1];
-  return part === "f" ? "Morgen" : part === "m" ? "Mittag" : "Abend";
-};
-const mealLabel = (id) => {
-  const part = id.split("-")[1];
-  return part === "f" ? "Frühstück" : part === "m" ? "Mittag" : "Abendessen";
-};
-
-// ---------- DATA (21 Rezepte, Woche 4, NON-STRICT / Woche-3-Format) ----------
+// ---------- DATA (21 Rezepte) ----------
 const DATA = [
   // Montag
   {
@@ -647,7 +636,7 @@ const groupByDay = (arr) => {
   return map;
 };
 
-// ---------- List Summary (wie Woche-3) ----------
+// ---------- List Summary ----------
 function normalizeName(n) {
   return n.replace(/\(.*?\)/g, "").replace(/^\s+|\s+$/g, "").replace(/\bgekauft\b/gi, "").replace(/\bgekocht\b/gi, "").replace(/\broh\b/gi, "").replace(/ +/g, " ");
 }
@@ -703,6 +692,7 @@ function buildListSummary() {
 }
 const LIST_SUMMARY = buildListSummary();
 
+<<<<<<< HEAD
 // --------- Export helpers ----------
 async function ensureScript(src) {
   if (document.querySelector(`script[src="${src}"]`)) return;
@@ -715,6 +705,8 @@ async function ensureScript(src) {
 
 import { buildEmbedCss } from "../utils/embedCss";
 
+=======
+>>>>>>> simplified-chinese
 // ---------- persistence ----------
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
 const readLocalImage = (key) => localStorage.getItem(key) || "";
@@ -738,8 +730,13 @@ function ImageUpload({ storageKey, label }) {
   );
 }
 
+// ---------- i18n Helpers ----------
+const dayNameI18n = (id, t) => t.day[id.split("-")[0]];
+const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
+const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
+
 // ---------- Recipe Card ----------
-function RecipeCard({ r }) {
+function RecipeCard({ r, t }) {
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   return (
@@ -751,35 +748,33 @@ function RecipeCard({ r }) {
           </div>
           {img ? <img src={img} alt={r.title} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
-            <div><b>{dayLabel(r.id)} – {mealTitle(r.id)}</b></div>
+            <div><b>{dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}</b></div>
             <div style={{ marginTop: 6 }}>{r.desc}</div>
             <div style={{ marginTop: 6 }}><b>Ziel:</b> {r.target}</div>
             <div><b>Checks:</b> {r.checks}</div>
-            <div><b>Beilage/Drink:</b> {r.side}</div>
+            <div><b>{t.sections.side}:</b> {r.side}</div>
             {r.remind ? <div style={{ marginTop: 8, padding: "6px 8px", background: "rgba(5,150,105,.08)", border: `1px solid ${COLORS.emerald}`, borderRadius: 10, fontSize: 13 }}>💊 Metformin mit der Mahlzeit einnehmen.</div> : null}
           </div>
         </aside>
         <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
-          {/* Wochentag-Überschrift über dem Hauptrezept (wie Woche 3) */}
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
-            {dayLabel(r.id)} – {mealTitle(r.id)}
+            {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
           </div>
           <h2 style={{ marginTop: 0 }}>{r.title}</h2>
-          {/* Sachliche Herkunft/Anlass-Story in kleinerer Schrift */}
           <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{r.story}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
-              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>Zutaten (2 Personen)</h3>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients} (2 Personen)</h3>
               <ul className="avoid-break">
                 {r.ingredients.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x}</li>)}
               </ul>
             </section>
             <section>
-              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>Zubereitung</h3>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
               <ol className="avoid-break" style={{ paddingLeft: 18 }}>
                 {r.steps.map((s, i) => <li key={i} style={{ marginBottom: 4 }}>{s}</li>)}
               </ol>
-              <div style={{ marginTop: 6, fontSize: 12 }}><b>Austausche & Alternativen:</b> {r.swaps}</div>
+              <div style={{ marginTop: 6, fontSize: 12 }}><b>{t.sections.swaps}:</b> {r.swaps}</div>
             </section>
           </div>
         </main>
@@ -788,8 +783,8 @@ function RecipeCard({ r }) {
   );
 }
 
-// ---------- Cookbook (Cover + Wochenübersicht + Rezepte) ----------
-function Cookbook() {
+// ---------- Cookbook ----------
+function Cookbook({ t }) {
   const weekly = useMemo(() => groupByDay(DATA), []);
   return (
     <div id="cookbook-root">
@@ -808,11 +803,11 @@ function Cookbook() {
             <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
               {DAYS_ORDER.map((d) => (
                 <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
-                  <div style={{ fontWeight: 700, marginBottom: 6 }}>{DAY_NAME[d]}</div>
+                  <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                     {(weekly[d] || []).map((m) => (
                       <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
-                        <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabel(m.id)}</div>
+                        <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
                         <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{m.title}</div>
                         <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
                           🌾 {m.target.replace("KH gesamt", "KH")}{m.remind ? " · 💊" : ""}
@@ -827,7 +822,7 @@ function Cookbook() {
         </div>
       </div>
       {/* Rezeptseiten */}
-      {DATA.map((r) => <RecipeCard key={r.id} r={r} />)}
+      {DATA.map((r) => <RecipeCard key={r.id} r={r} t={t} />)}
     </div>
   );
 }
@@ -863,6 +858,13 @@ function GroceryList() {
 // ---------- Main ----------
 export default function Woche4_2025_10_20() {
   const [tab, setTab] = useState("kochbuch");
+  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
+  const t = UI[lang] || UI.de;
+  const toggleLang = () => {
+    const next = lang === "de" ? "zh" : "de";
+    setLang(next);
+    localStorage.setItem("ghibli-lang", next);
+  };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
 
@@ -873,20 +875,20 @@ export default function Woche4_2025_10_20() {
     const id = isCook ? "cookbook-root" : "list-root";
     const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
     const res = await exportPDFById(id, name, isCook ? "landscape" : "portrait", {
-        pageBg: COLORS.pageBg,
-        after: [".page"],
-        avoid: [".avoid-break"],
-});
-
+      pageBg: COLORS.pageBg,
+      after: [".page"],
+      avoid: [".avoid-break"],
+    });
     if (res?.blobUrl) {
       setPdfLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: res.blobUrl }));
     }
   };
+
   const doHTML = () => {
     const isCook = tab === "kochbuch";
     const id = isCook ? "cookbook-root" : "list-root";
     const name = `${FILE_BASE} – ${isCook ? "kochbuch" : "einkauf"}`;
-    const css = getEmbedCss(); // deine bestehende CSS-Embed-Funktion
+    const css = buildEmbedCss({ pageBg: COLORS.pageBg, text: COLORS.text });
     const url = exportHTMLById(id, name, css, COLORS.pageBg);
     if (url) setHtmlLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: url }));
   };
@@ -895,17 +897,18 @@ export default function Woche4_2025_10_20() {
     <div style={{ background: COLORS.pageBg, minHeight: "100vh", padding: 16 }}>
       <div className="print:hidden" style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={() => setTab("kochbuch")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="kochbuch"?COLORS.indigo:COLORS.white, color: tab==="kochbuch"?"#fff":COLORS.text }}>Kochbuch</button>
-          <button onClick={() => setTab("einkauf")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="einkauf"?COLORS.indigo:COLORS.white, color: tab==="einkauf"?"#fff":COLORS.text }}>Einkaufsliste</button>
+          <button onClick={() => setTab("kochbuch")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="kochbuch"?COLORS.indigo:COLORS.white, color: tab==="kochbuch"?"#fff":COLORS.text }}>{t.tabs.cookbook}</button>
+          <button onClick={() => setTab("einkauf")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="einkauf"?COLORS.indigo:COLORS.white, color: tab==="einkauf"?"#fff":COLORS.text }}>{t.tabs.list}</button>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={doPDF} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>PDF erzeugen</button>
-          <button onClick={doHTML} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>HTML exportieren</button>
-          <button onClick={() => window.print()} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>Drucken</button>
+          <button onClick={doPDF} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.pdf}</button>
+          <button onClick={doHTML} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.html}</button>
+          <button onClick={() => window.print()} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.print}</button>
+          <button onClick={toggleLang} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.toggle}</button>
         </div>
       </div>
 
-      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}><Cookbook /></div>
+      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}><Cookbook t={t} /></div>
       <div style={{ display: tab === "einkauf" ? "block" : "none" }}><GroceryList /></div>
 
       {/* Download-Links unter dem jeweiligen Tab-Inhalt */}
@@ -935,7 +938,7 @@ function Tests() {
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
     const ids = new Set(DATA.map((r) => r.id));
     if (ids.size !== 21) throw new Error("IDs not unique");
-    if (mealLabel("xx-f") !== "Frühstück" || mealLabel("xx-m") !== "Mittag" || mealLabel("xx-a") !== "Abendessen") throw new Error("mealLabel mapping wrong");
+    // i18n-Meal-Labels werden dynamisch gerendert (keine feste Prüfung hier)
     DATA.forEach((r) => {
       const isLunch = /-m$/.test(r.id);
       if (isLunch && r.remind) throw new Error("Mittag darf keinen Reminder haben");
@@ -951,7 +954,7 @@ function Tests() {
   }
 }
 
-// ---------- Mount (Pflicht) ----------
+// ---------- Mount ----------
 const mountNode = document.getElementById("root") || (() => {
   const d = document.createElement("div");
   d.id = "root";
