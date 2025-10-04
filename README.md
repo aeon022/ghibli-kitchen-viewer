@@ -3,6 +3,11 @@
 **GhibliKitchen** ist ein Koch- und Ernährungs-Assistent für strukturierte Wochenpläne, Einkaufslisten und bebilderte Kochbuch-Layouts – mit Fokus auf **CN/JP/KR-Küche**, mild gewürzt und angepasst an **Diabetes (früh), Gastritis (mild) und Schwangerschaft**.  
 Das Projekt verbindet klar definierte **Gesundheits-Leitplanken**, ein **druckfähiges UI (PDF/HTML)** und eine **Datenstruktur, die von einem GPT („GhibliKitchen“) erzeugt/validiert werden kann**.
 
+Du findest GhibliKitchen Viewer auf Github Pages https://aeon022.github.io/ghibli-kitchen-viewer/ und den Code auf Github https://github.com/aeon022/ghibli-kitchen-viewer/.
+
+GhibliKitchen GPT findest du hier: https://chatgpt.com/g/g-68d2d50254c08191a73a90bc619bbf2f-ghiblikitchen
+
+
 ---
 
 ## Inhalt
