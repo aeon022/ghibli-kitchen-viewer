@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
+import { pickText, pickList } from "../i18n-data";
 
 export const meta = { title: "Woche 4", startDate: "2025-10-20", id: "woche-4-2025-10-20" };
 const FILE_BASE = "Woche 4 2025-10-20";
@@ -638,7 +639,13 @@ const groupByDay = (arr) => {
 
 // ---------- List Summary ----------
 function normalizeName(n) {
-  return n.replace(/\(.*?\)/g, "").replace(/^\s+|\s+$/g, "").replace(/\bgekauft\b/gi, "").replace(/\bgekocht\b/gi, "").replace(/\broh\b/gi, "").replace(/ +/g, " ");
+  return n
+    .replace(/\(.*?\)/g, "")
+    .replace(/^\s+|\s+$/g, "")
+    .replace(/\bgekauft\b/gi, "")
+    .replace(/\bgekocht\b/gi, "")
+    .replace(/\broh\b/gi, "")
+    .replace(/ +/g, " ");
 }
 function parseQty(item) {
   const m = item.match(/^(.*)\s(\d+(?:[.,]\d+)?)\s*(g|ml|l|EL|TL|Stück)$/i);
@@ -646,7 +653,10 @@ function parseQty(item) {
   const name = normalizeName(m[1]).trim();
   let qty = parseFloat(m[2].replace(",", "."));
   let unit = m[3];
-  if (unit.toLowerCase() === "l") { qty = qty * 1000; unit = "ml"; }
+  if (unit.toLowerCase() === "l") {
+    qty = qty * 1000;
+    unit = "ml";
+  }
   return { name, qty, unit };
 }
 const groupMap = {
@@ -703,14 +713,22 @@ function ImageUpload({ storageKey, label }) {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => { const dataUrl = reader.result; setSrc(dataUrl); saveLocalImage(storageKey, dataUrl); };
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      setSrc(dataUrl);
+      saveLocalImage(storageKey, dataUrl);
+    };
     reader.readAsDataURL(file);
   };
   return (
     <div className="print:hidden" style={{ marginBottom: 12 }}>
       <label style={{ display: "block", marginBottom: 6, color: COLORS.neutral }}>{label}</label>
       <input type="file" accept="image/*" onChange={onChange} />
-      {src ? <div style={{ marginTop: 8 }}><img src={src} alt={label} style={{ maxWidth: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /></div> : null}
+      {src ? (
+        <div style={{ marginTop: 8 }}>
+          <img src={src} alt={label} style={{ maxWidth: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -721,7 +739,7 @@ const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
 const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
 // ---------- Recipe Card ----------
-function RecipeCard({ r, t }) {
+function RecipeCard({ r, t, lang }) {
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   return (
@@ -729,37 +747,70 @@ function RecipeCard({ r, t }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, alignItems: "stretch" }}>
         <aside style={{ gridColumn: "span 4", ...cardPanelStyle }}>
           <div className="print:hidden">
-            <ImageUpload storageKey={recipeImgKey} label={`Rezeptbild hochladen: ${r.title}`} />
+            <ImageUpload storageKey={recipeImgKey} label={`Rezeptbild hochladen: ${pickText(r.title, lang)}`} />
           </div>
-          {img ? <img src={img} alt={r.title} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
+          {img ? <img src={img} alt={pickText(r.title, lang)} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
-            <div><b>{dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}</b></div>
-            <div style={{ marginTop: 6 }}>{r.desc}</div>
-            <div style={{ marginTop: 6 }}><b>Ziel:</b> {r.target}</div>
-            <div><b>Checks:</b> {r.checks}</div>
-            <div><b>{t.sections.side}:</b> {r.side}</div>
-            {r.remind ? <div style={{ marginTop: 8, padding: "6px 8px", background: "rgba(5,150,105,.08)", border: `1px solid ${COLORS.emerald}`, borderRadius: 10, fontSize: 13 }}>💊 Metformin mit der Mahlzeit einnehmen.</div> : null}
+            <div>
+              <b>
+                {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+              </b>
+            </div>
+            <div style={{ marginTop: 6 }}>{pickText(r.desc, lang)}</div>
+            <div style={{ marginTop: 6 }}>
+              <b>Ziel:</b> {pickText(r.target, lang)}
+            </div>
+            <div>
+              <b>Checks:</b> {pickText(r.checks, lang)}
+            </div>
+            <div>
+              <b>{t.sections.side}:</b> {pickText(r.side, lang)}
+            </div>
+            {r.remind ? (
+              <div
+                style={{
+                  marginTop: 8,
+                  padding: "6px 8px",
+                  background: "rgba(5,150,105,.08)",
+                  border: `1px solid ${COLORS.emerald}`,
+                  borderRadius: 10,
+                  fontSize: 13,
+                }}
+              >
+                💊 Metformin mit der Mahlzeit einnehmen.
+              </div>
+            ) : null}
           </div>
         </aside>
         <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
             {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
           </div>
-          <h2 style={{ marginTop: 0 }}>{r.title}</h2>
-          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{r.story}</p>
+          <h2 style={{ marginTop: 0 }}>{pickText(r.title, lang)}</h2>
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{pickText(r.story, lang)}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients} (2 Personen)</h3>
               <ul className="avoid-break">
-                {r.ingredients.map((x, i) => <li key={i} style={{ marginBottom: 4 }}>{x}</li>)}
+                {pickList(r.ingredients, lang).map((x, i) => (
+                  <li key={i} style={{ marginBottom: 4 }}>
+                    {x}
+                  </li>
+                ))}
               </ul>
             </section>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
               <ol className="avoid-break" style={{ paddingLeft: 18 }}>
-                {r.steps.map((s, i) => <li key={i} style={{ marginBottom: 4 }}>{s}</li>)}
+                {pickList(r.steps, lang).map((s, i) => (
+                  <li key={i} style={{ marginBottom: 4 }}>
+                    {s}
+                  </li>
+                ))}
               </ol>
-              <div style={{ marginTop: 6, fontSize: 12 }}><b>{t.sections.swaps}:</b> {r.swaps}</div>
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                <b>{t.sections.swaps}:</b> {pickText(r.swaps, lang)}
+              </div>
             </section>
           </div>
         </main>
@@ -769,7 +820,7 @@ function RecipeCard({ r, t }) {
 }
 
 // ---------- Cookbook ----------
-function Cookbook({ t }) {
+function Cookbook({ t, lang }) {
   const weekly = useMemo(() => groupByDay(DATA), []);
   return (
     <div id="cookbook-root">
@@ -779,7 +830,8 @@ function Cookbook({ t }) {
           <div style={{ flex: 1, ...cardPanelStyle }}>
             <h1 style={{ margin: 0, color: COLORS.emerald }}>{UI_TITLES.main}</h1>
             <p style={{ marginTop: 6, color: COLORS.neutral }}>
-              Woche ab {meta.startDate} – <b>Modus: Non-Strict (balanced)</b>; CN/JP/KR dominiert, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: 60–90 g KH pro Mahlzeit (2 P.).
+              Woche ab {meta.startDate} – <b>Modus: Non-Strict (balanced)</b>; CN/JP/KR dominiert, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: 60–90 g KH pro
+              Mahlzeit (2 P.).
             </p>
             <ImageUpload storageKey={getImageKey("cover")} label="Cover-Bild hochladen" />
           </div>
@@ -793,9 +845,10 @@ function Cookbook({ t }) {
                     {(weekly[d] || []).map((m) => (
                       <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
                         <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
-                        <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{m.title}</div>
+                        <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{pickText(m.title, lang)}</div>
                         <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
-                          🌾 {m.target.replace("KH gesamt", "KH")}{m.remind ? " · 💊" : ""}
+                          🌾 {pickText(m.target, lang).replace("KH gesamt", "KH")}
+                          {m.remind ? " · 💊" : ""}
                         </div>
                       </div>
                     ))}
@@ -807,7 +860,9 @@ function Cookbook({ t }) {
         </div>
       </div>
       {/* Rezeptseiten */}
-      {DATA.map((r) => <RecipeCard key={r.id} r={r} t={t} />)}
+      {DATA.map((r) => (
+        <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      ))}
     </div>
   );
 }
@@ -826,7 +881,9 @@ function GroceryList() {
               <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
                 <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
                 <ul>
-                  {items.map((t, i) => <li key={i}>{t}</li>)}
+                  {items.map((t, i) => (
+                    <li key={i}>{t}</li>
+                  ))}
                 </ul>
               </div>
             ))}
@@ -853,7 +910,9 @@ export default function Woche4_2025_10_20() {
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
 
-  useEffect(() => { Tests(); }, []);
+  useEffect(() => {
+    Tests();
+  }, []);
 
   const doPDF = async () => {
     const isCook = tab === "kochbuch";
@@ -882,32 +941,96 @@ export default function Woche4_2025_10_20() {
     <div style={{ background: COLORS.pageBg, minHeight: "100vh", padding: 16 }}>
       <div className="print:hidden" style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={() => setTab("kochbuch")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="kochbuch"?COLORS.indigo:COLORS.white, color: tab==="kochbuch"?"#fff":COLORS.text }}>{t.tabs.cookbook}</button>
-          <button onClick={() => setTab("einkauf")} style={{ padding: "8px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, boxShadow: COLORS.btnShadow, background: tab==="einkauf"?COLORS.indigo:COLORS.white, color: tab==="einkauf"?"#fff":COLORS.text }}>{t.tabs.list}</button>
+          <button
+            onClick={() => setTab("kochbuch")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "kochbuch" ? COLORS.indigo : COLORS.white,
+              color: tab === "kochbuch" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.cookbook}
+          </button>
+          <button
+            onClick={() => setTab("einkauf")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "einkauf" ? COLORS.indigo : COLORS.white,
+              color: tab === "einkauf" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.list}
+          </button>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
-          <button onClick={doPDF} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.pdf}</button>
-          <button onClick={doHTML} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.html}</button>
-          <button onClick={() => window.print()} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.btn.print}</button>
-          <button onClick={toggleLang} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}>{t.toggle}</button>
+          <button
+            onClick={doPDF}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.pdf}
+          </button>
+          <button
+            onClick={doHTML}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.html}
+          </button>
+          <button
+            onClick={() => window.print()}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.print}
+          </button>
+          <button
+            onClick={toggleLang}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.toggle}
+          </button>
         </div>
       </div>
 
-      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}><Cookbook t={t} /></div>
-      <div style={{ display: tab === "einkauf" ? "block" : "none" }}><GroceryList /></div>
+      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}>
+        <Cookbook t={t} lang={lang} />
+      </div>
+      <div style={{ display: tab === "einkauf" ? "block" : "none" }}>
+        <GroceryList />
+      </div>
 
       {/* Download-Links unter dem jeweiligen Tab-Inhalt */}
       <div className="print:hidden" style={{ marginTop: 12 }}>
         {tab === "kochbuch" && (
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            {pdfLink.kochbuch ? <a href={pdfLink.kochbuch} download={`${FILE_BASE} – kochbuch.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>📄 PDF herunterladen (Kochbuch)</a> : null}
-            {htmlLink.kochbuch ? <a href={htmlLink.kochbuch} download={`${FILE_BASE} – kochbuch.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>🌐 HTML herunterladen (Kochbuch)</a> : null}
+            {pdfLink.kochbuch ? (
+              <a href={pdfLink.kochbuch} download={`${FILE_BASE} – kochbuch.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Kochbuch)
+              </a>
+            ) : null}
+            {htmlLink.kochbuch ? (
+              <a href={htmlLink.kochbuch} download={`${FILE_BASE} – kochbuch.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Kochbuch)
+              </a>
+            ) : null}
           </div>
         )}
         {tab === "einkauf" && (
           <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            {pdfLink.einkauf ? <a href={pdfLink.einkauf} download={`${FILE_BASE} – einkauf.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>📄 PDF herunterladen (Einkaufsliste)</a> : null}
-            {htmlLink.einkauf ? <a href={htmlLink.einkauf} download={`${FILE_BASE} – einkauf.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>🌐 HTML herunterladen (Einkaufsliste)</a> : null}
+            {pdfLink.einkauf ? (
+              <a href={pdfLink.einkauf} download={`${FILE_BASE} – einkauf.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
+            {htmlLink.einkauf ? (
+              <a href={htmlLink.einkauf} download={`${FILE_BASE} – einkauf.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
           </div>
         )}
       </div>
@@ -940,11 +1063,13 @@ function Tests() {
 }
 
 // ---------- Mount ----------
-const mountNode = document.getElementById("root") || (() => {
-  const d = document.createElement("div");
-  d.id = "root";
-  document.body.appendChild(d);
-  return d;
-})();
+const mountNode =
+  document.getElementById("root") ||
+  (() => {
+    const d = document.createElement("div");
+    d.id = "root";
+    document.body.appendChild(d);
+    return d;
+  })();
 const root = createRoot(mountNode);
 root.render(<Woche4_2025_10_20 />);
