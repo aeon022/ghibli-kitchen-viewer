@@ -1,6 +1,5 @@
 // 文件: Woche-4-2025-10-20.zh.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
@@ -673,7 +672,7 @@ const groupMap = {
 function accumulateList(data) {
   const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
   data.forEach((r) =>
-    r.ingredients.forEach((ing) => {
+    (r.ingredients || []).forEach((ing) => {
       const q = parseQty(ing);
       if (!q) return;
       const n = normalizeName(q.name);
@@ -992,7 +991,6 @@ export default function Woche4_2025_10_20_ZH() {
           >
             {t.btn.print}
           </button>
-          
         </div>
       </div>
 
@@ -1060,4 +1058,3 @@ function Tests() {
     console.error("[GhibliKitchen] Tests failed:", e);
   }
 }
-
