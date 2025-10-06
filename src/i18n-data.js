@@ -128,31 +128,57 @@ function getOverride(key, lang) {
 }
 
 /* ---------------------------
- * Base pickers with auto-translate
+ * Base pickers with auto-translate (robust)
  * --------------------------- */
 
+const isLangCode = (x) => x === "de" || x === "zh";
+
 // Einzeltext: akzeptiert String ODER { de, zh }.
-// Wenn zh fehlt und lang === "zh", wird DE → ZH gemappt.
+// - Gibt niemals versehentlich "de"/"zh" zurück
+// - Wenn zh fehlt und lang === "zh", wird DE → ZH gemappt
 export const pickText = (v, lang = "de") => {
-  // object form with { de, zh }
-  if (v && typeof v === "object" && (v.de || v.zh)) {
-    const base = v[lang] || v.de || "";
-    return lang === "zh" && !v.zh ? deToZh(base) : base;
+  if (v == null) return "";
+
+  // primitiver String
+  if (typeof v === "string") {
+    if (isLangCode(v)) return "";
+    return lang === "zh" ? deToZh(v) : v;
   }
-  // primitive string
-  const s = v ?? "";
-  return lang === "zh" ? deToZh(String(s)) : String(s);
+
+  // Objektform { de, zh }
+  if (typeof v === "object") {
+    const hasDe = Object.prototype.hasOwnProperty.call(v, "de");
+    const hasZh = Object.prototype.hasOwnProperty.call(v, "zh");
+    if (hasDe || hasZh) {
+      const raw = v[lang] ?? v.de ?? "";
+      const safe = typeof raw === "string" ? (isLangCode(raw) ? "" : raw) : "";
+      return lang === "zh" && !hasZh ? deToZh(safe) : safe;
+    }
+  }
+
+  return "";
 };
 
 // Liste: akzeptiert Array ODER { de:[], zh:[] }.
-// Wenn zh fehlt und lang === "zh", werden die Einträge einzeln gemappt.
+// - Gibt IMMER ein Array zurück
+// - Filtert versehentlich eingestreute "de"/"zh" aus
+// - Wenn zh fehlt und lang === "zh", mappt jedes Element DE → ZH
 export const pickList = (v, lang = "de") => {
+  const sanitize = (arr) =>
+    (Array.isArray(arr) ? arr : [])
+      .filter((x) => typeof x === "string" && !isLangCode(x))
+      .map((x) => (lang === "zh" ? deToZh(x) : x));
+
+  if (Array.isArray(v)) return sanitize(v);
+
   if (v && typeof v === "object" && (Array.isArray(v.de) || Array.isArray(v.zh))) {
-    const list = v[lang] || v.de || [];
-    return lang === "zh" && !v.zh ? list.map(deToZh) : list;
+    // Wenn zh existiert, nehmen wir es; sonst de und mappen ggf. zu zh
+    const hasZh = Array.isArray(v.zh);
+    const list = v[lang] ?? v.de ?? [];
+    return hasZh && lang === "zh" ? sanitize(v.zh) : sanitize(list);
   }
-  const arr = Array.isArray(v) ? v : [];
-  return lang === "zh" ? arr.map(deToZh) : arr;
+
+  return [];
 };
 
 /* ---------------------------
