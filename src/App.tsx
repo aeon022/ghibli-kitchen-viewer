@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, Link, useParams, useNavigate } from 'react-rou
 import { plans, type PlanIndexItem } from './planLoader';
 import ErrorBoundary from './ErrorBoundary';
 import { useLanguageStore } from './i18n/useLanguageStore';
-import { LanguageSwitcher } from './i18n/LanguageSwitcher';
+import { LanguageSwitcher } from './i18n/LanguageSwitcher'; // ⟵ fehlte
 
 // Hilfsfunktionen
 const cleanSidebarTitle = (p: PlanIndexItem) =>
@@ -64,10 +64,7 @@ function PlanPage({ weeklyPlans }: { weeklyPlans: PlanIndexItem[] }) {
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
         <button onClick={() => Prev && nav(`/plan/${Prev.id}`)} disabled={!Prev}>← Älter</button>
         <button onClick={() => Next && nav(`/plan/${Next.id}`)} disabled={!Next}>Neuer →</button>
-        <h1 style={{ margin: 0, marginLeft: 12, fontSize: 18 }}>{cleanSidebarTitle(current)}</h1>
-        <div style={{ marginLeft: 'auto' }}>
-          <LanguageSwitcher />
-        </div>
+        <h1 style={{ margin: 0, marginLeft: 12, fontSize: 18 }}>{current.title}</h1>
       </div>
       <ErrorBoundary key={current.id}>
         <Cmp />

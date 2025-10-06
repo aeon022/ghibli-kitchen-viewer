@@ -992,12 +992,7 @@ export default function Woche4_2025_10_20_ZH() {
           >
             {t.btn.print}
           </button>
-          <button
-            onClick={toggleLang}
-            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}
-          >
-            {t.toggle}
-          </button>
+          
         </div>
       </div>
 
@@ -1066,14 +1061,3 @@ function Tests() {
   }
 }
 
-// ---------- 挂载 ----------
-const mountNode =
-  document.getElementById("root") ||
-  (() => {
-    const d = document.createElement("div");
-    d.id = "root";
-    document.body.appendChild(d);
-    return d;
-  })();
-const root = createRoot(mountNode);
-root.render(<Woche4_2025_10_20_ZH />);

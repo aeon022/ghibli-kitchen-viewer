@@ -12,11 +12,11 @@ type LanguageState = {
 };
 
 const STORAGE_KEY = 'ghibli-lang';
-
 const listeners = new Set<() => void>();
 
 function getInitialLang(): Lang {
-  const saved = (typeof window !== 'undefined' && window.localStorage.getItem(STORAGE_KEY)) as Lang | null;
+  if (typeof window === 'undefined') return 'de';
+  const saved = window.localStorage.getItem(STORAGE_KEY) as Lang | null;
   return saved === 'zh' ? 'zh' : 'de';
 }
 
@@ -41,6 +41,18 @@ const store: LanguageState = {
   getSnapshot: () => currentLang,
 };
 
+// Cross-tab sync (optional nice-to-have)
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY) {
+      const next = (e.newValue as Lang | null) ?? 'de';
+      if (next !== currentLang) {
+        setLangInternal(next);
+      }
+    }
+  });
+}
+
 export function useLanguageStore() {
   const lang = React.useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   return React.useMemo(
@@ -53,4 +65,5 @@ export function useLanguageStore() {
   );
 }
 
+// Named + Default Export
 export default useLanguageStore;
