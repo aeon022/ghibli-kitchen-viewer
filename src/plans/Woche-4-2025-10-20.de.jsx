@@ -4,8 +4,7 @@ import { createRoot } from "react-dom/client";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
-import { pickTextWithOverride as pickText, pickListWithOverride as pickList } from "../i18n-data";
-
+import { pickText, pickList } from "../i18n-data"; // ← Direkt, ohne Overrides
 
 export const meta = {
   title: "Woche 4",
@@ -994,7 +993,12 @@ export default function Woche4_2025_10_20_DE() {
           >
             {t.btn.print}
           </button>
-          
+          <button
+            onClick={toggleLang}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.toggle}
+          </button>
         </div>
       </div>
 

@@ -851,7 +851,7 @@ function Cookbook({ t, lang }) {
                         <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
                         <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{pickText(m.title, lang)}</div>
                         <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
-                          🌾 {pickText(m.target, lang).replace("KH gesamt", "KH")}
+                          🌾 {pickText(m.target, lang).replace("总碳水", "碳水")}
                           {m.remind ? " · 💊" : ""}
                         </div>
                       </div>

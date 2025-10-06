@@ -90,6 +90,7 @@ const DE_ZH_DICT = [
 
   // Common UI bits
   [/KH\s*gesamt/gi, "碳水"],
+  [/\bKH\b/gi, "碳水"],
   [/Protein/gi, "蛋白质"],
   [/Ziel/gi, "目标"],
   [/Checks/gi, "要点"],
@@ -114,11 +115,11 @@ function deToZh(s) {
 }
 
 /* ---------------------------
- * Optional per-field overrides
+ * Optional per-field overrides (safe no-op)
  * Use via pickTextWithOverride/pickListWithOverride
  * Key format: `${id}.${field}` e.g. "mo-f.title"
  * --------------------------- */
-
+const overrides = { zh: {} }; // <- leer, damit kein ReferenceError entsteht
 
 function getOverride(key, lang) {
   if (lang === "zh" && overrides.zh && Object.prototype.hasOwnProperty.call(overrides.zh, key)) {
