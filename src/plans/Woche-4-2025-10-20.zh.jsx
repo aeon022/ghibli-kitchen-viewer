@@ -55,6 +55,7 @@ const PROMPT_HEADER =
 
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
+/* -------------------- Safe helpers -------------------- */
 // Immer ein Array zurückgeben (egal ob Array, {de,zh} oder sonstwas)
 const asList = (v, lang) => {
   try {
@@ -64,8 +65,11 @@ const asList = (v, lang) => {
     return [];
   }
 };
+// generische Guards
+const safeArr = (v) => (Array.isArray(v) ? v : []);
+const safeMap = (v, fn) => (Array.isArray(v) ? v : []).map(fn);
 
-// ---------- DATA（21个食谱）----------
+/* -------------------- DATA（21个食谱）-------------------- */
 const DATA = [
   // 周一
   {
@@ -642,32 +646,40 @@ const DATA = [
   },
 ];
 
-// ---------- 周视图辅助 ----------
+/* -------------------- 周视图辅助 -------------------- */
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
 const DAY_NAME = { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" };
 const groupByDay = (arr) => {
   const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
-  arr.forEach((r) => map[r.id.split("-")[0]].push(r));
+  safeArr(arr).forEach((r) => {
+    const d = String(r?.id || "").split("-")[0];
+    if (map[d]) map[d].push(r);
+  });
   Object.values(map).forEach((list) =>
-    list.sort((a, b) => ["f", "m", "a"].indexOf(a.id.split("-")[1]) - ["f", "m", "a"].indexOf(b.id.split("-")[1]))
+    list.sort(
+      (a, b) =>
+        ["f", "m", "a"].indexOf(String(a?.id || "").split("-")[1]) -
+        ["f", "m", "a"].indexOf(String(b?.id || "").split("-")[1])
+    )
   );
   return map;
 };
 
-// ---------- 购物清单汇总 ----------
+/* -------------------- 购物清单汇总 -------------------- */
 function normalizeName(n) {
-  return n
+  return String(n || "")
     .replace(/\(.*?\)/g, "")
     .replace(/^\s+|\s+$/g, "")
     .replace(/ +/g, " ");
 }
 function parseQty(item) {
-  const m = item.match(/^(.*)\s(\d+(?:[.,]\d+)?)\s*(g|ml|l|EL|TL|Stück)$/i);
+  const s = String(item || "");
+  const m = s.match(/^(.*)\s(\d+(?:[.,]\d+)?)\s*(g|ml|l|EL|TL|Stück)$/i);
   if (!m) return null;
   const name = normalizeName(m[1]).trim();
   let qty = parseFloat(m[2].replace(",", "."));
   let unit = m[3];
-  if (unit.toLowerCase() === "l") {
+  if ((unit || "").toLowerCase() === "l") {
     qty = qty * 1000;
     unit = "ml";
   }
@@ -681,8 +693,8 @@ const groupMap = {
 };
 function accumulateList(data) {
   const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
-  data.forEach((r) =>
-    (r.ingredients || []).forEach((ing) => {
+  safeArr(data).forEach((r) =>
+    safeArr(r?.ingredients).forEach((ing) => {
       const q = parseQty(ing);
       if (!q) return;
       const n = normalizeName(q.name);
@@ -692,17 +704,17 @@ function accumulateList(data) {
         buckets[b][key].qty += q.qty;
       };
       const nLower = n.toLowerCase();
-      if (groupMap.protein.some((w) => nLower.includes(w.toLowerCase()))) add("protein");
-      else if (groupMap.staple.some((w) => nLower.includes(w.toLowerCase()))) add("staple");
-      else if (groupMap.veg.some((w) => nLower.includes(w.toLowerCase()))) add("veg");
-      else if (groupMap.season.some((w) => nLower.includes(w.toLowerCase()))) add("season");
+      if (groupMap.protein.some((w) => nLower.includes(String(w).toLowerCase()))) add("protein");
+      else if (groupMap.staple.some((w) => nLower.includes(String(w).toLowerCase()))) add("staple");
+      else if (groupMap.veg.some((w) => nLower.includes(String(w).toLowerCase()))) add("veg");
+      else if (groupMap.season.some((w) => nLower.includes(String(w).toLowerCase()))) add("season");
     })
   );
   return buckets;
 }
 function formatBucket(obj) {
   return Object.entries(obj)
-    .map(([k, v]) => `${k} ${Math.round(v.qty)} ${v.unit}`)
+    .map(([k, v]) => `${k} ${Math.round((v?.qty ?? 0))} ${v?.unit ?? ""}`.trim())
     .sort((a, b) => a.localeCompare(b));
 }
 function buildListSummary() {
@@ -716,7 +728,7 @@ function buildListSummary() {
 }
 const LIST_SUMMARY = buildListSummary();
 
-// ---------- 本地图片持久化 ----------
+/* -------------------- 本地图片持久化 -------------------- */
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
 const readLocalImage = (key) => localStorage.getItem(key) || "";
 const saveLocalImage = (key, dataUrl) => localStorage.setItem(key, dataUrl);
@@ -747,40 +759,51 @@ function ImageUpload({ storageKey, label }) {
   );
 }
 
-// ---------- i18n 辅助 ----------
-const dayNameI18n = (id, t) => t.day[id.split("-")[0]];
-const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
-const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
+/* -------------------- i18n 辅助 -------------------- */
+const dayNameI18n = (id, t) => t.day[String(id || "").split("-")[0]];
+const mealTitleI18n = (id, t) => t.mealTitle[String(id || "").split("-")[1]];
+const mealLabelI18n = (id, t) => t.meal[String(id || "").split("-")[1]];
 
-// ---------- 菜谱卡片 ----------
+/* -------------------- 菜谱卡片 -------------------- */
 function RecipeCard({ r, t, lang }) {
-  const recipeImgKey = getImageKey(`recipe::${r.id}`);
+  const recipeImgKey = getImageKey(`recipe::${r?.id ?? "unknown"}`);
   const img = readLocalImage(recipeImgKey);
+
+  // sichere Listen
+  const ingList = asList(r?.ingredients, lang);
+  const stepList = asList(r?.steps, lang);
+
   return (
     <div className="page" style={{ padding: 24 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, alignItems: "stretch" }}>
         <aside style={{ gridColumn: "span 4", ...cardPanelStyle }}>
           <div className="print:hidden">
-            <ImageUpload storageKey={recipeImgKey} label={`上传菜品图片：${pickText(r.title, lang)}`} />
+            <ImageUpload storageKey={recipeImgKey} label={`上传菜品图片：${pickText(r?.title, lang)}`} />
           </div>
-          {img ? <img src={img} alt={pickText(r.title, lang)} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
+          {img ? (
+            <img
+              src={img}
+              alt={pickText(r?.title, lang)}
+              style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }}
+            />
+          ) : null}
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
             <div>
               <b>
-                {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+                {dayNameI18n(r?.id, t)} – {mealTitleI18n(r?.id, t)}
               </b>
             </div>
-            <div style={{ marginTop: 6 }}>{pickText(r.desc, lang)}</div>
+            <div style={{ marginTop: 6 }}>{pickText(r?.desc, lang)}</div>
             <div style={{ marginTop: 6 }}>
-              <b>目标：</b> {pickText(r.target, lang)}
+              <b>目标：</b> {pickText(r?.target, lang)}
             </div>
             <div>
-              <b>检查点：</b> {pickText(r.checks, lang)}
+              <b>检查点：</b> {pickText(r?.checks, lang)}
             </div>
             <div>
-              <b>{t.sections.side}：</b> {pickText(r.side, lang)}
+              <b>{t.sections.side}：</b> {pickText(r?.side, lang)}
             </div>
-            {r.remind ? (
+            {r?.remind ? (
               <div
                 style={{
                   marginTop: 8,
@@ -796,44 +819,45 @@ function RecipeCard({ r, t, lang }) {
             ) : null}
           </div>
         </aside>
+
         <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
-            {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+            {dayNameI18n(r?.id, t)} – {mealTitleI18n(r?.id, t)}
           </div>
-          <h2 style={{ marginTop: 0 }}>{pickText(r.title, lang)}</h2>
-          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{pickText(r.story, lang)}</p>
+          <h2 style={{ marginTop: 0 }}>{pickText(r?.title, lang)}</h2>
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{pickText(r?.story, lang)}</p>
+
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients}（2人份）</h3>
-{(() => {
-  const ingList = asList(r.ingredients, lang);
-  return (
-    <ul className="avoid-break">
-      {ingList.map((x, i) => (
-        <li key={i} style={{ marginBottom: 4 }}>
-          {typeof x === "string" ? x : String(x ?? "")}
-        </li>
-      ))}
-    </ul>
-  );
-})()}
+              <ul className="avoid-break">
+                {ingList.length > 0 ? (
+                  ingList.map((x, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof x === "string" ? x : String(x ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ul>
             </section>
+
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
-{(() => {
-  const stepList = asList(r.steps, lang);
-  return (
-    <ol className="avoid-break" style={{ paddingLeft: 18 }}>
-      {stepList.map((s, i) => (
-        <li key={i} style={{ marginBottom: 4 }}>
-          {typeof s === "string" ? s : String(s ?? "")}
-        </li>
-      ))}
-    </ol>
-  );
-})()}
+              <ol className="avoid-break" style={{ paddingLeft: 18 }}>
+                {stepList.length > 0 ? (
+                  stepList.map((s, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof s === "string" ? s : String(s ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ol>
               <div style={{ marginTop: 6, fontSize: 12 }}>
-                <b>{t.sections.swaps}：</b> {pickText(r.swaps, lang)}
+                <b>{t.sections.swaps}：</b> {pickText(r?.swaps, lang)}
               </div>
             </section>
           </div>
@@ -843,21 +867,28 @@ function RecipeCard({ r, t, lang }) {
   );
 }
 
-// ---------- 整周菜谱（封面+周览+全部菜谱） ----------
+/* -------------------- 整周菜谱（封面+周览+全部菜谱） -------------------- */
 function Cookbook({ t, lang }) {
+  // Sanity log (Hook korrekt außerhalb von useMemo)
+  useEffect(() => {
+    if (!Array.isArray(DATA) || DATA.length !== 21) {
+      console.warn(
+        "[GhibliKitchen ZH] Unexpected DATA shape/length:",
+        Array.isArray(DATA) ? DATA.length : typeof DATA
+      );
+    }
+  }, []);
+
+  // Sichere Gruppierung der Woche
   const weekly = useMemo(() => {
-    useEffect(() => {
-  if (!Array.isArray(DATA) || DATA.length !== 21) {
-    console.warn("[GhibliKitchen ZH] Unexpected DATA shape/length:", Array.isArray(DATA) ? DATA.length : typeof DATA);
-  }
-}, []);
-  try {
-    const src = Array.isArray(DATA) ? DATA : [];
-    return groupByDay(src);
-  } catch {
-    return { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
-  }
-}, []);
+    try {
+      const src = safeArr(DATA);
+      return groupByDay(src);
+    } catch {
+      return { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
+    }
+  }, []);
+
   return (
     <div id="cookbook-root">
       {/* 封面 + 周览 */}
@@ -872,45 +903,54 @@ function Cookbook({ t, lang }) {
           </div>
           <div style={{ flex: 2, ...cardMainStyle }}>
             <h2 style={{ marginTop: 0, color: COLORS.indigo }}>本周总览</h2>
-            <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
+            <div
+              className="avoid-break"
+              style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}
+            >
               {DAYS_ORDER.map((d) => {
-  const dayList = Array.isArray(weekly?.[d]) ? weekly[d] : [];
-  return (
-    <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
-      <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-        {dayList.map((m) => {
-          const title = pickText(m?.title, lang) ?? "";
-          const target = pickText(m?.target, lang) ?? "";
-          return (
-            <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
-              <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
-              <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
-              <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
-                🌾 {(target || "").replace("总碳水", "碳水")}
-                {m?.remind ? " · 💊" : ""}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-})}
+                const dayList = safeArr(weekly?.[d]);
+                return (
+                  <div
+                    key={d}
+                    style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}
+                  >
+                    <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                      {dayList.map((m) => {
+                        const title = pickText(m?.title, lang) ?? "";
+                        const target = pickText(m?.target, lang) ?? "";
+                        return (
+                          <div
+                            key={m?.id}
+                            style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}
+                          >
+                            <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m?.id, t)}</div>
+                            <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
+                            <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
+                              🌾 {(target || "").replace("总碳水", "碳水")}
+                              {m?.remind ? " · 💊" : ""}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
       {/* 菜谱页 */}
-      {DATA.map((r) => (
-        <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      {safeArr(DATA).map((r) => (
+        <RecipeCard key={r?.id} r={r} t={t} lang={lang} />
       ))}
     </div>
   );
 }
 
-// ---------- 购物清单 ----------
+/* -------------------- 购物清单 -------------------- */
 function GroceryList() {
   const rootRef = useRef(null);
   return (
@@ -921,18 +961,21 @@ function GroceryList() {
           <p style={{ color: COLORS.neutral, marginTop: 4 }}>根据本周菜谱自动汇总（起始：{meta.startDate}）。</p>
           <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
             {Object.entries(LIST_SUMMARY).map(([group, items]) => {
-  const safeItems = Array.isArray(items) ? items : [];
-  return (
-    <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
-      <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
-      <ul>
-        {safeItems.map((t, i) => (
-          <li key={i}>{typeof t === "string" ? t : String(t ?? "")}</li>
-        ))}
-      </ul>
-    </div>
-  );
-})}
+              const safeItems = safeArr(items);
+              return (
+                <div
+                  key={group}
+                  style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}
+                >
+                  <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
+                  <ul>
+                    {safeItems.map((t, i) => (
+                      <li key={i}>{typeof t === "string" ? t : String(t ?? "")}</li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
           </div>
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
             注意：低钠酱油；海藻（裙带菜/海苔）适量；所有食材需充分加热。
@@ -943,16 +986,12 @@ function GroceryList() {
   );
 }
 
-// ---------- 主组件 ----------
+/* -------------------- 主组件 -------------------- */
 export default function Woche4_2025_10_20_ZH() {
   const [tab, setTab] = useState("kochbuch");
   const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
   const t = UI[lang] || UI.zh;
-  const toggleLang = () => {
-    const next = lang === "de" ? "zh" : "de";
-    setLang(next);
-    localStorage.setItem("ghibli-lang", next);
-  };
+
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
 
@@ -1078,20 +1117,20 @@ export default function Woche4_2025_10_20_ZH() {
   );
 }
 
-// ---------- 测试 ----------
+/* -------------------- 测试 -------------------- */
 function Tests() {
   try {
     if (!/^第4周 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
     if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
-    const ids = new Set(DATA.map((r) => r.id));
+    const ids = new Set(safeArr(DATA).map((r) => r?.id));
     if (ids.size !== 21) throw new Error("IDs not unique");
-    DATA.forEach((r) => {
-      const isLunch = /-m$/.test(r.id);
-      if (isLunch && r.remind) throw new Error("午餐不应带用药提醒");
-      if (!isLunch && !r.remind) throw new Error("早餐/晚餐应带用药提醒");
-      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`食材过少: ${r.id}`);
-      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`步骤过少: ${r.id}`);
+    safeArr(DATA).forEach((r) => {
+      const isLunch = /-m$/.test(String(r?.id || ""));
+      if (isLunch && r?.remind) throw new Error("午餐不应带用药提醒");
+      if (!isLunch && !r?.remind) throw new Error("早餐/晚餐应带用药提醒");
+      if (!Array.isArray(r?.ingredients) || r.ingredients.length < 5) throw new Error(`食材过少: ${r?.id}`);
+      if (!Array.isArray(r?.steps) || r.steps.length < 3) throw new Error(`步骤过少: ${r?.id}`);
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY 分组缺失");
