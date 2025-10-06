@@ -5,7 +5,7 @@ import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
 import { pickTextWithOverride as pickText, pickListWithOverride as pickList } from "../i18n-data";
-import "../i18n/recipes.zh-overrides"; // nur einmalig importieren, damit overrides geladen werden
+
 
 export const meta = {
   title: "Woche 4",
