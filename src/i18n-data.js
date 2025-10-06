@@ -118,9 +118,7 @@ function deToZh(s) {
  * Use via pickTextWithOverride/pickListWithOverride
  * Key format: `${id}.${field}` e.g. "mo-f.title"
  * --------------------------- */
-export const overrides = {
-  zh: {}, // fill from e.g. src/i18n/recipes.zh-overrides.js
-};
+
 
 function getOverride(key, lang) {
   if (lang === "zh" && overrides.zh && Object.prototype.hasOwnProperty.call(overrides.zh, key)) {
