@@ -1,12 +1,19 @@
-// Datei: Woche-4-2025-10-20.jsx
+// Datei: Woche-4-2025-10-20.de.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data";
+import { pickTextWithOverride as pickText, pickListWithOverride as pickList } from "../i18n-data";
+import "../i18n/recipes.zh-overrides"; // nur einmalig importieren, damit overrides geladen werden
 
-export const meta = { title: "Woche 4", startDate: "2025-10-20", id: "woche-4-2025-10-20" };
+export const meta = {
+  title: "Woche 4",
+  startDate: "2025-10-20",
+  id: "woche-4-2025-10-20",
+  lang: "de",
+  sidebar: "[DE] Woche 4 (2025-10-20)",
+};
 const FILE_BASE = "Woche 4 2025-10-20";
 
 const UI_TITLES = {
@@ -898,7 +905,7 @@ function GroceryList() {
 }
 
 // ---------- Main ----------
-export default function Woche4_2025_10_20() {
+export default function Woche4_2025_10_20_DE() {
   const [tab, setTab] = useState("kochbuch");
   const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
   const t = UI[lang] || UI.de;
@@ -1072,4 +1079,4 @@ const mountNode =
     return d;
   })();
 const root = createRoot(mountNode);
-root.render(<Woche4_2025_10_20 />);
+root.render(<Woche4_2025_10_20_DE />);
