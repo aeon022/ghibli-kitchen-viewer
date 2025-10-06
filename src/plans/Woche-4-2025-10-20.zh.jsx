@@ -55,6 +55,16 @@ const PROMPT_HEADER =
 
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
+// Immer ein Array zurückgeben (egal ob Array, {de,zh} oder sonstwas)
+const asList = (v, lang) => {
+  try {
+    const out = pickList(v, lang);
+    return Array.isArray(out) ? out : [];
+  } catch {
+    return [];
+  }
+};
+
 // ---------- DATA（21个食谱）----------
 const DATA = [
   // 周一
@@ -795,23 +805,33 @@ function RecipeCard({ r, t, lang }) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients}（2人份）</h3>
-              <ul className="avoid-break">
-                {pickList(r.ingredients, lang).map((x, i) => (
-                  <li key={i} style={{ marginBottom: 4 }}>
-                    {x}
-                  </li>
-                ))}
-              </ul>
+{(() => {
+  const ingList = asList(r.ingredients, lang);
+  return (
+    <ul className="avoid-break">
+      {ingList.map((x, i) => (
+        <li key={i} style={{ marginBottom: 4 }}>
+          {typeof x === "string" ? x : String(x ?? "")}
+        </li>
+      ))}
+    </ul>
+  );
+})()}
             </section>
             <section>
               <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
-              <ol className="avoid-break" style={{ paddingLeft: 18 }}>
-                {pickList(r.steps, lang).map((s, i) => (
-                  <li key={i} style={{ marginBottom: 4 }}>
-                    {s}
-                  </li>
-                ))}
-              </ol>
+{(() => {
+  const stepList = asList(r.steps, lang);
+  return (
+    <ol className="avoid-break" style={{ paddingLeft: 18 }}>
+      {stepList.map((s, i) => (
+        <li key={i} style={{ marginBottom: 4 }}>
+          {typeof s === "string" ? s : String(s ?? "")}
+        </li>
+      ))}
+    </ol>
+  );
+})()}
               <div style={{ marginTop: 6, fontSize: 12 }}>
                 <b>{t.sections.swaps}：</b> {pickText(r.swaps, lang)}
               </div>
