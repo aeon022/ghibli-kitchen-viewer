@@ -845,7 +845,19 @@ function RecipeCard({ r, t, lang }) {
 
 // ---------- 整周菜谱（封面+周览+全部菜谱） ----------
 function Cookbook({ t, lang }) {
-  const weekly = useMemo(() => groupByDay(DATA), []);
+  const weekly = useMemo(() => {
+    useEffect(() => {
+  if (!Array.isArray(DATA) || DATA.length !== 21) {
+    console.warn("[GhibliKitchen ZH] Unexpected DATA shape/length:", Array.isArray(DATA) ? DATA.length : typeof DATA);
+  }
+}, []);
+  try {
+    const src = Array.isArray(DATA) ? DATA : [];
+    return groupByDay(src);
+  } catch {
+    return { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
+  }
+}, []);
   return (
     <div id="cookbook-root">
       {/* 封面 + 周览 */}
@@ -861,23 +873,30 @@ function Cookbook({ t, lang }) {
           <div style={{ flex: 2, ...cardMainStyle }}>
             <h2 style={{ marginTop: 0, color: COLORS.indigo }}>本周总览</h2>
             <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
-              {DAYS_ORDER.map((d) => (
-                <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
-                  <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-                    {(weekly[d] || []).map((m) => (
-                      <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
-                        <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
-                        <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{pickText(m.title, lang)}</div>
-                        <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
-                          🌾 {pickText(m.target, lang).replace("总碳水", "碳水")}
-                          {m.remind ? " · 💊" : ""}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {DAYS_ORDER.map((d) => {
+  const dayList = Array.isArray(weekly?.[d]) ? weekly[d] : [];
+  return (
+    <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+        {dayList.map((m) => {
+          const title = pickText(m?.title, lang) ?? "";
+          const target = pickText(m?.target, lang) ?? "";
+          return (
+            <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
+              <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
+              <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
+              <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
+                🌾 {(target || "").replace("总碳水", "碳水")}
+                {m?.remind ? " · 💊" : ""}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+})}
             </div>
           </div>
         </div>
@@ -901,16 +920,19 @@ function GroceryList() {
           <h1 style={{ marginTop: 0, color: COLORS.emerald }}>{UI_TITLES.list}</h1>
           <p style={{ color: COLORS.neutral, marginTop: 4 }}>根据本周菜谱自动汇总（起始：{meta.startDate}）。</p>
           <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-            {Object.entries(LIST_SUMMARY).map(([group, items]) => (
-              <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
-                <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
-                <ul>
-                  {items.map((t, i) => (
-                    <li key={i}>{t}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+            {Object.entries(LIST_SUMMARY).map(([group, items]) => {
+  const safeItems = Array.isArray(items) ? items : [];
+  return (
+    <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
+      <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
+      <ul>
+        {safeItems.map((t, i) => (
+          <li key={i}>{typeof t === "string" ? t : String(t ?? "")}</li>
+        ))}
+      </ul>
+    </div>
+  );
+})}
           </div>
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
             注意：低钠酱油；海藻（裙带菜/海苔）适量；所有食材需充分加热。
