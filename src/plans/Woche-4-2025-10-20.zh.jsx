@@ -778,8 +778,17 @@ function RecipeCard({ r, t, lang }) {
   const recipeImgKey = `${FILE_BASE}::img::recipe::${r?.id ?? "unknown"}`;
   const img = localStorage.getItem(recipeImgKey) || "";
 
-const ingList = pickListSafe(r?.ingredients, lang);
-const stepList = pickListSafe(r?.steps, lang);
+const ingList = Array.isArray(r?.ingredients) ? r.ingredients : [];
+const stepList = Array.isArray(r?.steps) ? r.steps : [];
+
+{/* DEBUG (temporär): zeigt an, ob Listen leer sind */}
+{(ingList.length === 0 || stepList.length === 0) && (
+  <div style={{fontSize: 11, opacity: .6, margin: "6px 0"}}>
+    debug: {String(r?.id)} · ingredients={ingList.length} · steps={stepList.length}
+  </div>
+)}
+
+
 
 // optionales Debug (zum Test, später gerne wieder entfernen)
 if (process.env.NODE_ENV !== "production") {
