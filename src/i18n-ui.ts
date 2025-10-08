@@ -20,12 +20,12 @@ export const UI: Record<"de"|"zh", UiDict> = {
     sections: { ingredients: "Zutaten", steps: "Zubereitung", swaps: "Alternativen", side: "Beilage/Drink" },
   },
   zh: {
-    tabs: { cookbook: "食谱", list: "购物清单" },
+    tabs: { cookbook: "菜谱", list: "购物清单" }, // <- angepasst
     btn: { pdf: "导出 PDF", html: "导出 HTML", print: "打印" },
     toggle: "DE/中文",
     day: { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" },
     meal: { f: "早餐", m: "午餐", a: "晚餐" },
     mealTitle: { f: "早上", m: "中午", a: "晚上" },
-    sections: { ingredients: "配料", steps: "步骤", swaps: "替换", side: "配菜/饮品" },
+    sections: { ingredients: "配料", steps: "步骤", swaps: "替换", side: "配餐" }, // <- angepasst
   },
 };

@@ -6,18 +6,15 @@
  * - Works with plain strings/arrays OR objects like { de, zh }.
  * - If zh is missing and lang === "zh", we auto-map common culinary terms
  *   using a small dictionary + phrasing tweaks.
- * - Optional per-field overrides are supported via pickTextWithOverride/pickListWithOverride.
  */
 
-/* ---------------------------
- * Minimal DE → ZH term dictionary
- * (extend freely as needed)
- * --------------------------- */
+// ---------------------------
+// Minimal DE → ZH term dictionary (extend as needed)
+// ---------------------------
 const DE_ZH_DICT = [
-  // Staples / carbs
   [/Sushi-Reis/gi, "寿司米"],
   [/Vollkornreis|Brauner\s+Reis/gi, "糙米"],
-  [/Reis\s*\(roh\)|Reis\b/gi, "大米"],
+  [/Reis\s*\(roh\)|\bReis\b/gi, "大米"],
   [/Vollkornpasta/gi, "全麦意面"],
   [/Udon/gi, "乌冬面"],
   [/Soba/gi, "荞麦面"],
@@ -26,7 +23,6 @@ const DE_ZH_DICT = [
   [/Glasnudeln/gi, "粉丝（红薯粉）"],
   [/Gerste|Perlgerste/gi, "大麦"],
 
-  // Proteins
   [/Lachsfilet|Lachs/gi, "三文鱼"],
   [/Seelachs(filet)?/gi, "明太鱼"],
   [/Kabeljau(filet)?|Kabeljau/gi, "鳕鱼"],
@@ -39,12 +35,11 @@ const DE_ZH_DICT = [
   [/Tofu\s*seiden/gi, "嫩豆腐"],
   [/Tofu\s*fest/gi, "老豆腐"],
   [/Tofu/gi, "豆腐"],
-  [/Edamame/gi, "枝豆（毛豆）"],
+  [/Edamame/gi, "毛豆"],
   /\bEi(?:er)?\b/gi, "鸡蛋",
   [/Parmesan/gi, "帕玛森芝士（巴氏杀菌）"],
 
-  // Vegetables
-  [/Pak\s*Choi/gi, "上海青"],
+  [/Pak\s*Choi/gi, "小白菜"],
   [/Spinat/gi, "菠菜"],
   [/Shiitake/gi, "香菇"],
   [/Champignons/gi, "白蘑菇"],
@@ -54,12 +49,11 @@ const DE_ZH_DICT = [
   [/Karotte(n)?/gi, "胡萝卜"],
   [/Kartoffeln?/gi, "土豆"],
   [/Kürbis/gi, "南瓜"],
-  [/Rettich\s*\(Daikon\)?/gi, "白萝卜（大根）"],
+  [/Rettich\s*\(Daikon\)?/gi, "白萝卜"],
   [/Apfel/gi, "苹果"],
   [/Frühlingszwiebel|Lauch/gi, "葱"],
   [/Zwiebel/gi, "洋葱"],
 
-  // Liquids / seasoning
   [/Wasser/gi, "清水"],
   [/Gemüsebrühe|Brühe/gi, "蔬菜高汤"],
   [/Sojasauce\s*natriumarm/gi, "低钠酱油"],
@@ -77,7 +71,6 @@ const DE_ZH_DICT = [
   [/Salz/gi, "盐"],
   [/Zimt/gi, "肉桂"],
 
-  // Methods / descriptors
   [/sanft(?:e|) köcheln/gi, "小火慢煮"],
   [/dämpfen/gi, "清蒸"],
   [/durchgegart/gi, "完全熟透"],
@@ -88,8 +81,7 @@ const DE_ZH_DICT = [
   [/anschwitzen|anbraten/gi, "小火炒香"],
   [/separat/gi, "另行"],
 
-  // Common UI bits
-  [/KH\s*gesamt/gi, "碳水"],
+  [/KH\s*gesamt/gi, "总碳水"],
   [/\bKH\b/gi, "碳水"],
   [/Protein/gi, "蛋白质"],
   [/Ziel/gi, "目标"],
@@ -97,14 +89,11 @@ const DE_ZH_DICT = [
   [/Beilage|Side/gi, "配餐"],
 ];
 
-/* ---------------------------
- * Tiny phrasing tweaks
- * --------------------------- */
 function deToZh(s) {
-  if (!s) return "";
+  if (s == null) return "";
   let out = String(s);
   for (const [rx, zh] of DE_ZH_DICT) out = out.replace(rx, zh);
-  // Numeric/units & stock phrases
+  // numeric phrasing
   out = out
     .replace(/≈\s*(\d+)\s*g\s*KH/gi, "≈$1 g 碳水")
     .replace(/·\s*Protein\s*≈\s*(\d+)\s*g\s*p\.\s*P\./gi, "· 蛋白质 ≈ $1 g/人")
@@ -114,89 +103,30 @@ function deToZh(s) {
   return out;
 }
 
-/* ---------------------------
- * Optional per-field overrides (safe no-op)
- * Use via pickTextWithOverride/pickListWithOverride
- * Key format: `${id}.${field}` e.g. "mo-f.title"
- * --------------------------- */
-const overrides = { zh: {} }; // <- leer, damit kein ReferenceError entsteht
-
-function getOverride(key, lang) {
-  if (lang === "zh" && overrides.zh && Object.prototype.hasOwnProperty.call(overrides.zh, key)) {
-    return overrides.zh[key];
-  }
-  return undefined;
-}
-
-/* ---------------------------
- * Base pickers with auto-translate (robust)
- * --------------------------- */
-
-const isLangCode = (x) => x === "de" || x === "zh";
-
-// Einzeltext: akzeptiert String ODER { de, zh }.
-// - Gibt niemals versehentlich "de"/"zh" zurück
-// - Wenn zh fehlt und lang === "zh", wird DE → ZH gemappt
+// ---------- base pickers (ALWAYS safe) ----------
 export const pickText = (v, lang = "de") => {
-  if (v == null) return "";
-
-  // primitiver String
-  if (typeof v === "string") {
-    if (isLangCode(v)) return "";
-    return lang === "zh" ? deToZh(v) : v;
-  }
-
-  // Objektform { de, zh }
-  if (typeof v === "object") {
-    const hasDe = Object.prototype.hasOwnProperty.call(v, "de");
-    const hasZh = Object.prototype.hasOwnProperty.call(v, "zh");
-    if (hasDe || hasZh) {
-      const raw = v[lang] ?? v.de ?? "";
-      const safe = typeof raw === "string" ? (isLangCode(raw) ? "" : raw) : "";
-      return lang === "zh" && !hasZh ? deToZh(safe) : safe;
+  try {
+    if (v && typeof v === "object" && (Object.prototype.hasOwnProperty.call(v, "de") || Object.prototype.hasOwnProperty.call(v, "zh"))) {
+      const base = v[lang] ?? v.de ?? "";
+      return lang === "zh" && !v.zh ? deToZh(base) : String(base ?? "");
     }
+    const s = v ?? "";
+    return lang === "zh" ? deToZh(String(s)) : String(s);
+  } catch {
+    return "";
   }
-
-  return "";
 };
 
-// Liste: akzeptiert Array ODER { de:[], zh:[] }.
-// - Gibt IMMER ein Array zurück
-// - Filtert versehentlich eingestreute "de"/"zh" aus
-// - Wenn zh fehlt und lang === "zh", mappt jedes Element DE → ZH
 export const pickList = (v, lang = "de") => {
-  const sanitize = (arr) =>
-    (Array.isArray(arr) ? arr : [])
-      .filter((x) => typeof x === "string" && !isLangCode(x))
-      .map((x) => (lang === "zh" ? deToZh(x) : x));
-
-  if (Array.isArray(v)) return sanitize(v);
-
-  if (v && typeof v === "object" && (Array.isArray(v.de) || Array.isArray(v.zh))) {
-    // Wenn zh existiert, nehmen wir es; sonst de und mappen ggf. zu zh
-    const hasZh = Array.isArray(v.zh);
-    const list = v[lang] ?? v.de ?? [];
-    return hasZh && lang === "zh" ? sanitize(v.zh) : sanitize(list);
+  try {
+    if (v && typeof v === "object" && (Array.isArray(v.de) || Array.isArray(v.zh))) {
+      const list = v[lang] ?? v.de ?? [];
+      const arr = Array.isArray(list) ? list : [];
+      return lang === "zh" && !v.zh ? arr.map((x) => deToZh(x)) : arr.map((x) => String(x ?? ""));
+    }
+    const arr = Array.isArray(v) ? v : [];
+    return lang === "zh" ? arr.map((x) => deToZh(x)) : arr.map((x) => String(x ?? ""));
+  } catch {
+    return [];
   }
-
-  return [];
-};
-
-/* ---------------------------
- * Override-enabled variants (optional)
- * --------------------------- */
-
-// Text mit Override-Key
-export const pickTextWithOverride = (key, v, lang = "de") => {
-  const ov = getOverride(key, lang);
-  if (typeof ov === "string") return ov;
-  return pickText(v, lang);
-};
-
-// Liste mit Override-Key
-export const pickListWithOverride = (key, v, lang = "de") => {
-  const ov = getOverride(key, lang);
-  if (Array.isArray(ov)) return ov;
-  if (typeof ov === "string") return [ov];
-  return pickList(v, lang);
 };

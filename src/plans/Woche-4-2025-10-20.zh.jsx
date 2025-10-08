@@ -1,4 +1,4 @@
-// 文件: Woche-4-2025-10-20.zh.jsx
+// src/plans/Woche-4-2025-10-20.zh.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
@@ -56,7 +56,8 @@ const PROMPT_HEADER =
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
 /* -------------------- Safe helpers -------------------- */
-// Immer ein Array zurückgeben (egal ob Array, {de,zh} oder sonstwas)
+const safeArr = (v) => (Array.isArray(v) ? v : []);
+const safeObj = (v) => (v && typeof v === "object" ? v : {});
 const asList = (v, lang) => {
   try {
     const out = pickList(v, lang);
@@ -65,9 +66,6 @@ const asList = (v, lang) => {
     return [];
   }
 };
-// generische Guards
-const safeArr = (v) => (Array.isArray(v) ? v : []);
-const safeMap = (v, fn) => (Array.isArray(v) ? v : []).map(fn);
 
 /* -------------------- DATA（21个食谱）-------------------- */
 const DATA = [
@@ -649,6 +647,7 @@ const DATA = [
 /* -------------------- 周视图辅助 -------------------- */
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
 const DAY_NAME = { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" };
+
 const groupByDay = (arr) => {
   const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
   safeArr(arr).forEach((r) => {
@@ -685,12 +684,14 @@ function parseQty(item) {
   }
   return { name, qty, unit };
 }
+
 const groupMap = {
   protein: ["鸡", "鸡胸", "火鸡", "牛", "三文鱼", "鳕鱼", "明太鱼", "豆腐", "鸡蛋", "毛豆", "帕玛森", "猪里脊", "猪", "牛肉糜"],
   veg: ["胡萝卜", "西葫芦", "小白菜", "菠菜", "香菇", "蘑菇", "西兰花", "大葱", "洋葱", "彩椒", "白萝卜", "葱", "土豆", "南瓜", "黄瓜", "苹果"],
-  staple: ["米", "寿司米", "糙米", "糙米", "珍珠麦", "乌冬", "小麦面", "米粉", "红薯粉丝", "全麦意面"],
+  staple: ["米", "寿司米", "糙米", "珍珠麦", "乌冬", "小麦面", "米粉", "红薯粉丝", "全麦意面"],
   season: ["裙带菜", "海苔", "高汤", "蔬菜高汤", "酱油", "味噌", "大酱", "香油", "菜籽油", "橄榄油", "味醂", "蜂蜜", "肉桂", "盐", "芝麻", "蒜", "姜", "番茄", "水"],
 };
+
 function accumulateList(data) {
   const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
   safeArr(data).forEach((r) =>
@@ -712,11 +713,13 @@ function accumulateList(data) {
   );
   return buckets;
 }
+
 function formatBucket(obj) {
   return Object.entries(obj)
-    .map(([k, v]) => `${k} ${Math.round((v?.qty ?? 0))} ${v?.unit ?? ""}`.trim())
+    .map(([k, v]) => `${k} ${Math.round(v?.qty ?? 0)} ${v?.unit ?? ""}`.trim())
     .sort((a, b) => a.localeCompare(b));
 }
+
 function buildListSummary() {
   const b = accumulateList(DATA);
   return {
@@ -728,13 +731,14 @@ function buildListSummary() {
 }
 const LIST_SUMMARY = buildListSummary();
 
-/* -------------------- 本地图片持久化 -------------------- */
-const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
-const readLocalImage = (key) => localStorage.getItem(key) || "";
-const saveLocalImage = (key, dataUrl) => localStorage.setItem(key, dataUrl);
+/* -------------------- i18n 辅助 -------------------- */
+const dayNameI18n = (id, t) => safeObj(t).day?.[String(id || "").split("-")[0]] ?? String(id || "").split("-")[0];
+const mealTitleI18n = (id, t) => safeObj(t).mealTitle?.[String(id || "").split("-")[1]] ?? String(id || "").split("-")[1];
+const mealLabelI18n = (id, t) => safeObj(t).meal?.[String(id || "").split("-")[1]] ?? String(id || "").split("-")[1];
 
+/* -------------------- 菜谱卡片 -------------------- */
 function ImageUpload({ storageKey, label }) {
-  const [src, setSrc] = useState(() => readLocalImage(storageKey));
+  const [src, setSrc] = useState(() => localStorage.getItem(storageKey) || "");
   const onChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -742,7 +746,7 @@ function ImageUpload({ storageKey, label }) {
     reader.onload = () => {
       const dataUrl = reader.result;
       setSrc(dataUrl);
-      saveLocalImage(storageKey, dataUrl);
+      localStorage.setItem(storageKey, dataUrl);
     };
     reader.readAsDataURL(file);
   };
@@ -759,17 +763,10 @@ function ImageUpload({ storageKey, label }) {
   );
 }
 
-/* -------------------- i18n 辅助 -------------------- */
-const dayNameI18n = (id, t) => t.day[String(id || "").split("-")[0]];
-const mealTitleI18n = (id, t) => t.mealTitle[String(id || "").split("-")[1]];
-const mealLabelI18n = (id, t) => t.meal[String(id || "").split("-")[1]];
-
-/* -------------------- 菜谱卡片 -------------------- */
 function RecipeCard({ r, t, lang }) {
-  const recipeImgKey = getImageKey(`recipe::${r?.id ?? "unknown"}`);
-  const img = readLocalImage(recipeImgKey);
+  const recipeImgKey = `${FILE_BASE}::img::recipe::${r?.id ?? "unknown"}`;
+  const img = localStorage.getItem(recipeImgKey) || "";
 
-  // sichere Listen
   const ingList = asList(r?.ingredients, lang);
   const stepList = asList(r?.steps, lang);
 
@@ -801,7 +798,7 @@ function RecipeCard({ r, t, lang }) {
               <b>检查点：</b> {pickText(r?.checks, lang)}
             </div>
             <div>
-              <b>{t.sections.side}：</b> {pickText(r?.side, lang)}
+              <b>{safeObj(t).sections?.side ?? "配餐"}：</b> {pickText(r?.side, lang)}
             </div>
             {r?.remind ? (
               <div
@@ -829,7 +826,7 @@ function RecipeCard({ r, t, lang }) {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
-              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients}（2人份）</h3>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{safeObj(t).sections?.ingredients ?? "食材"}（2人份）</h3>
               <ul className="avoid-break">
                 {ingList.length > 0 ? (
                   ingList.map((x, i) => (
@@ -844,7 +841,7 @@ function RecipeCard({ r, t, lang }) {
             </section>
 
             <section>
-              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{safeObj(t).sections?.steps ?? "步骤"}</h3>
               <ol className="avoid-break" style={{ paddingLeft: 18 }}>
                 {stepList.length > 0 ? (
                   stepList.map((s, i) => (
@@ -857,7 +854,7 @@ function RecipeCard({ r, t, lang }) {
                 )}
               </ol>
               <div style={{ marginTop: 6, fontSize: 12 }}>
-                <b>{t.sections.swaps}：</b> {pickText(r?.swaps, lang)}
+                <b>{safeObj(t).sections?.swaps ?? "替换"}：</b> {pickText(r?.swaps, lang)}
               </div>
             </section>
           </div>
@@ -869,17 +866,25 @@ function RecipeCard({ r, t, lang }) {
 
 /* -------------------- 整周菜谱（封面+周览+全部菜谱） -------------------- */
 function Cookbook({ t, lang }) {
-  // Sanity log (Hook korrekt außerhalb von useMemo)
+  // 0) Fail fast, wenn UI.zh unvollständig ist
+  const uiOK =
+    t &&
+    t.day && typeof t.day === "object" &&
+    t.meal && typeof t.meal === "object" &&
+    t.mealTitle && typeof t.mealTitle === "object" &&
+    t.sections && typeof t.sections === "object";
+
+  // 1) Diagnose: Datenform
   useEffect(() => {
     if (!Array.isArray(DATA) || DATA.length !== 21) {
-      console.warn(
-        "[GhibliKitchen ZH] Unexpected DATA shape/length:",
-        Array.isArray(DATA) ? DATA.length : typeof DATA
-      );
+      console.warn("[ZH] Unexpected DATA shape/length:", Array.isArray(DATA) ? DATA.length : typeof DATA);
     }
-  }, []);
+    if (!uiOK) {
+      console.warn("[ZH] UI dictionary incomplete for zh:", t);
+    }
+  }, [uiOK, t]);
 
-  // Sichere Gruppierung der Woche
+  // 2) Sicher gruppieren
   const weekly = useMemo(() => {
     try {
       const src = safeArr(DATA);
@@ -899,32 +904,25 @@ function Cookbook({ t, lang }) {
             <p style={{ marginTop: 6, color: COLORS.neutral }}>
               自 {meta.startDate} 起的一周 —— <b>模式：Non-Strict（均衡）</b>；以中/日/韩为主，温和调味、低钠酱油、孕期友好；糖尿病：每餐（2人）60–90 g KH。
             </p>
-            <ImageUpload storageKey={getImageKey("cover")} label="上传封面图片" />
+            <ImageUpload storageKey={`${FILE_BASE}::img::cover`} label="上传封面图片" />
           </div>
           <div style={{ flex: 2, ...cardMainStyle }}>
             <h2 style={{ marginTop: 0, color: COLORS.indigo }}>本周总览</h2>
-            <div
-              className="avoid-break"
-              style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}
-            >
+            <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
               {DAYS_ORDER.map((d) => {
                 const dayList = safeArr(weekly?.[d]);
                 return (
-                  <div
-                    key={d}
-                    style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}
-                  >
-                    <div style={{ fontWeight: 700, marginBottom: 6 }}>{t.day[d]}</div>
+                  <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
+                    <div style={{ fontWeight: 700, marginBottom: 6 }}>{(t?.day?.[d]) ?? DAY_NAME[d]}</div>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                       {dayList.map((m) => {
                         const title = pickText(m?.title, lang) ?? "";
                         const target = pickText(m?.target, lang) ?? "";
                         return (
-                          <div
-                            key={m?.id}
-                            style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}
-                          >
-                            <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m?.id, t)}</div>
+                          <div key={m?.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
+                            <div style={{ color: COLORS.sky, fontSize: 12 }}>
+                              {t?.meal?.[String(m?.id || "").split("-")[1]] ?? String(m?.id || "")}
+                            </div>
                             <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
                             <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
                               🌾 {(target || "").replace("总碳水", "碳水")}
@@ -963,10 +961,7 @@ function GroceryList() {
             {Object.entries(LIST_SUMMARY).map(([group, items]) => {
               const safeItems = safeArr(items);
               return (
-                <div
-                  key={group}
-                  style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}
-                >
+                <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
                   <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
                   <ul>
                     {safeItems.map((t, i) => (
@@ -989,15 +984,13 @@ function GroceryList() {
 /* -------------------- 主组件 -------------------- */
 export default function Woche4_2025_10_20_ZH() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
+  const [lang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
   const t = UI[lang] || UI.zh;
 
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
 
-  useEffect(() => {
-    Tests();
-  }, []);
+  useEffect(() => { Tests(); }, []);
 
   const doPDF = async () => {
     const isCook = tab === "kochbuch";
@@ -1037,7 +1030,7 @@ export default function Woche4_2025_10_20_ZH() {
               color: tab === "kochbuch" ? "#fff" : COLORS.text,
             }}
           >
-            {t.tabs.cookbook}
+            {t?.tabs?.cookbook ?? "菜谱"}
           </button>
           <button
             onClick={() => setTab("einkauf")}
@@ -1050,7 +1043,7 @@ export default function Woche4_2025_10_20_ZH() {
               color: tab === "einkauf" ? "#fff" : COLORS.text,
             }}
           >
-            {t.tabs.list}
+            {t?.tabs?.list ?? "购物清单"}
           </button>
         </div>
         <div style={{ display: "flex", gap: 10 }}>
@@ -1058,19 +1051,19 @@ export default function Woche4_2025_10_20_ZH() {
             onClick={doPDF}
             style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
           >
-            {t.btn.pdf}
+            {t?.btn?.pdf ?? "PDF"}
           </button>
           <button
             onClick={doHTML}
             style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
           >
-            {t.btn.html}
+            {t?.btn?.html ?? "HTML"}
           </button>
           <button
             onClick={() => window.print()}
             style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
           >
-            {t.btn.print}
+            {t?.btn?.print ?? "Drucken"}
           </button>
         </div>
       </div>
@@ -1121,7 +1114,6 @@ export default function Woche4_2025_10_20_ZH() {
 function Tests() {
   try {
     if (!/^第4周 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
-    if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
     const ids = new Set(safeArr(DATA).map((r) => r?.id));
     if (ids.size !== 21) throw new Error("IDs not unique");

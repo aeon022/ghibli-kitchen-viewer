@@ -993,12 +993,6 @@ export default function Woche4_2025_10_20_DE() {
           >
             {t.btn.print}
           </button>
-          <button
-            onClick={toggleLang}
-            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}
-          >
-            {t.toggle}
-          </button>
         </div>
       </div>
 
