@@ -67,6 +67,27 @@ const asList = (v, lang) => {
 };
 const safeArr = (v) => (Array.isArray(v) ? v : []);
 
+// --- Robust Fallbacks: immer Text/Listen zurückgeben, ohne i18n-Picker ---
+const toText = (v) => {
+  if (typeof v === "string") return v;
+  if (v && typeof v === "object") {
+    // unterstütze { zh, de }-Form
+    if (typeof v.zh === "string") return v.zh;
+    if (typeof v.de === "string") return v.de;
+  }
+  return String(v ?? "");
+};
+
+const toList = (v) => {
+  if (Array.isArray(v)) return v;
+  if (v && typeof v === "object") {
+    // unterstütze { zh:[], de:[] }-Form
+    if (Array.isArray(v.zh)) return v.zh;
+    if (Array.isArray(v.de)) return v.de;
+  }
+  return []; // sichere Vorgabe
+};
+
 /* ---------- DATA（21 个食谱，结构与 DE 完全一致） ---------- */
 const DATA = [
   // 周一
@@ -765,15 +786,15 @@ const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 function RecipeCard({ r, t, lang }) {
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
-  const title = pickText(r.title, lang);
-  const desc = pickText(r.desc, lang);
-  const story = pickText(r.story, lang);
-  const target = pickText(r.target, lang);
-  const checks = pickText(r.checks, lang);
-  const side = pickText(r.side, lang);
-  const swaps = pickText(r.swaps, lang);
-  const ingredients = asList(r.ingredients, lang);
-  const steps = asList(r.steps, lang);
+  const title = toText(r.title);
+  const desc = toText(r.desc);
+  const story = toText(r.story);
+  const target = toText(r.target);
+  const checks = toText(r.checks);
+  const side = toText(r.side);
+  const swaps = toText(r.swaps);
+  const ingredients = toList(r.ingredients);
+  const steps = toList(r.steps);
 
   return (
     <div className="page" style={{ padding: 24 }}>
@@ -883,8 +904,8 @@ function Cookbook({ t, lang }) {
                   <div style={{ fontWeight: 700, marginBottom: 6 }}>{DAY_NAME[d]}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
                     {safeArr(weekly[d]).map((m) => {
-                      const title = pickText(m?.title, lang) ?? "";
-                      const target = pickText(m?.target, lang) ?? "";
+                      const title = toText(m?.title);
+                      const target = toText(m?.target);
                       return (
                         <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
                           <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
