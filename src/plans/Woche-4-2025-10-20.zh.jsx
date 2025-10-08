@@ -56,6 +56,17 @@ const PROMPT_HEADER =
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
 /* -------------------- Safe helpers -------------------- */
+
+const pickListSafe = (v, lang) => {
+  try {
+    const out = pickList(v, lang);
+    return Array.isArray(out) ? out.filter((x) => x != null && x !== "") : [];
+  } catch (e) {
+    console.warn("[ZH] pickListSafe fallback -> []", e);
+    return [];
+  }
+};
+
 const safeArr = (v) => (Array.isArray(v) ? v : []);
 const safeObj = (v) => (v && typeof v === "object" ? v : {});
 const asList = (v, lang) => {
@@ -767,8 +778,18 @@ function RecipeCard({ r, t, lang }) {
   const recipeImgKey = `${FILE_BASE}::img::recipe::${r?.id ?? "unknown"}`;
   const img = localStorage.getItem(recipeImgKey) || "";
 
-  const ingList = asList(r?.ingredients, lang);
-  const stepList = asList(r?.steps, lang);
+const ingList = pickListSafe(r?.ingredients, lang);
+const stepList = pickListSafe(r?.steps, lang);
+
+// optionales Debug (zum Test, später gerne wieder entfernen)
+if (process.env.NODE_ENV !== "production") {
+  console.debug("[ZH] RecipeCard lists", r?.id, {
+    rawIngIsArray: Array.isArray(r?.ingredients),
+    rawStepsIsArray: Array.isArray(r?.steps),
+    ingCount: ingList.length,
+    stepCount: stepList.length,
+  });
+}
 
   return (
     <div className="page" style={{ padding: 24 }}>
