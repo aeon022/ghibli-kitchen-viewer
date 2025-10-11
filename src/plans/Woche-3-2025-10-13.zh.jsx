@@ -1,4 +1,5 @@
 // 文件: Woche-3-2025-10-13.zh.jsx
+/* eslint-disable */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
@@ -54,7 +55,7 @@ const PROMPT_HEADER =
   "Ultra-clean cookbook photo, soft daylight, top-down, pastel background, visible steam, pregnancy-safe (no raw fish or raw egg), mild Asian home cooking (JP/CN/KR), family-friendly";
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
-// 安全渲染辅助
+/* -------- 安全渲染辅助（与 Woche-4 ZH 同步） -------- */
 const asList = (v, lang) => {
   try {
     const out = pickList(v, lang);
@@ -72,7 +73,7 @@ const safeText = (v, lang) => {
   }
 };
 
-// ---------- 数据 (21 个食谱；ZH) ----------
+/* ---------- 数据 (21 个食谱) ---------- */
 const DATA = [
   // 周一
   {
@@ -649,7 +650,7 @@ const DATA = [
   },
 ];
 
-// ---------- 周视图 Helper ----------
+/* ---------- 周视图 Helper ---------- */
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
 const DAY_NAME = { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" };
 const groupByDay = (arr) => {
@@ -664,7 +665,7 @@ const groupByDay = (arr) => {
   return map;
 };
 
-// ---------- 购物清单汇总 ----------
+/* ---------- 购物清单汇总 ---------- */
 function normalizeName(n) {
   return String(n || "")
     .replace(/\(.*?\)/g, "")
@@ -726,7 +727,7 @@ function buildListSummary() {
 }
 const LIST_SUMMARY = buildListSummary();
 
-// ---------- 图片持久化 ----------
+/* ---------- 图片持久化 ---------- */
 const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
 const readLocalImage = (key) => (typeof localStorage !== "undefined" ? localStorage.getItem(key) || "" : "");
 const saveLocalImage = (key, dataUrl) => {
@@ -761,12 +762,12 @@ function ImageUpload({ storageKey, label }) {
   );
 }
 
-// ---------- i18n 辅助 ----------
+/* ---------- i18n 辅助 ---------- */
 const dayNameI18n = (id, t) => t.day[id.split("-")[0]];
 const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
 const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
-// ---------- 菜谱卡片 ----------
+/* ---------- 菜谱卡片 ---------- */
 function RecipeCard({ r, t, lang }) {
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
@@ -865,7 +866,7 @@ function RecipeCard({ r, t, lang }) {
   );
 }
 
-// ---------- 整周（封面 + 周览 + 配方页） ----------
+/* ---------- 整周（封面 + 周览 + 配方页） ---------- */
 function Cookbook({ t, lang }) {
   const weekly = useMemo(() => groupByDay(DATA), []);
   return (
@@ -911,6 +912,7 @@ function Cookbook({ t, lang }) {
           </div>
         </div>
       </div>
+
       {/* 菜谱页 */}
       {DATA.map((r) => (
         <RecipeCard key={r.id} r={r} t={t} lang={lang} />
@@ -919,7 +921,7 @@ function Cookbook({ t, lang }) {
   );
 }
 
-// ---------- 购物清单 ----------
+/* ---------- 购物清单 ---------- */
 function GroceryList() {
   const rootRef = useRef(null);
   return (
@@ -952,7 +954,7 @@ function GroceryList() {
   );
 }
 
-// ---------- 主组件 ----------
+/* ---------- 主组件 ---------- */
 export default function Woche3_2025_10_13_ZH() {
   const [tab, setTab] = useState("kochbuch");
   const [lang] = useState("zh");
@@ -1082,11 +1084,11 @@ export default function Woche3_2025_10_13_ZH() {
   );
 }
 
-// ---------- 测试 ----------
+/* ---------- 测试 ---------- */
 function Tests() {
   try {
     if (!/^第3周 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
-    if (DATA.length !== 21) throw new Error("DATA length must be 21");
+    if (!Array.isArray(DATA) || DATA.length !== 21) throw new Error("DATA length must be 21");
     const ids = new Set(DATA.map((r) => r.id));
     if (ids.size !== 21) throw new Error("IDs not unique");
     DATA.forEach((r) => {
