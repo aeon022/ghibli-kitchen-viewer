@@ -1024,4 +1024,75 @@ export default function Woche6_2025_11_03_DE() {
             {t.btn.html}
           </button>
           <button
- 
+            onClick={() => window.print()}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.print}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}>
+        <Cookbook t={t} lang={lang} />
+      </div>
+      <div style={{ display: tab === "einkauf" ? "block" : "none" }}>
+        <GroceryList />
+      </div>
+
+      {/* Download-Links */}
+      <div className="print:hidden" style={{ marginTop: 12 }}>
+        {tab === "kochbuch" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.kochbuch ? (
+              <a href={pdfLink.kochbuch} download={`${FILE_BASE} – cookbook.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Kochbuch)
+              </a>
+            ) : null}
+            {htmlLink.kochbuch ? (
+              <a href={htmlLink.kochbuch} download={`${FILE_BASE} – cookbook.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Kochbuch)
+              </a>
+            ) : null}
+          </div>
+        )}
+        {tab === "einkauf" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.einkauf ? (
+              <a href={pdfLink.einkauf} download={`${FILE_BASE} – list.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
+            {htmlLink.einkauf ? (
+              <a href={htmlLink.einkauf} download={`${FILE_BASE} – list.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Tests ---------- */
+function Tests() {
+  try {
+    if (!/^Woche 6 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
+    if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
+    if (DATA.length !== 21) throw new Error("DATA length must be 21");
+    const ids = new Set(DATA.map((r) => r.id));
+    if (ids.size !== 21) throw new Error("IDs not unique");
+    DATA.forEach((r) => {
+      const isLunch = /-m$/.test(r.id);
+      if (isLunch && r.remind) throw new Error("Mittagessen ohne Medikamenten-Reminder");
+      if (!isLunch && !r.remind) throw new Error("Frühstück/Abendessen mit Reminder");
+      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten: ${r.id}`);
+      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte: ${r.id}`);
+    });
+    const groups = Object.keys(LIST_SUMMARY);
+    if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
+    console.log("[GhibliKitchen] All tests passed (DE JSX).");
+  } catch (e) {
+    console.error("[GhibliKitchen] Tests failed:", e);
+  }
+}
