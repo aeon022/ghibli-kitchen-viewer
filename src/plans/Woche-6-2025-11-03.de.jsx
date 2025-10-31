@@ -1,5 +1,5 @@
 // src/plans/Woche-6-2025-11-03.de.jsx
-// Strikt an Woche-5-2025-10-27.de.jsx / .zh.jsx angelehnt (1:1 Struktur), nur Meta & DATA aktualisiert
+// Strikt nach Woche-5-2025-10-27.* Struktur (1:1), nur Meta & DATA neu (komplett neue Rezepte)
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
@@ -87,314 +87,563 @@ const toList = (v) => {
   return [];
 };
 
-/* ---------- DATA (21 Rezepte) ---------- */
+/* ---------- DATA (21 neue Rezepte) ---------- */
 const DATA = [
   // Montag
   {
     id: "mo-f",
-    title: "Ochazuke mit Kabeljau (お茶漬け)",
-    desc: "Heißer grüner Tee über Reis mit gedämpftem Kabeljau; inspiriert von Just One Cookbook.",
-    story: "Ochazuke ist japanischer Comfort – warm, mild und bekömmlich am Morgen.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Grüner Tee (heiß) 400 ml", "Kabeljaufilet 140 g", "Nori 1 Stück", "Sesam 6 g", "Ingwer 6 g", "Sojasauce natriumarm 10 ml", "Frühlingszwiebel 15 g"],
-    steps: ["Reis kochen.", "Kabeljau 8–10 Min. dämpfen und zerpflücken.", "Reis in Schalen, mit heißem Tee übergießen; Fisch/Nori/Sesam/Lauch darauf, mild abschmecken."],
-    checks: "Gastritis – mild & warm · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Fisch durchgegart, jodarm",
-    swaps: "Kabeljau ↔ Köhler/Seelachs; Tee ↔ milder Dashi.",
-    side: "Kleine Schale Gurken-Pickles (ohne Schärfe).",
+    title: "Tamago-toji Suppe (卵とじ汁) + kleiner Reis",
+    desc: "Klarer japanischer Eintopf mit vollständig gestocktem Ei und Seidentofu; dazu kleine Reisschale.",
+    story: "Tamago-toji bindet Brühe mit Ei – hier vollständig gegart und besonders mild.",
+    target: "≈68 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    ingredients: [
+      "Reis (roh) 80 g",
+      "Eier 2 Stück",
+      "Tofu seiden 150 g",
+      "Spinat 120 g",
+      "Wasser 900 ml",
+      "Sojasauce natriumarm 10 ml",
+      "Frühlingszwiebel 15 g",
+    ],
+    steps: [
+      "Reis garen.",
+      "Brühe erhitzen, Spinat 2–3 Min. garen, Tofuwürfel zugeben.",
+      "Verquirlte Eier einlaufen lassen und rühren, bis vollständig gestockt; mild abschmecken.",
+    ],
+    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈68 g KH · Schwangerschaft ✓ Ei vollständig gegart",
+    swaps: "Seidentofu ↔ fester Tofu; Spinat ↔ Pak Choi.",
+    side: "Kleine Gurken-Pickles (ohne Schärfe).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Ochazuke rice bowl, hot green tea broth, flaked cooked cod, nori strips, sesame, scallions"),
+    prompt: buildPrompt(PROMPT_HEADER, "Clear Japanese egg-drop soup with silken tofu and spinach, small rice bowl on side"),
   },
   {
     id: "mo-m",
-    title: "Janchi-guksu – Hähnchen-Nudelsuppe (잔치국수)",
-    desc: "Koreanische klare Suppe mit feinen Nudeln, sehr mild.",
-    story: "„Festnudeln“ sind auch alltagstauglich – leicht und gut verdaulich.",
+    title: "Takikomi Gohan mit Huhn & Pilzen (炊き込みご飯)",
+    desc: "Gemischter Reis mit Hähnchen, Shiitake und Karotte – alles in einem Topf gegart.",
+    story: "Hausmannskost aus Japan – aromatisch, aber sehr mild gewürzt.",
     target: "≈78 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
-    ingredients: ["Somen (trocken) 110 g", "Hähnchenbrust 220 g", "Zucchini 150 g", "Karotte 100 g", "Frühlingszwiebel 20 g", "Wasser 1000 ml", "Sojasauce natriumarm 12 ml"],
-    steps: ["Brühe zubereiten; Hähnchenstreifen 6–8 Min. gar ziehen.", "Gemüsestreifen 2–3 Min. mitköcheln.", "Nudeln separat kochen, abspülen und zugeben."],
-    checks: "Gastritis – klar & mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Somen ↔ Udon; Hähnchen ↔ Tofu.",
-    side: "Blanchierter Rettich.",
+    ingredients: [
+      "Reis (roh) 90 g",
+      "Hähnchenbrust 200 g",
+      "Shiitake 120 g",
+      "Karotte 100 g",
+      "Sojasauce natriumarm 20 ml",
+      "Mirin 5 ml",
+      "Wasser 320 ml",
+    ],
+    steps: [
+      "Alle Zutaten mit Wasser und Gewürz in den Topf geben.",
+      "Abgedeckt 20–25 Min. sanft garen, bis Reis weich ist.",
+      "Durchheben, 5 Min. ruhen lassen und servieren.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
+    swaps: "Hähnchen ↔ Tofu; Shiitake ↔ Champignons.",
+    side: "Blanchierter Brokkoli.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Clear Korean noodle soup with chicken strips, zucchini and carrot, light broth"),
+    prompt: buildPrompt(PROMPT_HEADER, "Japanese mixed rice with chicken, shiitake and carrots in pot, gentle steam"),
   },
   {
     id: "mo-a",
-    title: "Geschmorter Chinakohl & Tofu mit Reis",
-    desc: "Napa-Kohl mit Shiitake und Tofu sanft in Brühe geschmort; dazu Reis.",
-    story: "Nördlich-chinesische Hausmannskost – weich und wärmend.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈26 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Chinakohl 400 g", "Tofu fest 360 g", "Shiitake 120 g", "Gemüsebrühe 400 ml", "Sojasauce natriumarm 18 ml", "Sesamöl 6 ml", "Ingwer 8 g"],
-    steps: ["Reis garen.", "Kohl & Shiitake 10–12 Min. sanft schmoren.", "Tofu zugeben, 3–4 Min. ziehen lassen; mild abschmecken und mit Reis servieren."],
-    checks: "Gastritis – sanft geschmort · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Putenbrust; Weißer Reis ↔ Vollkornreis.",
-    side: "Gedämpfter Brokkoli.",
+    title: "Dubu Jorim (두부조림) – Tofu in milder Sojasauce + Reis",
+    desc: "Koreanischer Tofu-Schmor-Teller, ohne Schärfe, mit Lauch und Sesam.",
+    story: "Beliebtes Beilagengericht als Haupt – proteinreich und leicht.",
+    target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+    ingredients: [
+      "Tofu fest 400 g",
+      "Sojasauce natriumarm 20 ml",
+      "Wasser 300 ml",
+      "Frühlingszwiebel 20 g",
+      "Knoblauch 1 Stück",
+      "Ingwer 8 g",
+      "Sesamöl 8 ml",
+      "Reis (roh) 90 g",
+    ],
+    steps: [
+      "Reis garen.",
+      "Tofu in Scheiben in Wasser+Sojasauce 6–8 Min. sanft schmoren.",
+      "Mit Lauch/Knoblauch/Ingwer kurz ziehen lassen, Sesamöl zugeben.",
+    ],
+    checks: "Gastritis – mild geschmort · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Tofu ↔ Hähnchenwürfel; Reis ↔ Vollkornreis.",
+    side: "Spinat-Namul (mild).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Braised napa cabbage with tofu and shiitake in light broth, side bowl of rice"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean braised tofu steaks in light soy glaze, scallions on top, side rice bowl"),
   },
 
   // Dienstag
   {
     id: "di-f",
-    title: "Süßkartoffel-Juk mit Seidentofu (고구마죽)",
-    desc: "Koreanischer Süßkartoffel-Reisbrei mit Seidentofu – zart und leicht süß.",
-    story: "Beliebtes mildes Frühstück in Korea.",
-    target: "≈75 g KH gesamt (2 P.) · Protein ≈21 g p. P.",
-    ingredients: ["Süßkartoffel 400 g", "Reis (roh) 70 g", "Wasser 900 ml", "Tofu seiden 200 g", "Ingwer 6 g", "Salz 1 g"],
-    steps: ["Süßkartoffel & Reis 25–30 Min. sanft kochen.", "Pürieren, Tofu zugeben und 2–3 Min. ziehen lassen.", "Mild abschmecken."],
-    checks: "Gastritis – weich & mild · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Hähnchenwürfel; Reis ↔ Hirse.",
+    title: "Sumashi-jiru (すまし汁) mit Seidentofu & kleiner Reis",
+    desc: "Klare Suppe mit Tofu und Lauch, sehr leicht; kleine Portion Reis dazu.",
+    story: "Japanische Frühstückssuppe – elegant und beruhigend.",
+    target: "≈62 g KH gesamt (2 P.) · Protein ≈18 g p. P.",
+    ingredients: [
+      "Reis (roh) 80 g",
+      "Tofu seiden 200 g",
+      "Wasser 900 ml",
+      "Sojasauce natriumarm 8 ml",
+      "Wakame (getrocknet) 2 g",
+      "Frühlingszwiebel 20 g",
+    ],
+    steps: [
+      "Reis garen.",
+      "Klare Brühe erhitzen, Wakame 3 Min. ziehen lassen.",
+      "Tofu zugeben, mild würzen und mit Lauch servieren.",
+    ],
+    checks: "Gastritis – klar & mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ vollständig gegart; Jod sparsam",
+    swaps: "Wakame ↔ Nori (sparsam); Tofu ↔ Hähnchenwürfel.",
     side: "Warmer Gerstentee.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Silky sweet potato rice porridge with silken tofu, pastel bowl, steam visible"),
+    prompt: buildPrompt(PROMPT_HEADER, "Crystal clear soup with silken tofu cubes and scallions, small rice bowl"),
   },
   {
     id: "di-m",
-    title: "Leichtes Yaki Udon mit Huhn & Gemüse (やきうどん)",
-    desc: "Wenig Öl, ohne Schärfe – Gemüseanteil hoch.",
-    story: "Japanisches Pfannengericht in mild.",
-    target: "≈79 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
-    ingredients: ["Udon (trocken) 110 g", "Hähnchenbrust 220 g", "Paprika 150 g", "Zwiebel 80 g", "Spinat 150 g", "Sojasauce natriumarm 22 ml", "Sesamöl 6 ml"],
-    steps: ["Udon kochen und abspülen.", "Hähnchen in wenig Öl vollständig garen.", "Gemüse kurz mitbraten, mild abschmecken."],
-    checks: "Gastritis – wenig Fett · Diabetes ✓ – ≈79 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Udon ↔ Soba; Hähnchen ↔ Tofu.",
-    side: "Gurkenscheiben natur.",
+    title: "Kaschuhuhn (腰果鸡丁) – mild – mit Vollkornreis",
+    desc: "China-klassisch, aber salzarm und ohne Schärfe – knusprige Cashews.",
+    story: "Pfannengericht für jeden Tag – bunt und ausgewogen.",
+    target: "≈82 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+    ingredients: [
+      "Vollkornreis (roh) 90 g",
+      "Hähnchenbrust 240 g",
+      "Cashews 40 g",
+      "Paprika 150 g",
+      "Brokkoli 200 g",
+      "Zwiebel 60 g",
+      "Sojasauce natriumarm 22 ml",
+      "Rapsöl 10 ml",
+    ],
+    steps: [
+      "Reis garen; Cashews ohne Öl kurz rösten.",
+      "Hähnchenwürfel vollständig durchbraten.",
+      "Gemüse zugeben, mild würzen, Cashews unterheben.",
+    ],
+    checks: "Gastritis – wenig Fett · Diabetes ✓ – ≈82 g KH · Schwangerschaft ✓ Huhn durchgegart",
+    swaps: "Cashews ↔ Erdnüsse (geröstet) · Hähnchen ↔ Tofu.",
+    side: "Gurkensalat natur.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Light yaki udon with chicken and colorful vegetables, no chili, glossy noodles"),
+    prompt: buildPrompt(PROMPT_HEADER, "Stir-fry chicken with broccoli and peppers, sprinkle of roasted cashews, brown rice"),
   },
   {
     id: "di-a",
-    title: "Kabeljau in milder Ingwer-Sojasauce (煮付け) mit Reis",
-    desc: "Leicht süß-salzige Schmorflüssigkeit, sehr mild.",
-    story: "Japanische „Nizuke“-Hausküche.",
-    target: "≈74 g KH gesamt (2 P.) · Protein ≈29 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Kabeljaufilet 320 g", "Wasser 300 ml", "Sojasauce natriumarm 20 ml", "Mirin 6 ml", "Honig 4 g", "Ingwer 10 g"],
-    steps: ["Reis garen.", "Wasser+Sojasauce+Mirin+Honig+Ingwer aufkochen.", "Fisch 8–10 Min. leise köcheln, vollständig garen; mit Reis servieren."],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Fisch vollständig gegart",
-    swaps: "Kabeljau ↔ Köhler; Weißer Reis ↔ Vollkornreis.",
-    side: "Gedämpfter Pak Choi.",
+    title: "Gyeran-jjim (계란찜) – gedämpfter Eierpudding + Gemüse & Reis",
+    desc: "Sanft gedämpfter koreanischer Eierpudding, vollständig gestockt; dazu Zucchini und Reis.",
+    story: "Wolkenweich und sehr bekömmlich – Abendessen zum Löffeln.",
+    target: "≈66 g KH gesamt (2 P.) · Protein ≈23 g p. P.",
+    ingredients: [
+      "Eier 3 Stück",
+      "Wasser 300 ml",
+      "Tofu fest 150 g",
+      "Zucchini 200 g",
+      "Frühlingszwiebel 15 g",
+      "Sojasauce natriumarm 8 ml",
+      "Reis (roh) 80 g",
+    ],
+    steps: [
+      "Reis garen; Zucchini dünsten.",
+      "Eier mit Wasser verquirlen, Tofu unterrühren, in Schüssel 12–15 Min. dämpfen bis fest.",
+      "Mit Lauch und wenig Sojasauce servieren.",
+    ],
+    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈66 g KH · Schwangerschaft ✓ Ei vollständig gestockt",
+    swaps: "Tofu ↔ Hühnerbrustwürfel; Zucchini ↔ Spinat.",
+    side: "Kleine Schale Kimchi weiß (ohne Chili).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Simmered cod in light ginger-soy broth, served with a bowl of rice"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean steamed egg custard in clay bowl, zucchini on side, small rice bowl"),
   },
 
   // Mittwoch
   {
     id: "mi-f",
-    title: "Tofu-„Rührei“ Bowl über Reis",
-    desc: "Zerdrückter Tofu als pflanzliches „Rührei“ auf heißem Reis.",
-    story: "Japan-inspiriert, proteinreich und gut bekömmlich.",
-    target: "≈62 g KH gesamt (2 P.) · Protein ≈23 g p. P.",
-    ingredients: ["Reis (roh) 80 g", "Tofu fest 250 g", "Spinat 150 g", "Zwiebel 60 g", "Sojasauce natriumarm 10 ml", "Sesam 6 g"],
-    steps: ["Reis garen.", "Tofu zerdrücken und mit Zwiebel/Spinat 4–5 Min. garen.", "Über den Reis geben und mild würzen."],
-    checks: "Gastritis – mild & wenig Öl · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Reis ↔ Vollkornreis; Spinat ↔ Pak Choi.",
-    side: "Warmer Bancha.",
+    title: "Onigirazu (おにぎらず) mit Hähnchen‑Teriyaki",
+    desc: "Reissandwich mit zartem Hähnchen in leichter Teriyaki-Glasur; nori außen.",
+    story: "Praktisches Bento-Frühstück – hier warm und komplett durchgegart.",
+    target: "≈72 g KH gesamt (2 P.) · Protein ≈26 g p. P.",
+    ingredients: [
+      "Sushi-Reis (roh) 90 g",
+      "Hähnchenbrust 180 g",
+      "Nori 2 Stück",
+      "Sojasauce natriumarm 15 ml",
+      "Honig 4 g",
+      "Ingwer 6 g",
+      "Gurke 80 g",
+    ],
+    steps: [
+      "Reis kochen.",
+      "Hähnchen in Pfanne garen, mit Sojasauce/Honig/Ingwer glasieren.",
+      "Mit Gurke in Nori-Reis ‘sandwichen’ und halbieren.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
+    swaps: "Hähnchen ↔ Tofu; Sushi-Reis ↔ Vollkornreis.",
+    side: "Milder Grüntee (koffeinarm).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Tofu scramble over steamed rice with spinach, gentle colors, top-down"),
+    prompt: buildPrompt(PROMPT_HEADER, "Onigirazu rice sandwich with glazed chicken and cucumber, nori wrap, clean cut"),
   },
   {
     id: "mi-m",
-    title: "Somen-Pilzsuppe (そうめん)",
-    desc: "Feine Nudeln in leichter Brühe mit Shiitake.",
-    story: "Zart & klar – magenfreundlich.",
-    target: "≈75 g KH gesamt (2 P.) · Protein ≈18 g p. P.",
-    ingredients: ["Somen (trocken) 110 g", "Shiitake 140 g", "Frühlingszwiebel 20 g", "Miso hell 18 g", "Wasser 1000 ml", "Sojasauce natriumarm 10 ml"],
-    steps: ["Brühe aus Wasser+Miso+Sojasauce erhitzen.", "Shiitake 4–5 Min. köcheln.", "Nudeln separat kochen, abspülen, zugeben."],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Somen ↔ Udon; Shiitake ↔ Zucchini.",
-    side: "Kleine Schale Gurke.",
+    title: "Mandu‑guk (만두국) – milde Dumplingsuppe",
+    desc: "Koreanische Klößchensuppe mit Gemüse in klarer Brühe.",
+    story: "Seidige Brühe, sanfte Aromen – wohltuend und sättigend.",
+    target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+    ingredients: [
+      "Mandu (Stück) 8 Stück",
+      "Wasser 1100 ml",
+      "Zucchini 120 g",
+      "Tofu fest 150 g",
+      "Frühlingszwiebel 20 g",
+      "Sojasauce natriumarm 10 ml",
+    ],
+    steps: [
+      "Brühe erhitzen; Mandu 6–8 Min. köcheln bis durchgegart.",
+      "Zucchini/Tofu 3–4 Min. mitgaren.",
+      "Mild abschmecken und mit Lauch servieren.",
+    ],
+    checks: "Gastritis – klar & mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Füllung vollständig gegart",
+    swaps: "Mandu ↔ Udon (separat gekocht); Tofu ↔ Hähnchenwürfel.",
+    side: "Gurken-Pickles (ohne Chili).",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Light somen soup with shiitake and scallions in clear bowl"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean dumpling soup in clear broth with zucchini and tofu, steam rising"),
   },
   {
     id: "mi-a",
-    title: "„Yuxiang“-Aubergine mild (ohne Chili) mit Reis",
-    desc: "Reduzierte Säure & Öl, leicht gebunden – ohne Schärfe.",
-    story: "Sichuan-Idee, aber sanft umgesetzt.",
-    target: "≈73 g KH gesamt (2 P.) · Protein ≈16 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Aubergine 400 g", "Knoblauch 1 Stück", "Ingwer 8 g", "Tomaten (reif) 300 g", "Sojasauce natriumarm 20 ml", "Reisessig mild 6 ml", "Honig 4 g", "Maisstärke 10 g"],
-    steps: ["Reis garen; Auberginen mit wenig Öl weich schmoren.", "Tomaten & Gewürze 8–10 Min. köcheln.", "Leicht mit Stärke binden, zu Reis servieren."],
-    checks: "Gastritis – geringe Säure, mild · Diabetes ✓ – ≈73 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Aubergine ↔ Zucchini; Weißer Reis ↔ Vollkornreis.",
+    title: "Tomaten‑Rind‑Schmortopf (番茄牛腩) – mild – mit Reis",
+    desc: "Rind mit Tomaten und Kartoffeln sanft geschmort; dazu Reis.",
+    story: "Südchinesisch inspiriert – reich an Gemüse, ohne Schärfe.",
+    target: "≈76 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+    ingredients: [
+      "Reis (roh) 80 g",
+      "Rind (mager, Würfel) 300 g",
+      "Tomaten (reif) 400 g",
+      "Kartoffeln 300 g",
+      "Zwiebel 80 g",
+      "Wasser 600 ml",
+      "Sojasauce natriumarm 15 ml",
+    ],
+    steps: [
+      "Fleisch anrösten (wenig Öl), mit Wasser aufgießen.",
+      "Tomaten/Kartoffeln/Zwiebel zugeben, 35–45 Min. sanft schmoren.",
+      "Mit Reis servieren, mild abschmecken.",
+    ],
+    checks: "Gastritis – sanft geschmort · Diabetes ✓ – ≈76 g KH · Schwangerschaft ✓ Fleisch vollständig gegart",
+    swaps: "Rind ↔ Pute; Reis ↔ Vollkornreis.",
     side: "Blanchierter Spinat.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Glazed eggplant in mild garlic-ginger tomato sauce, bowl of rice alongside"),
+    prompt: buildPrompt(PROMPT_HEADER, "Chinese tomato beef stew with potatoes in a bowl, side of white rice"),
   },
 
   // Donnerstag
   {
     id: "do-f",
-    title: "Oyakodon (Ei vollständig gestockt)",
-    desc: "Hähnchen-Ei-Donburi, Sauce mild – ohne rohe Eier.",
-    story: "Japanischer Klassiker – hier mit komplett gestocktem Ei.",
-    target: "≈76 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Hähnchenbrust 220 g", "Zwiebel 60 g", "Eier 3 Stück", "Sojasauce natriumarm 20 ml", "Mirin 8 ml", "Wasser 200 ml"],
-    steps: ["Reis garen.", "Huhn/Zwiebel 6–8 Min. in milder Sauce köcheln.", "Verquirlte Eier zugeben und vollständig stocken lassen; über Reis."],
-    checks: "Gastritis – mild geschmort · Diabetes ✓ – ≈76 g KH · Schwangerschaft ✓ Ei/Huhn vollständig gegart",
-    swaps: "Hähnchen ↔ Pute; Reis ↔ Vollkornreis.",
-    side: "Milde Misosuppe.",
+    title: "Zakkoku‑Gohan Set (雑穀ご飯) + Ohitashi & Misosuppe",
+    desc: "Mehrkornreis, Spinat‑Ohitashi (blanchiert) und milde Misosuppe mit Tofu.",
+    story: "Frühstück wie in Japan – schlicht, warm und ausgewogen.",
+    target: "≈64 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
+    ingredients: [
+      "Mehrkornreis (roh) 80 g",
+      "Spinat 200 g",
+      "Tofu fest 150 g",
+      "Miso hell 18 g",
+      "Wasser 1000 ml",
+      "Nori 1 Stück",
+    ],
+    steps: [
+      "Mehrkornreis garen.",
+      "Spinat 1–2 Min. blanchieren, abtropfen lassen.",
+      "Miso in heißem Wasser lösen (nicht kochen), Tofu kurz ziehen lassen; alles zusammen servieren.",
+    ],
+    checks: "Gastritis – mild & warm · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Mehrkornreis ↔ Reis; Spinat ↔ Pak Choi.",
+    side: "Gerstentee oder Bancha warm.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Oyakodon bowl with fully set egg, tender chicken, glossy sauce over rice"),
+    prompt: buildPrompt(PROMPT_HEADER, "Japanese breakfast set: multigrain rice, spinach ohitashi, small bowl miso soup with tofu"),
   },
   {
     id: "do-m",
-    title: "Kongnamul-bap – Sojasprossen-Reis (콩나물밥)",
-    desc: "Koreanischer Sprossenreis – knusprig-frisch und mild.",
-    story: "Sprossen als Hauptdarsteller, leicht & klar.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈18 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Sojasprossen 250 g", "Frühlingszwiebel 20 g", "Sesam 6 g", "Sojasauce natriumarm 12 ml", "Wasser 200 ml"],
-    steps: ["Reis mit Sprossen garen.", "Mit Sojasauce & Sesam mild würzen.", "Mit Lauchgrün servieren."],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ gut gewaschen & erhitzt",
-    swaps: "Sprossen ↔ Spinat; Reis ↔ Vollkornreis.",
-    side: "Mildes (weißes) Kimchi separat.",
+    title: "Saeu Bokkeumbap (새우볶음밥) – milder Garnelen‑Reis",
+    desc: "Schonend gebratener Reis mit Garnelen, Erbsen und Karotte – wenig Öl.",
+    story: "Koreanisches Schnellgericht – hier salzarm und ohne Chili.",
+    target: "≈80 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    ingredients: [
+      "Reis (roh) 90 g",
+      "Garnelen (geschält) 220 g",
+      "Erbsen (TK) 150 g",
+      "Karotte 100 g",
+      "Ei 1 Stück",
+      "Sojasauce natriumarm 15 ml",
+      "Rapsöl 10 ml",
+    ],
+    steps: [
+      "Reis vorkochen und ausdampfen lassen.",
+      "Garnelen vollständig garen, Gemüse zufügen.",
+      "Reis und verquirltes Ei zugeben, Ei komplett stocken lassen; mild würzen.",
+    ],
+    checks: "Gastritis – wenig Fett · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Garnelen & Ei vollständig gegart",
+    swaps: "Garnelen ↔ Hähnchenwürfel; Reis ↔ Vollkornreis.",
+    side: "Gurkenscheiben.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Korean bean sprout rice in a bowl, glossy grains, scallions and sesame on top"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean shrimp fried rice with peas and carrot, fully cooked egg, light glaze"),
   },
   {
     id: "do-a",
-    title: "Ingwer-Miso-Hähncheneintopf mit Wurzelgemüse & Reis",
-    desc: "Hähnchen, Karotte & Daikon in Misobrühe geschmort; dazu Reis.",
-    story: "Japanisch inspiriert – winterlich & mild.",
-    target: "≈74 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Hähnchenbrust 300 g", "Karotte 200 g", "Rettich (Daikon) 200 g", "Miso hell 24 g", "Wasser 800 ml", "Sojasauce natriumarm 10 ml", "Ingwer 8 g"],
-    steps: ["Reis garen.", "Gemüse 12–15 Min. in Misobrühe sieden.", "Huhn zugeben und 8–10 Min. garen; mit Reis servieren."],
-    checks: "Gastritis – mild & lange geköchelt · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
-    swaps: "Huhn ↔ Tofu; Reis ↔ Vollkornreis.",
-    side: "Blanchierter Pak Choi.",
+    title: "Oden (おでん) – milder Wintereintopf",
+    desc: "Daikon, Konnyaku, frittierter Tofu (Atsuage), Fischkuchen & gekochte Eier in klarer Brühe.",
+    story: "Straßenklassiker Japans – hier salzarm und ohne scharfe Dips.",
+    target: "≈69 g KH gesamt (2 P.) · Protein ≈26 g p. P.",
+    ingredients: [
+      "Daikon 300 g",
+      "Konnyaku 200 g",
+      "Atsuage‑Tofu 200 g",
+      "Fischkuchen 200 g",
+      "Gekochte Eier 2 Stück",
+      "Wasser 1200 ml",
+      "Sojasauce natriumarm 15 ml",
+      "Reis (roh) 70 g",
+    ],
+    steps: [
+      "Brühe ansetzen; Daikon 12–15 Min. sieden.",
+      "Konnyaku/Tofu/Fischkuchen 8–10 Min. mitziehen lassen.",
+      "Mit Reis servieren; alles vollständig erhitzen.",
+    ],
+    checks: "Gastritis – klar & mild · Diabetes ✓ – ≈69 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Fischkuchen ↔ mehr Tofu; Reis ↔ Vollkornreis.",
+    side: "Milder Senf optional separat.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Japanese ginger-miso chicken stew with carrots and daikon, side rice bowl"),
+    prompt: buildPrompt(PROMPT_HEADER, "Japanese oden pot with daikon, tofu, fish cakes and eggs in clear broth, side rice"),
   },
 
   // Freitag
   {
     id: "fr-f",
-    title: "Mais-Congee mit Seidentofu",
-    desc: "Feiner Reis-Mais-Brei mit Seidentofu.",
-    story: "Südchinesische Inspiration – mild & leicht süß.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
-    ingredients: ["Reis (roh) 70 g", "Mais (gekocht) 200 g", "Wasser 1000 ml", "Tofu seiden 200 g", "Salz 1 g"],
-    steps: ["Reis 30 Min. leise köcheln.", "Mais & Tofu 3–4 Min. mitziehen lassen.", "Dezent abschmecken."],
-    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Hähnchenhack; Reis ↔ Hirse.",
-    side: "Warmer Kräutertee.",
+    title: "Bori‑bap (보리밥) – Gerstenreis‑Schale mit Tofu & Gemüse",
+    desc: "Warmer Gerstenreis mit Tofu, Gurke und Karotte – leicht würzig, ohne Chili.",
+    story: "Koreanisch rustikal, ballaststoffreich und magenfreundlich.",
+    target: "≈66 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    ingredients: [
+      "Perlgerste (roh) 80 g",
+      "Tofu fest 200 g",
+      "Gurke 150 g",
+      "Karotte 100 g",
+      "Sesam 6 g",
+      "Sojasauce natriumarm 10 ml",
+    ],
+    steps: [
+      "Gerste garen.",
+      "Tofu würfeln und kurz in der Pfanne erhitzen.",
+      "Mit Gemüse und Sesam auf Gerste anrichten, mild würzen.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈66 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Gerste ↔ Reis; Tofu ↔ Hähnchen.",
+    side: "Gerstentee warm.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Silky corn congee with silken tofu in a white bowl, steam visible"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean barley rice bowl with tofu, cucumber and carrot, sesame sprinkle"),
   },
   {
     id: "fr-m",
-    title: "Vollkorn-Risotto (IT) mit Zucchini & Erbsen",
-    desc: "Cremig gerührtes Vollkornrisotto, ballaststoffreich.",
-    story: "Einzige italienische Option der Woche.",
-    target: "≈78 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
-    ingredients: ["Vollkorn-Risottoreis (roh) 100 g", "Zucchini 300 g", "Erbsen (TK) 150 g", "Gemüsebrühe 900 ml", "Olivenöl 8 ml", "Parmesan (pasteurisiert) 20 g"],
-    steps: ["Reis in wenig Öl anschwitzen, nach und nach Brühe zugeben (20–25 Min.).", "Zucchini/Erbsen in den letzten 6–8 Min. zugeben.", "Mit wenig Käse abschmecken."],
-    checks: "Gastritis – sanft gerührt · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ pasteurisierter Käse",
-    swaps: "Vollkornreis ↔ Gerste; Käse ↔ Nährhefe.",
-    side: "Gedämpfter Brokkoli.",
+    title: "Reisnudelsuppe Guangzhou‑Stil (鸡丝米粉汤) – mild",
+    desc: "Klare Hühnerbrühe mit Reisnudeln, Pak Choi und Ingwer.",
+    story: "Südchinesisch inspiriert – leicht und aromatisch.",
+    target: "≈78 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+    ingredients: [
+      "Reisnudeln (trocken) 90 g",
+      "Hähnchenbrust 200 g",
+      "Pak Choi 200 g",
+      "Ingwer 8 g",
+      "Wasser 1200 ml",
+      "Sojasauce natriumarm 10 ml",
+      "Frühlingszwiebel 20 g",
+    ],
+    steps: [
+      "Brühe kochen; Hähnchen 8–10 Min. gar ziehen.",
+      "Pak Choi 2–3 Min. mitgaren.",
+      "Reisnudeln separat kochen, abspülen, in die Brühe geben.",
+    ],
+    checks: "Gastritis – klar & mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
+    swaps: "Reisnudeln ↔ Udon; Hähnchen ↔ Tofu.",
+    side: "Gurke natur.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Creamy wholegrain risotto with zucchini and peas, simple bowl, no garnishes"),
+    prompt: buildPrompt(PROMPT_HEADER, "Cantonese-style chicken rice noodle soup with bok choy in clear broth"),
   },
   {
     id: "fr-a",
-    title: "Shogayaki – Ingwer-Schweinefleisch mit Reis",
-    desc: "Mageres Schwein sanft gebraten und in Ingwersauce glasiert; dazu Reis.",
-    story: "Japanische Hausmannskost – salzig-süß, ohne Chili.",
-    target: "≈75 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Schweinelachs/‑rücken 280 g", "Zwiebel 80 g", "Ingwer 10 g", "Sojasauce natriumarm 20 ml", "Mirin 6 ml", "Honig 4 g"],
-    steps: ["Reis garen.", "Schweinefleisch in wenig Öl vollständig braten.", "Sauce zugeben und leicht glasieren; mit Reis servieren."],
-    checks: "Gastritis – wenig Fett · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ Fleisch vollständig gegart",
-    swaps: "Schwein ↔ Hähnchen; Reis ↔ Vollkornreis.",
-    side: "Blanchierter Spinat.",
+    title: "Gedämpfte Forelle mit Ingwer (清蒸鳟鱼) + Reis",
+    desc: "Zarte Forelle mit Ingwer-Lauch-Aroma; dazu Reis.",
+    story: "Schonende Dämpftechnik nach südchinesischem Vorbild.",
+    target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    ingredients: [
+      "Forellenfilet 320 g",
+      "Reis (roh) 90 g",
+      "Ingwer 12 g",
+      "Frühlingszwiebel 24 g",
+      "Sojasauce natriumarm 12 ml",
+      "Sesamöl 6 ml",
+      "Gemüsebrühe 100 ml",
+    ],
+    steps: [
+      "Reis garen.",
+      "Fisch auf Ingwer 9–11 Min. dämpfen (vollständig gar).",
+      "Mit lauwarmer Brühe/Sojasauce übergießen, Sesamöl dazu; mit Reis servieren.",
+    ],
+    checks: "Gastritis – gedämpft · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Forelle vollständig gegart, quecksilberarm",
+    swaps: "Forelle ↔ Kabeljau; Reis ↔ Vollkornreis.",
+    side: "Gedünsteter Brokkoli.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Japanese ginger pork slices glossy in pan sauce, served with steamed rice"),
+    prompt: buildPrompt(PROMPT_HEADER, "Steamed trout fillet with ginger and scallions, light soy broth, served with rice"),
   },
 
   // Samstag
   {
     id: "sa-f",
-    title: "Hirse-Dattel-Porridge",
-    desc: "Warmer Frühstücksbrei aus Hirse und Datteln.",
-    story: "Nordchinesische Anmutung – mild & wärmend.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈10 g p. P.",
-    ingredients: ["Hirse (roh) 80 g", "Datteln 40 g", "Wasser 1000 ml"],
-    steps: ["Hirse waschen, aufkochen.", "Datteln zugeben und 25–30 Min. sanft köcheln.", "Bei Bedarf Wasser ergänzen, mild abschmecken."],
-    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Hirse ↔ Reis; Dattel ↔ Kürbiswürfel.",
-    side: "Warmer Reistee.",
+    title: "Hobak‑bokkeum (호박볶음) – Zucchini‑Ei‑Pfanne + kleiner Reis",
+    desc: "Sanft gebratene Zucchini mit Ei, komplett gestockt; kleine Reisschale.",
+    story: "Koreanisches Frühstück – mild und schnell.",
+    target: "≈64 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    ingredients: [
+      "Reis (roh) 80 g",
+      "Zucchini 300 g",
+      "Eier 2 Stück",
+      "Frühlingszwiebel 20 g",
+      "Sojasauce natriumarm 8 ml",
+      "Sesamöl 5 ml",
+    ],
+    steps: [
+      "Reis garen.",
+      "Zucchini in wenig Öl 3–4 Min. braten.",
+      "Eier unterrühren und vollständig stocken lassen; mild abschmecken.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ Ei vollständig gegart",
+    swaps: "Zucchini ↔ Spinat; Reis ↔ Vollkornreis.",
+    side: "Kleine Schale Kimchi weiß (ohne Chili).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Millet and date porridge in a ceramic bowl, soft light"),
+    prompt: buildPrompt(PROMPT_HEADER, "Korean zucchini and egg sauté, fully set, small bowl of rice"),
   },
   {
     id: "sa-m",
-    title: "Japchae – Süßkartoffelglasnudeln mit Huhn (잡채)",
-    desc: "Glasnudeln mit buntem Gemüse & Huhn – wenig Öl; Chili separat.",
-    story: "Koreanischer Klassiker, hier extra mild.",
-    target: "≈80 g KH gesamt (2 P.) · Protein ≈27 g p. P.",
-    ingredients: ["Süßkartoffelglasnudeln (trocken) 90 g", "Hähnchenbrust 220 g", "Paprika 150 g", "Spinat 150 g", "Karotte 120 g", "Zwiebel 60 g", "Sojasauce natriumarm 22 ml", "Sesamöl 8 ml"],
-    steps: ["Glasnudeln kochen, abspülen.", "Hähnchen vollständig garen.", "Mit Gemüse vermengen, mild würzen; Chili separat servieren."],
-    checks: "Gastritis – mild & ohne Chili · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Hähnchen ↔ Tofu; Glasnudeln ↔ Udon.",
-    side: "Gurkensalat natur.",
+    title: "Warme Soba mit Sesam‑Sauce & Hähnchen (ごまだれそば)",
+    desc: "Soba in milder Sesam-Dashi-Sauce, Hähnchenstreifen und Gurke.",
+    story: "Sesam betont die Nussigkeit der Buchweizennudeln – ohne Schärfe.",
+    target: "≈76 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+    ingredients: [
+      "Soba (trocken) 100 g",
+      "Hähnchenbrust 200 g",
+      "Gurke 120 g",
+      "Sesam 10 g",
+      "Sojasauce natriumarm 15 ml",
+      "Wasser 100 ml",
+      "Reisessig mild 5 ml",
+    ],
+    steps: [
+      "Soba kochen, abspülen.",
+      "Hähnchenstreifen garen.",
+      "Sauce aus Sojasauce/Wasser/Essig/Sesam anrühren, alles mischen und warm servieren.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈76 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
+    swaps: "Soba ↔ Udon; Hähnchen ↔ Tofu.",
+    side: "Gurkenscheiben natur.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Korean japchae with chicken and colorful vegetables, glossy sweet potato noodles, no chili"),
+    prompt: buildPrompt(PROMPT_HEADER, "Warm soba noodles with sesame sauce, chicken slices and cucumber strips"),
   },
   {
     id: "sa-a",
-    title: "Gedämpfter Wolfsbarsch mit Ingwer & Reis",
-    desc: "Kantonesisch gedämpft – zart & klar.",
-    story: "Schonend dämpfen, dezente Würze.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Wolfsbarsch 320 g", "Ingwer 10 g", "Frühlingszwiebel 24 g", "Sojasauce natriumarm 12 ml", "Sesamöl 6 ml"],
-    steps: ["Reis garen.", "Fisch auf Ingwer 10–12 Min. dämpfen (vollständig gar).", "Mit wenig Sojasauce/Sesamöl beträufeln, Lauchgrün darüber; mit Reis."],
-    checks: "Gastritis – gedämpft · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Fisch vollständig gegart",
-    swaps: "Wolfsbarsch ↔ Kabeljau; Reis ↔ Vollkornreis.",
+    title: "Huang Men Ji (黄焖鸡) – gelb geschmortes Huhn + Reis (mild)",
+    desc: "Kartoffeln, Shiitake und Hähnchen sanft geschmort; ohne Chili.",
+    story: "Nordchinesischer Topf – hier leichter und salzarm.",
+    target: "≈82 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    ingredients: [
+      "Hähnchenkeule ohne Haut 320 g",
+      "Kartoffeln 250 g",
+      "Shiitake 120 g",
+      "Zwiebel 80 g",
+      "Sojasauce natriumarm 20 ml",
+      "Wasser 600 ml",
+      "Reis (roh) 80 g",
+    ],
+    steps: [
+      "Huhn kurz anbraten, mit Wasser aufgießen.",
+      "Kartoffeln/Shiitake/Zwiebel zugeben, 25–30 Min. sanft schmoren.",
+      "Mit Reis servieren, mild abschmecken.",
+    ],
+    checks: "Gastritis – mild geschmort · Diabetes ✓ – ≈82 g KH · Schwangerschaft ✓ Huhn vollständig gegart",
+    swaps: "Hähnchen ↔ Pute; Reis ↔ Vollkornreis.",
     side: "Gedämpfter Pak Choi.",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Steamed sea bass with ginger and scallions, light soy drizzle, served with rice"),
+    prompt: buildPrompt(PROMPT_HEADER, "Chinese yellow braised chicken with potatoes and mushrooms, small bowl of rice"),
   },
 
   // Sonntag
   {
     id: "so-f",
-    title: "Japanischer Süßkartoffelreis (さつまいもご飯)",
-    desc: "Im Reiskocher gegarter Reis mit Süßkartoffel – leicht süß.",
-    story: "Herbstlicher Klassiker aus Japan.",
-    target: "≈78 g KH gesamt (2 P.) · Protein ≈10 g p. P.",
-    ingredients: ["Reis (roh) 90 g", "Süßkartoffel 250 g", "Kombu 2 g", "Wasser 300 ml", "Sesam 6 g"],
-    steps: ["Süßkartoffel würfeln, Reis waschen.", "Mit Kombu und Wasser garen (Kombu entfernen).", "Mit Sesam servieren."],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ vollständig gegart, Jod sparsam",
-    swaps: "Weißer Reis ↔ Vollkornreis; Sesam ↔ Nori.",
+    title: "Sekihan (赤飯) – roter Bohnenreis (kleine Portion)",
+    desc: "Adzuki‑Bohnen mit Klebreis – zart und nussig, kleine Portion zum Frühstück.",
+    story: "Festlicher Reis – hier diabetikerfreundlich portioniert.",
+    target: "≈68 g KH gesamt (2 P.) · Protein ≈10 g p. P.",
+    ingredients: [
+      "Klebreis (roh) 90 g",
+      "Adzukibohnen (gekocht) 120 g",
+      "Sesam 6 g",
+      "Salz 1 g",
+      "Wasser 320 ml",
+    ],
+    steps: [
+      "Klebreis waschen, mit Bohnen und Wasser 25–30 Min. garen.",
+      "5 Min. ruhen lassen.",
+      "Mit Sesam servieren.",
+    ],
+    checks: "Gastritis – mild · Diabetes ✓ – ≈68 g KH · Schwangerschaft ✓ vollständig gegart",
+    swaps: "Klebreis ↔ Reis; Adzuki ↔ Edamame (separat).",
     side: "Warmer Grüntee (koffeinarm).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Japanese sweet potato rice in pot, golden cubes among white grains"),
+    prompt: buildPrompt(PROMPT_HEADER, "Japanese sekihan red rice with azuki beans in a small bowl"),
   },
   {
     id: "so-m",
-    title: "Tomaten-Hühner-Nudelsuppe",
-    desc: "Klare Nudelsuppe mit Tomate – leicht säuerlich, nicht scharf.",
-    story: "Chinesische Hausmannskost, wärmend.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈25 g p. P.",
-    ingredients: ["Weizennudeln (trocken) 100 g", "Hähnchenbrust 180 g", "Tomaten (reif) 300 g", "Wasser 1000 ml", "Sojasauce natriumarm 10 ml", "Ingwer 6 g"],
-    steps: ["Brühe kochen, Tomaten 8–10 Min. sieden.", "Hähnchenstreifen 6–8 Min. garen.", "Nudeln separat kochen und zugeben."],
-    checks: "Gastritis – milde Säure · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Weizennudeln ↔ Udon; Hähnchen ↔ Tofu.",
-    side: "Blanchierter Spinat.",
+    title: "Garnelen‑Rührei (虾仁炒蛋) + Reis – voll durchgegart",
+    desc: "Saftiges Rührei mit Garnelen, komplett gestockt; dazu Reis.",
+    story: "Kantonesisch inspiriert – weich, mild, proteinstark.",
+    target: "≈74 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    ingredients: [
+      "Reis (roh) 90 g",
+      "Garnelen (geschält) 220 g",
+      "Eier 3 Stück",
+      "Frühlingszwiebel 20 g",
+      "Sojasauce natriumarm 10 ml",
+      "Rapsöl 8 ml",
+    ],
+    steps: [
+      "Reis garen.",
+      "Garnelen 3–4 Min. braten bis durch.",
+      "Eier zugeben und vollständig stocken lassen; mild würzen.",
+    ],
+    checks: "Gastritis – sehr mild · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Garnelen/Ei vollständig gegart",
+    swaps: "Garnelen ↔ Hähnchen; Reis ↔ Vollkornreis.",
+    side: "Gedünsteter Brokkoli.",
     remind: false,
-    prompt: buildPrompt(PROMPT_HEADER, "Chicken tomato noodle soup, clear red-tinged broth, thin noodles, steam"),
+    prompt: buildPrompt(PROMPT_HEADER, "Chinese shrimp and egg scramble glossy in pan, served with rice"),
   },
   {
     id: "so-a",
-    title: "Leichter Tofu-Pilz-Hotpot + kleiner Reis",
-    desc: "Tofu, Pilze & Chinakohl in klarer Brühe; dazu kleine Reisportion.",
-    story: "Klarer Hotpot-Stil aus Ostasien.",
-    target: "≈64 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
-    ingredients: ["Reis (roh) 80 g", "Tofu fest 300 g", "Shiitake 180 g", "Enoki 120 g", "Chinakohl 200 g", "Wasser 1200 ml", "Miso hell 20 g", "Sojasauce natriumarm 10 ml"],
-    steps: ["Reis garen.", "Gemüse & Tofu 10–12 Min. in milder Brühe kochen.", "Mit wenig Miso/Sojasauce abschmecken und heiß servieren."],
-    checks: "Gastritis – mild & warm · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Hähnchen; Weißer Reis ↔ Vollkornreis.",
-    side: "Milde Gurken-Pickles (ohne Chili).",
+    title: "Sukiyaki‑Style Tofu‑Rind‑Topf (すき焼き風) ohne rohes Ei + kleiner Reis",
+    desc: "Rind, Tofu, Shirataki, Chinakohl & Pilze in milder Brühe; ohne rohei‑Dip.",
+    story: "Wärmender Tisch‑Eintopf – alle Zutaten vollständig gegart.",
+    target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+    ingredients: [
+      "Reis (roh) 80 g",
+      "Rind (dünn geschnitten) 260 g",
+      "Tofu fest 250 g",
+      "Shirataki 200 g",
+      "Chinakohl 300 g",
+      "Shiitake 120 g",
+      "Sojasauce natriumarm 20 ml",
+      "Mirin 6 ml",
+      "Wasser 800 ml",
+    ],
+    steps: [
+      "Brühe ansetzen.",
+      "Gemüse 6–8 Min. sieden, dann Tofu/Rind 4–5 Min. garen.",
+      "Mit kleinem Reis servieren; ohne rohe Eier.",
+    ],
+    checks: "Gastritis – mild gekocht · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ alles vollständig gegart",
+    swaps: "Rind ↔ Pute; Shirataki ↔ Soba (separat).",
+    side: "Gurken‑Pickles (ohne Chili).",
     remind: true,
-    prompt: buildPrompt(PROMPT_HEADER, "Light tofu and mushroom hotpot in a shallow pot, napa cabbage, steam rising"),
+    prompt: buildPrompt(PROMPT_HEADER, "Light sukiyaki-style hotpot with beef, tofu, napa and mushrooms, small rice bowl"),
   },
 ];
 
@@ -417,7 +666,7 @@ const groupByDay = (arr) => {
   return map;
 };
 
-/* ---------- Einkaufsliste (Gruppe wie Woche-4/-5) ---------- */
+/* ---------- Einkaufsliste (Gruppen wie Woche-4/5) ---------- */
 function normalizeName(n) {
   return String(n).replace(/\(.*?\)/g, "").trim().replace(/ +/g, " ");
 }
@@ -434,10 +683,10 @@ function parseQty(item) {
   return { name, qty, unit };
 }
 const groupMap = {
-  protein: ["hähn", "pute", "rind", "schwein", "kabeljau", "lachs", "wolfsbarsch", "tofu", "eier", "edamame", "parmesan"],
-  veg: ["karotte", "zucchini", "pak choi", "spinat", "shiitake", "enoki", "brokkoli", "chinakohl", "zwiebel", "paprika", "rettich", "frühlingszwiebel", "gurke", "tomaten", "süßkartoffel", "aubergine"],
-  staple: ["reis", "hirse", "udon", "somen", "weizennudeln", "glasnudeln", "vollkorn", "risotto", "gerste"],
-  season: ["kombu", "nori", "brühe", "gemüsebrühe", "sojasauce", "miso", "sesamöl", "olivenöl", "mirin", "honig", "salz", "sesam", "knoblauch", "ingwer", "wasser", "tee"],
+  protein: ["hähn", "pute", "rind", "schwein", "forelle", "kabeljau", "lachs", "tofu", "eier", "garnelen", "mandu"],
+  veg: ["karotte", "zucchini", "pak choi", "spinat", "shiitake", "enoki", "brokkoli", "chinakohl", "zwiebel", "paprika", "rettich", "frühlingszwiebel", "gurke", "tomaten", "kartoffeln", "daikon"],
+  staple: ["reis", "klebreis", "mehrkorn", "udon", "soba", "somen", "weizennudeln", "reisnudeln", "vollkorn", "risotto", "gerste"],
+  season: ["kombu", "nori", "brühe", "gemüsebrühe", "sojasauce", "miso", "sesamöl", "olivenöl", "mirin", "honig", "salz", "sesam", "knoblauch", "ingwer", "wasser", "tee", "wakame", "reisessig"],
 };
 function accumulateList(data) {
   const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
@@ -682,7 +931,7 @@ function GroceryList() {
             ))}
           </div>
           <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
-            Hinweis: Natriumarme Sojasauce verwenden; Algen (Kombu/Nori) sparsam; alles vollständig garen.
+            Hinweis: Natriumarme Sojasauce verwenden; Algen (Wakame/Nori) sparsam; alles vollständig garen.
           </div>
         </div>
       </div>
@@ -775,79 +1024,4 @@ export default function Woche6_2025_11_03_DE() {
             {t.btn.html}
           </button>
           <button
-            onClick={() => window.print()}
-            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
-          >
-            {t.btn.print}
-          </button>
-          {/* optional Sprachen-Toggle */}
-          {/* <button onClick={() => toggleLang()} style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.white, color: COLORS.text, boxShadow: COLORS.btnShadow, fontWeight: 600 }}>
-            {t.toggle}
-          </button> */}
-        </div>
-      </div>
-
-      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}>
-        <Cookbook t={t} lang={lang} />
-      </div>
-      <div style={{ display: tab === "einkauf" ? "block" : "none" }}>
-        <GroceryList />
-      </div>
-
-      {/* Downloads */}
-      <div className="print:hidden" style={{ marginTop: 12 }}>
-        {tab === "kochbuch" && (
-          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            {pdfLink.kochbuch ? (
-              <a href={pdfLink.kochbuch} download={`${FILE_BASE} – cookbook.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
-                📄 PDF herunterladen (Kochbuch)
-              </a>
-            ) : null}
-            {htmlLink.kochbuch ? (
-              <a href={htmlLink.kochbuch} download={`${FILE_BASE} – cookbook.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
-                🌐 HTML herunterladen (Kochbuch)
-              </a>
-            ) : null}
-          </div>
-        )}
-        {tab === "einkauf" && (
-          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
-            {pdfLink.einkauf ? (
-              <a href={pdfLink.einkauf} download={`${FILE_BASE} – list.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
-                📄 PDF herunterladen (Einkaufsliste)
-              </a>
-            ) : null}
-            {htmlLink.einkauf ? (
-              <a href={htmlLink.einkauf} download={`${FILE_BASE} – list.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
-                🌐 HTML herunterladen (Einkaufsliste)
-              </a>
-            ) : null}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Tests ---------- */
-function Tests() {
-  try {
-    if (!/^Woche 6 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
-    if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
-    if (DATA.length !== 21) throw new Error("DATA length must be 21");
-    const ids = new Set(DATA.map((r) => r.id));
-    if (ids.size !== 21) throw new Error("IDs not unique");
-    DATA.forEach((r) => {
-      const isLunch = /-m$/.test(r.id);
-      if (isLunch && r.remind) throw new Error("Mittag darf keinen 💊-Reminder haben");
-      if (!isLunch && !r.remind) throw new Error("Frühstück/Abend müssen 💊-Reminder haben");
-      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten: ${r.id}`);
-      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte: ${r.id}`);
-    });
-    const groups = Object.keys(LIST_SUMMARY);
-    if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
-    console.log("[GhibliKitchen] All tests passed (DE JSX).");
-  } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
-  }
-}
+ 
