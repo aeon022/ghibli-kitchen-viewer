@@ -1,33 +1,23 @@
-import React, { useEffect, useMemo } from "react";
-import { createRoot } from "react-dom/client";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
+import { UI } from "../i18n-ui";
+import { pickText, pickList } from "../i18n-data";
 
-/* -----------------------------------------------------
-   GhibliKitchen – Woche 7 (2025-11-10) – DE
-   Strikt nach Wochen-Template (A4 quer, linker Info-Panel ≤1/3, Rezept rechts ≥2/3)
-   Zwei getrennte Dateien (dies ist die DE-Datei). ZH folgt separat.
------------------------------------------------------ */
-
+/* ---------- Meta ---------- */
 export const meta = {
   title: "Woche 7",
   startDate: "2025-11-10",
-  id: "woche-07-2025-11-10-de",
+  id: "woche-7-2025-11-10-de",
+  lang: "de",
+  sidebar: "[DE] Woche 7 (2025-11-10)",
 };
-const FILE_BASE = "Woche 07 2025-11-10";
+const FILE_BASE = "Woche 7 2025-11-10";
 
+/* ---------- UI ----------- */
 const UI_TITLES = {
   main: "GhibliKitchen – Woche 7",
   list: "GhibliKitchen – Einkaufsliste – Woche 7",
-  coverLeft: "Infos & Uploads",
-  coverRight: "Wochenübersicht",
-  pdf: "PDF erzeugen",
-  html: "HTML exportieren",
-  print: "Drucken",
-  download: "Download-Link erscheint nach Export",
-  cookbookTab: "Kochbuch",
-  listTab: "Einkaufsliste",
-  reminder: "💊 Metformin mit der Mahlzeit einnehmen",
 };
 
 const COLORS = {
@@ -40,6 +30,7 @@ const COLORS = {
   emerald: "#059669",
   amber: "#f59e0b",
   sky: "#0284c7",
+  neutral: "#404040",
   indigo: "#4f46e5",
   btnShadow: "0 6px 20px rgba(0,0,0,.12)",
 };
@@ -62,26 +53,38 @@ const cardMainStyle = {
 
 const PROMPT_HEADER =
   "Ultra-clean cookbook photo, soft daylight, top-down, pastel background, visible steam, pregnancy-safe (no raw fish or raw egg), mild Asian home cooking (JP/CN/KR), family-friendly";
-
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
-const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
-const DAY_NAME_DE = { mo: "Montag", di: "Dienstag", mi: "Mittwoch", do: "Donnerstag", fr: "Freitag", sa: "Samstag", so: "Sonntag" };
-const MEAL_NAME_DE = { f: "Morgen", m: "Mittag", a: "Abend" };
+/* ---------- Safe helpers ---------- */
+const asList = (v, lang) => {
+  try {
+    const out = pickList(v, lang);
+    return Array.isArray(out) ? out : [];
+  } catch {
+    return [];
+  }
+};
+const safeArr = (v) => (Array.isArray(v) ? v : []);
 
-const groupByDay = (arr) => {
-  const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
-  arr.forEach((r) => map[r.id.split("-")[0]].push(r));
-  Object.values(map).forEach((list) =>
-    list.sort(
-      (a, b) => ["f", "m", "a"].indexOf(a.id.split("-")[1]) - ["f", "m", "a"].indexOf(b.id.split("-")[1])
-    )
-  );
-  return map;
+// --- Fallbacks: immer Text/Listen zurückgeben, ohne i18n-Picker ---
+const toText = (v) => {
+  if (typeof v === "string") return v;
+  if (v && typeof v === "object") {
+    if (typeof v.de === "string") return v.de;
+    if (typeof v.zh === "string") return v.zh;
+  }
+  return String(v ?? "");
+};
+const toList = (v) => {
+  if (Array.isArray(v)) return v;
+  if (v && typeof v === "object") {
+    if (Array.isArray(v.de)) return v.de;
+    if (Array.isArray(v.zh)) return v.zh;
+  }
+  return [];
 };
 
-// ---------- DATA (21 NEUE Rezepte; keine Wiederholungen aus früheren Wochen) ----------
-// Portionen: 2 Personen · Ziel KH pro Mahlzeit (gesamt, 2 P.): 60–90 g · Protein ~20–40 g p. P.
+/* ---------- DATA (21 neue Rezepte – Woche 7) ---------- */
 const DATA = [
   // Montag
   {
@@ -407,7 +410,7 @@ const DATA = [
   // Freitag
   {
     id: "fr-f",
-    title: "Tofu-" + "Scramble" + " japanisch & kleiner Reis (豆腐スクランブル)",
+    title: "Tofu-Scramble japanisch & kleiner Reis (豆腐スクランブル)",
     desc: "Rühr-Tofu mit Spinat und Pilzen – würzig-mild, ohne Ei.",
     story: "Ein japanisch inspiriertes, veganes Frühstück – proteinstark und leicht.",
     target: "≈64 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
@@ -460,7 +463,7 @@ const DATA = [
   },
   {
     id: "fr-a",
-    title: "Leichter Ton­topf-Reis mit Huhn & Shiitake (砂锅鸡饭)",
+    title: "Leichter Tontopf-Reis mit Huhn & Shiitake (砂锅鸡饭)",
     desc: "Claypot-inspirierter Reis aus dem Topf – fettarm, aromatisch, mild.",
     story: "煲仔饭 ist ein Südchina-Klassiker. Wir kochen eine leichtere, abendfreundliche Variante im Topf.",
     target: "≈80 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
@@ -593,7 +596,7 @@ const DATA = [
     id: "so-m",
     title: "Spinat-Pilz-Pfanne (清炒菠菜香菇) & Reis",
     desc: "Chinesische Gemüsepfanne – saftig, ohne Schärfe.",
-    story: "轻炒蔬菜是 die schnelle Alltagsküche – aromatisch und leicht.",
+    story: "轻炒蔬菜 ist die schnelle Alltagsküche – aromatisch und leicht.",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -641,278 +644,455 @@ const DATA = [
   },
 ];
 
-// ---------- Einkaufsliste aus DATA aggregieren ----------
-const parseLine = (s) => {
-  const m = s.match(/^(.*)\s(\d+[\.,]?\d*)\s*(g|ml|l|EL|TL|Stück)$/i);
-  if (!m) return { name: s, amount: null, unit: null };
-  let name = m[1].trim();
-  let amount = parseFloat(m[2].replace(",", "."));
+/* ---------- Wochen-Helfer ---------- */
+const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
+const DAY_NAME = { mo: "Montag", di: "Dienstag", mi: "Mittwoch", do: "Donnerstag", fr: "Freitag", sa: "Samstag", so: "Sonntag" };
+const groupByDay = (arr) => {
+  const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
+  safeArr(arr).forEach((r) => {
+    const d = (r?.id || "").split("-")[0];
+    if (map[d]) map[d].push(r);
+  });
+  Object.values(map).forEach((list) =>
+    list.sort(
+      (a, b) =>
+        ["f", "m", "a"].indexOf(a.id.split("-")[1]) -
+        ["f", "m", "a"].indexOf(b.id.split("-")[1])
+    )
+  );
+  return map;
+};
+
+/* ---------- Einkaufsliste (Gruppen wie Woche-4/5/6) ---------- */
+function normalizeName(n) {
+  return String(n).replace(/\(.*?\)/g, "").trim().replace(/ +/g, " ");
+}
+function parseQty(item) {
+  const m = String(item).match(/^(.*)\s(\d+(?:[.,]\d+)?)\s*(g|ml|l|EL|TL|Stück)$/i);
+  if (!m) return null;
+  const name = normalizeName(m[1]).trim();
+  let qty = parseFloat(m[2].replace(",", "."));
   let unit = m[3];
-  if (unit === "l") { unit = "ml"; amount *= 1000; }
-  return { name, amount, unit };
+  if ((unit || "").toLowerCase() === "l") {
+    qty = qty * 1000;
+    unit = "ml";
+  }
+  return { name, qty, unit };
+}
+const groupMap = {
+  protein: ["hähn", "pute", "rind", "schwein", "forelle", "kabeljau", "seelachs", "lachs", "tofu", "eier", "garnelen", "mandu"],
+  veg: ["karotte", "zucchini", "pak choi", "spinat", "shiitake", "enoki", "brokkoli", "chinakohl", "zwiebel", "paprika", "rettich", "frühlingszwiebel", "gurke", "tomaten", "kartoffeln", "daikon", "radieschen"],
+  staple: ["reis", "klebreis", "mehrkorn", "udon", "soba", "somen", "weizennudeln", "reisnudeln", "vollkorn", "risotto", "gerste", "glasnudeln", "mantou"],
+  season: ["kombu", "nori", "brühe", "gemüsebrühe", "sojasauce", "miso", "sesamöl", "olivenöl", "mirin", "honig", "salz", "sesam", "knoblauch", "ingwer", "wasser", "tee", "wakame", "reisessig", "stärke", "ketchup"],
 };
-const normalizeName = (name) => name.replace(/\s+/g, " ").trim();
-const classify = (name) => {
-  const lower = name.toLowerCase();
-  const isProtein = /(hähnchen|pute|rind|schwein|lachs|kabeljau|seelachs|fisch|tofu|ei\b|eier)/i.test(lower);
-  const isStarch = /(reis|sob(a)|glasnudeln|nudel|mantou)/i.test(lower);
-  const isVeg = /(brokkoli|pak choi|paprika|karotte|tomate|zwiebel|zucchini|spinat|chinakohl|kürbis|kartoffel|frühlingszwiebel|gurke|shiitake|champignon|pilz|rettich|daikon|erbsen|mais|sprossen|nori)/i.test(lower);
-  const isSeasoning = /(sojasauce|miso|mirin|honig|salz|brühe|sesamöl|öl|ingwer|knoblauch|stärke|essig|tee|sesam)/i.test(lower);
-  if (isProtein) return "Protein/Fisch/Tofu";
-  if (isVeg) return "Gemüse/Pilze";
-  if (isStarch) return "Reis/Nudeln/Sättigung";
-  if (isSeasoning) return "Algen/Brühen/Würze";
-  return "Sonstiges";
-};
-const buildListFromData = () => {
-  const items = {};
-  const add = (cat, key, amount, unit) => {
-    if (!items[cat]) items[cat] = {};
-    const k = `${key}__${unit || "?"}`;
-    if (!items[cat][k]) items[cat][k] = 0;
-    items[cat][k] += amount || 0;
+function accumulateList(data) {
+  const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
+  safeArr(data).forEach((r) =>
+    safeArr(r?.ingredients).forEach((ing) => {
+      const q = parseQty(ing);
+      if (!q) return;
+      const n = normalizeName(q.name);
+      const key = n;
+      const add = (b) => {
+        if (!buckets[b][key]) buckets[b][key] = { qty: 0, unit: q.unit };
+        buckets[b][key].qty += q.qty;
+      };
+      const nLower = n.toLowerCase();
+      if (groupMap.protein.some((w) => nLower.includes(String(w)))) add("protein");
+      else if (groupMap.staple.some((w) => nLower.includes(String(w)))) add("staple");
+      else if (groupMap.veg.some((w) => nLower.includes(String(w)))) add("veg");
+      else if (groupMap.season.some((w) => nLower.includes(String(w)))) add("season");
+    })
+  );
+  return buckets;
+}
+function formatBucket(obj) {
+  return Object.entries(obj)
+    .map(([k, v]) => `${k} ${Math.round(v.qty)} ${v.unit}`)
+    .sort((a, b) => a.localeCompare(b));
+}
+function buildListSummary() {
+  const b = accumulateList(DATA);
+  return {
+    "Protein/Fisch/Tofu": formatBucket(b.protein),
+    "Gemüse/Pilze": formatBucket(b.veg),
+    "Reis/Nudeln/Sättigung": formatBucket(b.staple),
+    "Algen/Brühen/Würze": formatBucket(b.season),
   };
-  DATA.forEach((r) => {
-    r.ingredients.forEach((line) => {
-      const { name, amount, unit } = parseLine(line);
-      const key = normalizeName(name);
-      const cat = classify(key);
-      if (amount != null && unit) add(cat, key, amount, unit);
-      else add(cat, key, 0, "");
-    });
-  });
-  const out = [];
-  const ORDER = ["Protein/Fisch/Tofu", "Gemüse/Pilze", "Reis/Nudeln/Sättigung", "Algen/Brühen/Würze", "Sonstiges"];
-  ORDER.forEach((cat) => {
-    if (!items[cat]) return;
-    const lines = Object.entries(items[cat]).map(([k, v]) => {
-      const [name, unit] = k.split("__");
-      const amount = v;
-      return { name, amount, unit };
-    });
-    out.push({ cat, lines });
-  });
-  return out;
-};
+}
+const LIST_SUMMARY = buildListSummary();
 
-const WeekView = () => {
-  const grouped = useMemo(() => groupByDay(DATA), []);
+/* ---------- Bilder-Persistenz ---------- */
+const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
+const readLocalImage = (key) => localStorage.getItem(key) || "";
+const saveLocalImage = (key, dataUrl) => localStorage.setItem(key, dataUrl);
+
+function ImageUpload({ storageKey, label }) {
+  const [src, setSrc] = useState(() => readLocalImage(storageKey));
+  const onChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      setSrc(dataUrl);
+      saveLocalImage(storageKey, dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
   return (
-    <div className="grid gap-6" style={{ width: "100%" }}>
-      {/* Cover */}
-      <section className="grid md:grid-cols-12 gap-6" id="cover" style={{ alignItems: "stretch" }}>
-        <div className="md:col-span-4" style={cardPanelStyle}>
-          <h2 className="text-xl font-semibold mb-2">{UI_TITLES.coverLeft}</h2>
-          <p className="text-sm opacity-80 mb-3">{meta.title} · {meta.startDate}</p>
-          <div className="space-y-2">
-            <label className="block text-sm">Cover-Bild</label>
-            <input type="file" className="block w-full" accept="image/*" />
-          </div>
-          <hr className="my-4" />
-          <p className="text-sm">
-            Diabetes (frühes Stadium) & Schwangerschaft: mild würzen, quecksilberarme Fische (Lachs/Kabeljau/Seelachs), Eier stets vollständig gestockt, Sojasauce natriumarm, Algen sparsam. Metformin-Reminder erscheint bei Frühstück und Abendessen.
-          </p>
+    <div className="print:hidden" style={{ marginBottom: 12 }}>
+      <label style={{ display: "block", marginBottom: 6, color: COLORS.neutral }}>{label}</label>
+      <input type="file" accept="image/*" onChange={onChange} />
+      {src ? (
+        <div style={{ marginTop: 8 }}>
+          <img src={src} alt={label} style={{ maxWidth: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} />
         </div>
-        <div className="md:col-span-8" style={cardMainStyle}>
-          <h2 className="text-xl font-semibold mb-3">{UI_TITLES.coverRight}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {DAYS_ORDER.map((d) => (
-              <div key={d} className="rounded-xl p-3 border" style={{ borderColor: COLORS.border }}>
-                <div className="text-sky-700 font-semibold mb-2">{DAY_NAME_DE[d]}</div>
-                <div className="grid grid-cols-3 gap-2">
-                  {grouped[d].map((r) => {
-                    const id = r.id.split("-")[1];
-                    return (
-                      <div key={r.id} className="rounded-lg p-2" style={{ background: COLORS.panelBG80, border: `1px solid ${COLORS.border}` }}>
-                        <div className="text-[11px] opacity-70">{MEAL_NAME_DE[id]}</div>
-                        <div className="text-[12px] font-medium leading-tight">{r.title}</div>
-                        <div className="text-[11px] opacity-70">🌾 {r.target}</div>
-                        {r.remind ? <div className="text-[11px] mt-1">💊</div> : null}
-                      </div>
-                    );
-                  })}
-                </div>
+      ) : null}
+    </div>
+  );
+}
+
+/* ---------- i18n helpers ---------- */
+const dayNameI18n = (id, t) => t.day[id.split("-")[0]];
+const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
+const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
+
+/* ---------- Recipe Card ---------- */
+function RecipeCard({ r, t, lang }) {
+  const recipeImgKey = getImageKey(`recipe::${r.id}`);
+  const img = readLocalImage(recipeImgKey);
+  const title = toText(r.title);
+  const desc = toText(r.desc);
+  const story = toText(r.story);
+  const target = toText(r.target);
+  const checks = toText(r.checks);
+  const side = toText(r.side);
+  const swaps = toText(r.swaps);
+  const ingredients = toList(r.ingredients);
+  const steps = toList(r.steps);
+
+  return (
+    <div className="page" style={{ padding: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, alignItems: "stretch" }}>
+        <aside style={{ gridColumn: "span 4", ...cardPanelStyle }}>
+          <div className="print:hidden">
+            <ImageUpload storageKey={recipeImgKey} label={`Rezeptbild hochladen: ${title}`} />
+          </div>
+          {img ? <img src={img} alt={title} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
+          <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
+            <div>
+              <b>
+                {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+              </b>
+            </div>
+            <div style={{ marginTop: 6 }}>{desc}</div>
+            <div style={{ marginTop: 6 }}>
+              <b>Ziel:</b> {target}
+            </div>
+            <div>
+              <b>Hinweise:</b> {checks}
+            </div>
+            <div>
+              <b>{t.sections.side}:</b> {side}
+            </div>
+            {r.remind ? (
+              <div
+                style={{
+                  marginTop: 8,
+                  padding: "6px 8px",
+                  background: "rgba(5,150,105,.08)",
+                  border: `1px solid ${COLORS.emerald}`,
+                  borderRadius: 10,
+                  fontSize: 13,
+                }}
+              >
+                💊 Metformin mit der Mahlzeit einnehmen.
               </div>
-            ))}
+            ) : null}
           </div>
-        </div>
-      </section>
-
-      {/* 21 Rezeptseiten */}
-      {DAYS_ORDER.map((d) => (
-        <React.Fragment key={d}>
-          {grouped[d].map((r) => {
-            const id = r.id.split("-")[1];
-            return (
-              <section key={r.id} className="grid md:grid-cols-12 gap-6" style={{ alignItems: "start" }}>
-                <div className="md:col-span-4" style={cardPanelStyle}>
-                  <div className="mb-2">
-                    <label className="block text-sm mb-1">Bild-Upload</label>
-                    <input type="file" className="block w-full" accept="image/*" />
-                  </div>
-                  <p className="text-sm mb-2 opacity-80">{r.desc}</p>
-                  <p className="text-sm mb-1"><b>🎯</b> {r.target}</p>
-                  <p className="text-sm mb-1">{r.checks}</p>
-                  <p className="text-sm mb-1">{r.side}</p>
-                  {r.remind ? (
-                    <div className="inline-block text-xs mt-2 px-2 py-1 rounded-full" style={{ background: COLORS.sky, color: "white" }}>
-                      {UI_TITLES.reminder}
-                    </div>
-                  ) : null}
-                </div>
-                <div className="md:col-span-8" style={cardMainStyle}>
-                  <div className="text-sm mb-1" style={{ color: COLORS.sky }}>
-                    {DAY_NAME_DE[d]} — {MEAL_NAME_DE[id]}
-                  </div>
-                  <h2 className="text-2xl font-semibold leading-snug">{r.title}</h2>
-                  <p className="text-[12px] opacity-80 mb-3">{r.story}</p>
-                  <h3 className="font-semibold mb-1">Zutaten (2 Personen)</h3>
-                  <ul className="list-disc pl-5 mb-3">
-                    {r.ingredients.map((li, i) => (
-                      <li key={i} className="text-sm">{li}</li>
-                    ))}
-                  </ul>
-                  <h3 className="font-semibold mb-1">Schritte</h3>
-                  <ol className="list-decimal pl-5 mb-3">
-                    {r.steps.map((li, i) => (
-                      <li key={i} className="text-sm">{li}</li>
-                    ))}
-                  </ol>
-                  <p className="text-sm opacity-90"><b>Swaps:</b> {r.swaps}</p>
-                  {/* Bildprompt versteckt (nicht gerendert) */}
-                  <div style={{ display: "none" }}>{r.prompt}</div>
-                </div>
-              </section>
-            );
-          })}
-        </React.Fragment>
-      ))}
+        </aside>
+        <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
+          <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
+            {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+          </div>
+          <h2 style={{ marginTop: 0 }}>{title}</h2>
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients} (2 Personen)</h3>
+              <ul className="avoid-break">
+                {ingredients.length ? (
+                  ingredients.map((x, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof x === "string" ? x : String(x ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ul>
+            </section>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
+              <ol className="avoid-break" style={{ paddingLeft: 18 }}>
+                {steps.length ? (
+                  steps.map((s, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof s === "string" ? s : String(s ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ol>
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                <b>{t.sections.swaps}:</b> {swaps}
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
     </div>
   );
-};
+}
 
-const ShoppingList = () => {
-  const summary = useMemo(() => buildListFromData(), []);
+/* ---------- Kochbuch ---------- */
+function Cookbook({ t, lang }) {
+  const weekly = useMemo(() => groupByDay(DATA), []);
   return (
-    <div className="grid gap-6">
-      {summary.map((block) => (
-        <section key={block.cat} style={cardMainStyle}>
-          <h3 className="text-lg font-semibold mb-2">{block.cat}</h3>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left opacity-70">
-                <th className="py-1">Artikel</th>
-                <th className="py-1" style={{ width: 140 }}>Menge</th>
-              </tr>
-            </thead>
-            <tbody>
-              {block.lines.map((ln, i) => (
-                <tr key={i} className="border-t" style={{ borderColor: COLORS.border }}>
-                  <td className="py-1 pr-2">{ln.name}</td>
-                  <td className="py-1">{ln.amount ? `${Math.round(ln.amount)} ${ln.unit}` : "—"}</td>
-                </tr>
+    <div id="cookbook-root">
+      {/* Cover + Wochenübersicht */}
+      <div className="page" style={{ padding: 24 }}>
+        <div style={{ display: "flex", gap: 16 }}>
+          <div style={{ flex: 1, ...cardPanelStyle }}>
+            <h1 style={{ margin: 0, color: COLORS.emerald }}>{UI_TITLES.main}</h1>
+            <p style={{ marginTop: 6, color: COLORS.neutral }}>
+              Woche ab {meta.startDate} — <b>Modus: Non-Strict (balanced)</b>; Fokus CN/JP/KR, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: je Mahlzeit (2 P.) 60–90 g KH.
+            </p>
+            <ImageUpload storageKey={getImageKey("cover")} label="Titelbild hochladen" />
+          </div>
+          <div style={{ flex: 2, ...cardMainStyle }}>
+            <h2 style={{ marginTop: 0, color: COLORS.indigo }}>Wochenübersicht</h2>
+            <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
+              {DAYS_ORDER.map((d) => (
+                <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 6 }}>{DAY_NAME[d]}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                    {safeArr(weekly[d]).map((m) => {
+                      const title = toText(m?.title);
+                      const target = toText(m?.target);
+                      return (
+                        <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
+                          <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
+                          <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
+                          <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>
+                            🌾 {target}
+                            {m?.remind ? " · 💊" : ""}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </section>
-      ))}
-    </div>
-  );
-};
-
-export default function Woche07DE() {
-  const pdfIdMain = "cookbook-de";
-  const pdfIdList = "shopping-de";
-
-  useEffect(() => {
-    const styleId = "embed-css-ghibli";
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement("style");
-      style.id = styleId;
-      style.innerHTML = buildEmbedCss();
-      document.head.appendChild(style);
-    }
-  }, []);
-
-  return (
-    <div style={{ background: COLORS.pageBg, color: COLORS.text, minHeight: "100vh" }}>
-      {/* Top Bar */}
-      <div className="sticky top-0 z-20" style={{ background: COLORS.pageBg, borderBottom: `1px solid ${COLORS.border}` }}>
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-2">
-          <div className="font-semibold">{UI_TITLES.main}</div>
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              className="rounded-xl px-3 py-1 text-sm text-white"
-              style={{ background: COLORS.indigo, boxShadow: COLORS.btnShadow }}
-              onClick={() => exportPDFById(pdfIdMain, `${FILE_BASE}-de-kochbuch.pdf`)}
-            >
-              {UI_TITLES.pdf}
-            </button>
-            <button
-              className="rounded-xl px-3 py-1 text-sm text-white"
-              style={{ background: COLORS.emerald, boxShadow: COLORS.btnShadow }}
-              onClick={() => exportHTMLById(pdfIdMain, `${FILE_BASE}-de-kochbuch.html`)}
-            >
-              {UI_TITLES.html}
-            </button>
-            <button
-              className="rounded-xl px-3 py-1 text-sm text-white"
-              style={{ background: COLORS.sky, boxShadow: COLORS.btnShadow }}
-              onClick={() => window.print()}
-            >
-              {UI_TITLES.print}
-            </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="flex gap-2 mb-4">
-          <a href="#tab-cookbook" className="px-3 py-1 rounded-full text-sm" style={{ background: COLORS.sky, color: "white" }}>{UI_TITLES.cookbookTab}</a>
-          <a href="#tab-list" className="px-3 py-1 rounded-full text-sm" style={{ background: COLORS.amber, color: "white" }}>{UI_TITLES.listTab}</a>
-        </div>
+      {/* Rezeptseiten */}
+      {DATA.map((r) => (
+        <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      ))}
+    </div>
+  );
+}
 
-        {/* Kochbuch A4 quer */}
-        <div id="tab-cookbook">
-          <div id={pdfIdMain} className="space-y-6 print:space-y-0">
-            <WeekView />
+/* ---------- Einkaufsliste ---------- */
+function GroceryList() {
+  const rootRef = useRef(null);
+  return (
+    <div id="list-root" ref={rootRef}>
+      <div className="page" style={{ padding: 24 }}>
+        <div style={{ ...cardMainStyle }}>
+          <h1 style={{ marginTop: 0, color: COLORS.emerald }}>{UI_TITLES.list}</h1>
+          <p style={{ color: COLORS.neutral, marginTop: 4 }}>Automatisch aus den Rezepten der Woche ab {meta.startDate} berechnet.</p>
+          <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+            {Object.entries(LIST_SUMMARY).map(([group, items]) => (
+              <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
+                <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
+                <ul>
+                  {safeArr(items).map((t, i) => (
+                    <li key={i}>{typeof t === "string" ? t : String(t ?? "")}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <p className="text-sm opacity-70 mt-3">{UI_TITLES.download}</p>
-        </div>
-
-        <hr className="my-8" />
-
-        {/* Einkaufsliste A4 hoch */}
-        <div id="tab-list">
-          <div className="flex items-center gap-2 mb-3">
-            <button
-              className="rounded-xl px-3 py-1 text-sm text-white"
-              style={{ background: COLORS.indigo, boxShadow: COLORS.btnShadow }}
-              onClick={() => exportPDFById(pdfIdList, `${FILE_BASE}-de-einkaufsliste.pdf`)}
-            >
-              {UI_TITLES.pdf}
-            </button>
-            <button
-              className="rounded-xl px-3 py-1 text-sm text-white"
-              style={{ background: COLORS.emerald, boxShadow: COLORS.btnShadow }}
-              onClick={() => exportHTMLById(pdfIdList, `${FILE_BASE}-de-einkaufsliste.html`)}
-            >
-              {UI_TITLES.html}
-            </button>
+          <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
+            Hinweis: Natriumarme Sojasauce verwenden; Algen (Wakame/Nori) sparsam; alles vollständig garen.
           </div>
-          <div id={pdfIdList} className="space-y-6">
-            <h2 className="text-xl font-semibold">{UI_TITLES.list}</h2>
-            <ShoppingList />
-          </div>
-          <p className="text-sm opacity-70 mt-3">{UI_TITLES.download}</p>
         </div>
       </div>
     </div>
   );
 }
 
-try {
-  const rootEl = document.getElementById("root");
-  if (rootEl) createRoot(rootEl).render(<Woche07DE />);
-} catch {}
+/* ---------- Root-Komponente ---------- */
+export default function Woche7_2025_11_10_DE() {
+  const [tab, setTab] = useState("kochbuch");
+  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
+  const t = UI[lang] || UI.de;
+  const toggleLang = () => {
+    const next = lang === "de" ? "zh" : "de";
+    setLang(next);
+    localStorage.setItem("ghibli-lang", next);
+  };
+  const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
+  const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
+
+  useEffect(() => {
+    Tests();
+  }, []);
+
+  const doPDF = async () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "cookbook" : "list"}`;
+    const res = await exportPDFById(id, name, isCook ? "landscape" : "portrait", {
+      pageBg: COLORS.pageBg,
+      after: [".page"],
+      avoid: [".avoid-break"],
+    });
+    if (res?.blobUrl) {
+      setPdfLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: res.blobUrl }));
+    }
+  };
+
+  const doHTML = () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "cookbook" : "list"}`;
+    const css = buildEmbedCss({ pageBg: COLORS.pageBg, text: COLORS.text });
+    const url = exportHTMLById(id, name, css, COLORS.pageBg);
+    if (url) setHtmlLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: url }));
+  };
+
+  return (
+    <div style={{ background: COLORS.pageBg, minHeight: "100vh", padding: 16 }}>
+      <div className="print:hidden" style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={() => setTab("kochbuch")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "kochbuch" ? COLORS.indigo : COLORS.white,
+              color: tab === "kochbuch" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.cookbook}
+          </button>
+          <button
+            onClick={() => setTab("einkauf")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "einkauf" ? COLORS.indigo : COLORS.white,
+              color: tab === "einkauf" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.list}
+          </button>
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            onClick={doPDF}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.pdf}
+          </button>
+          <button
+            onClick={doHTML}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.html}
+          </button>
+          <button
+            onClick={() => window.print()}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.print}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}>
+        <Cookbook t={t} lang={lang} />
+      </div>
+      <div style={{ display: tab === "einkauf" ? "block" : "none" }}>
+        <GroceryList />
+      </div>
+
+      {/* Download-Links */}
+      <div className="print:hidden" style={{ marginTop: 12 }}>
+        {tab === "kochbuch" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.kochbuch ? (
+              <a href={pdfLink.kochbuch} download={`${FILE_BASE} – cookbook.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Kochbuch)
+              </a>
+            ) : null}
+            {htmlLink.kochbuch ? (
+              <a href={htmlLink.kochbuch} download={`${FILE_BASE} – cookbook.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Kochbuch)
+              </a>
+            ) : null}
+          </div>
+        )}
+        {tab === "einkauf" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.einkauf ? (
+              <a href={pdfLink.einkauf} download={`${FILE_BASE} – list.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 PDF herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
+            {htmlLink.einkauf ? (
+              <a href={htmlLink.einkauf} download={`${FILE_BASE} – list.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 HTML herunterladen (Einkaufsliste)
+              </a>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Tests ---------- */
+function Tests() {
+  try {
+    if (!/^Woche 7 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
+    if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
+    if (DATA.length !== 21) throw new Error("DATA length must be 21");
+    const ids = new Set(DATA.map((r) => r.id));
+    if (ids.size !== 21) throw new Error("IDs not unique");
+    DATA.forEach((r) => {
+      const isLunch = /-m$/.test(r.id);
+      if (isLunch && r.remind) throw new Error("Mittagessen ohne Medikamenten-Reminder");
+      if (!isLunch && !r.remind) throw new Error("Frühstück/Abendessen mit Reminder");
+      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten: ${r.id}`);
+      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte: ${r.id}`);
+    });
+    const groups = Object.keys(LIST_SUMMARY);
+    if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
+    console.log("[GhibliKitchen] All tests passed (DE JSX, Woche 7).");
+  } catch (e) {
+    console.error("[GhibliKitchen] Tests failed:", e);
+  }
+}
