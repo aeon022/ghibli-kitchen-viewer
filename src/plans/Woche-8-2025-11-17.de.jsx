@@ -1,5 +1,5 @@
 // src/plans/Woche-8-2025-11-17.de.jsx
-// Struktur 1:1 nach Woche-6; Meta/DATA aktualisiert; plus RICE_COOKER (7 Gerichte)
+// Strikt nach Woche-5/6 Struktur (1:1), Rezepte = Woche 8 (21 Stück) + pro Tag 1 Reiskocher-Gericht (7 Stück)
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
@@ -54,6 +54,7 @@ const cardMainStyle = {
   border: `1px solid ${COLORS.border}`,
 };
 
+/* ---------- Prompts ---------- */
 const PROMPT_HEADER =
   "Ultra-clean cookbook photo, soft daylight, top-down, pastel background, visible steam, pregnancy-safe (no raw fish or raw egg), mild Asian home cooking (JP/CN/KR), family-friendly";
 const buildPrompt = (a, b) => `${a}\n${b}`;
@@ -69,7 +70,6 @@ const asList = (v, lang) => {
 };
 const safeArr = (v) => (Array.isArray(v) ? v : []);
 
-// --- Fallbacks: immer Text/Listen zurückgeben, ohne i18n-Picker ---
 const toText = (v) => {
   if (typeof v === "string") return v;
   if (v && typeof v === "object") {
@@ -87,14 +87,15 @@ const toList = (v) => {
   return [];
 };
 
-/* ---------- DATA (21 Rezepte; Woche 8 behalten) ---------- */
+/* ---------- DATA (21 Rezepte – Woche 8) ---------- */
 const DATA = [
   // Montag
   {
     id: "mo-f",
     title: "Reisbrei mit Lachs & Seidentofu (お粥)",
     desc: "Japanischer Okayu, sehr mild & salzarm – wärmender Start.",
-    story: "Okayu stammt aus Japan und wird gern zum Frühstück oder bei Erkältungen gegessen. Sanft, cremig und bekömmlich für ruhige Morgen. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Okayu stammt aus Japan und wird gern zum Frühstück oder bei Erkältungen gegessen. Sanft, cremig und bekömmlich für ruhige Morgen. Inspiration: inspiriert von Just One Cookbook",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -125,7 +126,8 @@ const DATA = [
     id: "mo-m",
     title: "Mildes Bibimbap (비빔밥) – Chili separat",
     desc: "Koreanische Reisschale mit Gemüse & Rind; salzarm, Chili extra.",
-    story: "Bibimbap ist ein koreanischer Klassiker für jede Saison – warm und vielseitig. Diese milde Version setzt auf Gemüse und voll durchgegarte Toppings. Inspiration: inspiriert von My Korean Kitchen",
+    story:
+      "Bibimbap ist ein koreanischer Klassiker für jede Saison – warm und vielseitig. Diese milde Version setzt auf Gemüse und voll durchgegarte Toppings. Inspiration: inspiriert von My Korean Kitchen",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
     ingredients: [
       "Vollkornreis (roh) 90 g",
@@ -157,7 +159,8 @@ const DATA = [
     id: "mo-a",
     title: "Mildes Mapo-Tofu (麻婆豆腐) – ohne Schärfe",
     desc: "Hausmannskost aus China in milder, miso-basierter Sauce; salzarm.",
-    story: "Mapo-Tofu stammt aus Sichuan, hier als sanfte Alltagsvariante ohne Schärfe. Wärmend und unkompliziert für den Feierabend. Inspiration: inspiriert von Omnivore’s Cookbook",
+    story:
+      "Mapo-Tofu stammt aus Sichuan, hier als sanfte Alltagsvariante ohne Schärfe. Wärmend und unkompliziert für den Feierabend. Inspiration: inspiriert von Omnivore’s Cookbook",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Tofu fest 400 g",
@@ -191,7 +194,8 @@ const DATA = [
     id: "di-f",
     title: "Lachs-Onigiri & Miso-Suppe (おにぎり・味噌汁)",
     desc: "Reisbälle mit gegartem Lachs, dazu milde Misosuppe; salzarm.",
-    story: "Onigiri gehören zur Bento-Kultur – praktisch für unterwegs. Mit Misosuppe ein leichtes, warmes Frühstück. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Onigiri gehören zur Bento-Kultur – praktisch für unterwegs. Mit Misosuppe ein leichtes, warmes Frühstück. Inspiration: inspiriert von Just One Cookbook",
     target: "≈78 g KH gesamt (2 P.) · Protein ≈27 g p. P.",
     ingredients: [
       "Sushi-Reis (roh) 100 g",
@@ -222,7 +226,8 @@ const DATA = [
     id: "di-m",
     title: "Reisnudelpfanne mit Hähnchen (河粉)",
     desc: "Kantonesisch inspirierte Wokpfanne, gemüsebetont und mild.",
-    story: "Locker angelehnt an Ho-Fun aus Südchina – schnell, ausgewogen und familientauglich. Inspiration: inspiriert von The Woks of Life",
+    story:
+      "Locker angelehnt an Ho-Fun aus Südchina – schnell, ausgewogen und familientauglich. Inspiration: inspiriert von The Woks of Life",
     target: "≈74 g KH gesamt (2 P.) · Protein ≈39 g p. P.",
     ingredients: [
       "Reisnudeln (trocken) 80 g",
@@ -252,7 +257,8 @@ const DATA = [
     id: "di-a",
     title: "Doenjang-Jjigae mit Gerste (된장찌개)",
     desc: "Koreanischer Sojabohnen-Eintopf, herzhaft-mild, mit Gerste.",
-    story: "Ein Alltags-Eintopf aus Korea – kräftig, aber nicht scharf; perfekt für gemütliche Abende. Inspiration: inspiriert von Seon Kyoung Longest",
+    story:
+      "Ein Alltags-Eintopf aus Korea – kräftig, aber nicht scharf; perfekt für gemütliche Abende. Inspiration: inspiriert von Seon Kyoung Longest",
     target: "≈86 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Doenjang 30 g",
@@ -286,7 +292,8 @@ const DATA = [
     id: "mi-f",
     title: "Kürbis-Juk mit Tofu & Edamame (단호박죽)",
     desc: "Samtiger Kürbisreisbrei, proteinreich & mild.",
-    story: "Koreanischer Reisbrei mit saisonalem Kürbis – cremig und angenehm. Inspiration: inspiriert von Mom's Korean Recipes",
+    story:
+      "Koreanischer Reisbrei mit saisonalem Kürbis – cremig und angenehm. Inspiration: inspiriert von Mom's Korean Recipes",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
       "Kürbis (Kabocha/Hokkaido) 400 g",
@@ -315,7 +322,8 @@ const DATA = [
     id: "mi-m",
     title: "Udon-Suppe mit Huhn & Brokkoli (うどん)",
     desc: "Klare japanische Nudelsuppe, mild & sättigend.",
-    story: "Leichte Udon-Brühen sind in Japan ganzjährig beliebt – besonders in kühlen Monaten. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Leichte Udon-Brühen sind in Japan ganzjährig beliebt – besonders in kühlen Monaten. Inspiration: inspiriert von Just One Cookbook",
     target: "≈79 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
     ingredients: [
       "Udon (trocken) 100 g",
@@ -344,7 +352,8 @@ const DATA = [
     id: "mi-a",
     title: "Gedämpfter Kabeljau mit Ingwer (清蒸鳕鱼) & Reis",
     desc: "Kantonesisch dämpfen – zart & bekömmlich.",
-    story: "Sanftes Dämpfen ist ein Klassiker der südchinesischen Küche – leicht und elegant. Inspiration: inspiriert von Made With Lau",
+    story:
+      "Sanftes Dämpfen ist ein Klassiker der südchinesischen Küche – leicht und elegant. Inspiration: inspiriert von Made With Lau",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Kabeljaufilet 320 g",
@@ -376,7 +385,8 @@ const DATA = [
     id: "do-f",
     title: "Tamagoyaki & Misosuppe mit kleinem Reis (卵焼き・味噌汁)",
     desc: "Japanisches Frühstück, Ei vollständig gestockt.",
-    story: "Tamagoyaki ist ein Frühstücksklassiker und beliebt in Bento-Boxen – mild und ausgewogen. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Tamagoyaki ist ein Frühstücksklassiker und beliebt in Bento-Boxen – mild und ausgewogen. Inspiration: inspiriert von Just One Cookbook",
     target: "≈62 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Eier 4 Stück",
@@ -407,7 +417,8 @@ const DATA = [
     id: "do-m",
     title: "Tomaten-Rührei (番茄炒蛋) mit Tofu & Reis",
     desc: "Chinesisches Hausgericht, mild-säuerlich & schnell.",
-    story: "Fànqié Chǎo Dàn ist ein bekannter Alltagsklassiker – mit reifen Tomaten besonders rund. Inspiration: inspiriert von The Woks of Life",
+    story:
+      "Fànqié Chǎo Dàn ist ein bekannter Alltagsklassiker – mit reifen Tomaten besonders rund. Inspiration: inspiriert von The Woks of Life",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -437,7 +448,8 @@ const DATA = [
     id: "do-a",
     title: "Bulgogi-Style Pute (불고기) & Vollkornreis – mild",
     desc: "Koreanisch inspirierte Pfanne, süß-mild, Chili optional separat.",
-    story: "Bulgogi stammt aus Korea – die Pfannenvariante ist schnell und familienfreundlich. Inspiration: inspiriert von Maangchi",
+    story:
+      "Bulgogi stammt aus Korea – die Pfannenvariante ist schnell und familienfreundlich. Inspiration: inspiriert von Maangchi",
     target: "≈80 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Putenbrust 250 g",
@@ -470,7 +482,8 @@ const DATA = [
     id: "fr-f",
     title: "Hühner-Congee (鸡肉粥)",
     desc: "Chinesischer Reisbrei mit zartem Huhn – sehr mild.",
-    story: "Congee ist in Südchina und Südostasien ein Klassiker – wärmt sanft an ruhigen Morgen. Inspiration: inspiriert von The Woks of Life",
+    story:
+      "Congee ist in Südchina und Südostasien ein Klassiker – wärmt sanft an ruhigen Morgen. Inspiration: inspiriert von The Woks of Life",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -499,7 +512,8 @@ const DATA = [
     id: "fr-m",
     title: "Leichte Minestrone (IT) mit Tofu",
     desc: "Italienischer Gemüseeintopf, lange geköchelt, mild & ballaststoffreich.",
-    story: "Minestrone ist eine italienische Gemüsesuppe – diese sanfte Version passt zu entspannten Mittagspausen. Inspiration: inspiriert von Giallo Zafferano",
+    story:
+      "Minestrone ist eine italienische Gemüsesuppe – diese sanfte Version passt zu entspannten Mittagspausen. Inspiration: inspiriert von Giallo Zafferano",
     target: "≈69 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Vollkornnudeln (trocken) 80 g",
@@ -530,7 +544,8 @@ const DATA = [
     id: "fr-a",
     title: "Ofen-Lachs Teriyaki (照り焼き鮭) & Brokkoli, Reis",
     desc: "Schonend gebacken, natriumarm angepasst; süß-mild.",
-    story: "Teriyaki ist eine japanische Glasurtechnik – hier zurückhaltend gesüßt und salzarm. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Teriyaki ist eine japanische Glasurtechnik – hier zurückhaltend gesüßt und salzarm. Inspiration: inspiriert von Just One Cookbook",
     target: "≈77 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Lachsfilet 320 g",
@@ -562,7 +577,8 @@ const DATA = [
     id: "sa-f",
     title: "Zōsui-Reissuppe mit Huhn & Gemüse (雑炊)",
     desc: "Japanische Restereissuppe, leicht & wärmend.",
-    story: "Zōsui ist eine japanische Reissuppe – ideal zur Resteverwertung und für sanfte Morgen. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Zōsui ist eine japanische Reissuppe – ideal zur Resteverwertung und für sanfte Morgen. Inspiration: inspiriert von Just One Cookbook",
     target: "≈68 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
       "Gekochter Reis 250 g",
@@ -592,7 +608,8 @@ const DATA = [
     id: "sa-m",
     title: "Warme Soba mit Tofu & Spinat (そば)",
     desc: "Buchweizennudeln in milder Brühe, gemüsig & salzarm.",
-    story: "Soba sind in Japan beliebt – hier als leichte Mittagsnudel mit viel Grün. Inspiration: inspiriert von MAFF Japan",
+    story:
+      "Soba sind in Japan beliebt – hier als leichte Mittagsnudel mit viel Grün. Inspiration: inspiriert von MAFF Japan",
     target: "≈72 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Soba (trocken) 90 g",
@@ -621,7 +638,8 @@ const DATA = [
     id: "sa-a",
     title: "Geschmorter Napa-Kohl mit Tofu (白菜豆腐煮) & Reis",
     desc: "Sanft geschmort, leicht & bekömmlich; vegetabil.",
-    story: "Ein nordchinesisch inspiriertes Pfannengericht – sehr mild und gut verträglich. Inspiration: inspiriert von The Hong Kong Cookery",
+    story:
+      "Ein nordchinesisch inspiriertes Pfannengericht – sehr mild und gut verträglich. Inspiration: inspiriert von The Hong Kong Cookery",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
     ingredients: [
       "Chinakohl 500 g",
@@ -653,7 +671,8 @@ const DATA = [
     id: "so-f",
     title: "Süßkartoffel-Okayu mit Tofu (さつまいも粥)",
     desc: "Sanfter Reisbrei mit Süßkartoffel – milde Süße, salzarm.",
-    story: "Eine Hausmannskost-Variante des Okayu – wärmend und freundlich zum Morgenmagen. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Eine Hausmannskost-Variante des Okayu – wärmend und freundlich zum Morgenmagen. Inspiration: inspiriert von Just One Cookbook",
     target: "≈75 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
       "Reis (roh) 80 g",
@@ -681,7 +700,8 @@ const DATA = [
     id: "so-m",
     title: "Tonjiru (豚汁) – Schweine-Miso-Suppe & Reis",
     desc: "Kräftig, aber mild; mageres Schwein, klare Brühe.",
-    story: "Tonjiru ist eine beliebte Wintersuppe in Japan – sättigend ohne Schärfe. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Tonjiru ist eine beliebte Wintersuppe in Japan – sättigend ohne Schärfe. Inspiration: inspiriert von Just One Cookbook",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Mageres Schweinefleisch 220 g",
@@ -710,7 +730,8 @@ const DATA = [
     id: "so-a",
     title: "Sukiyaki-Style Rind-Gemüse-Topf (すき焼き風) & kleiner Reis",
     desc: "Mild abgeschmeckt, süß-salzig zurückhaltend; Reis klein.",
-    story: "Sukiyaki ist ein Festessen aus Japan – hier als sanfte Pfannenvariante ohne rohe Eier. Inspiration: inspiriert von Just One Cookbook",
+    story:
+      "Sukiyaki ist ein Festessen aus Japan – hier als sanfte Pfannenvariante ohne rohe Eier. Inspiration: inspiriert von Just One Cookbook",
     target: "≈62 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
     ingredients: [
       "Mageres Rindfleisch in Scheiben 240 g",
@@ -739,14 +760,14 @@ const DATA = [
   },
 ];
 
-/* ---------- RICE COOKER (1 Gericht pro Tag; alles in den Reiskocher) ---------- */
+/* ---------- Reiskocher (7 Gerichte – alles in den Kocher) ---------- */
 const RICE_COOKER = [
   {
     id: "mo-rc",
     title: "Reiskocher: Pilz-Takikomi Gohan (きのこご飯)",
     desc: "Umami-Pilzreis – alles in den Kocher, mild & ballaststoffreich.",
     story:
-      "Takikomi Gohan ist japanischer Mischreis – Zutaten und Reis garen zusammen, herrlich unkompliziert. Inspiration: inspiriert von Just One Cookbook & Okonomi Kitchen",
+      "Takikomi Gohan ist japanischer Mischreis – Zutaten und Reis garen zusammen, herrlich unkompliziert. Inspiration: inspiriert von Just One Cookbook (Kinoko Gohan) & Okonomi Kitchen",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈18 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -833,7 +854,7 @@ const RICE_COOKER = [
     title: "Reiskocher: Lachs-Takikomi Gohan (鮭の炊き込みご飯)",
     desc: "Japanischer Mischreis mit Lachs & Pilzen – Kocher an, fertig.",
     story:
-      "Sake Takikomi Gohan: Reis, Lachs und Gemüse garen zusammen – aromatisch und alltagstauglich. Inspiration: inspiriert von Japanese Cooking 101 & Just One Cookbook",
+      "Sake Takikomi Gohan: Reis, Lachs und Gemüse garen zusammen – aromatisch und alltagstauglich. Inspiration: inspiriert von Japanese Cooking 101 & allgemeinem Takikomi-Prinzip (Just One Cookbook)",
     target: "≈72 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -917,7 +938,7 @@ const RICE_COOKER = [
     title: "Reiskocher: Huhn & Gobo-Takikomi (鶏ごぼう炊き込みご飯)",
     desc: "Japanischer Mischreis mit Huhn & Schwarzwurzel/Burdock – erdig & fein.",
     story:
-      "Gobo-Takikomi ist ein Klassiker – wir kochen alles gemeinsam im Kocher. Inspiration: inspiriert von Just One Cookbook",
+      "Gobo-Takikomi ist ein Klassiker – wir kochen alles gemeinsam im Kocher. Inspiration: inspiriert von Just One Cookbook (Gobo & Miso Takikomi Gohan)",
     target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
       "Reis (roh) 90 g",
@@ -955,14 +976,14 @@ const groupByDay = (arr) => {
   Object.values(map).forEach((list) =>
     list.sort(
       (a, b) =>
-        ["f", "m", "a"].indexOf(a.id.split("-")[1]) -
-        ["f", "m", "a"].indexOf(b.id.split("-")[1])
+        ["f", "m", "a", "rc"].indexOf(a.id.split("-")[1]) -
+        ["f", "m", "a", "rc"].indexOf(b.id.split("-")[1])
     )
   );
   return map;
 };
 
-/* ---------- Einkaufsliste (Gruppen wie Woche-6) ---------- */
+/* ---------- Einkaufsliste (Gruppen wie Woche-5/6) ---------- */
 function normalizeName(n) {
   return String(n).replace(/\(.*?\)/g, "").trim().replace(/ +/g, " ");
 }
@@ -980,8 +1001,8 @@ function parseQty(item) {
 }
 const groupMap = {
   protein: ["hähn", "pute", "rind", "schwein", "forelle", "kabeljau", "lachs", "tofu", "eier", "garnelen", "mandu"],
-  veg: ["karotte", "zucchini", "pak choi", "spinat", "shiitake", "enoki", "brokkoli", "chinakohl", "zwiebel", "paprika", "rettich", "frühlingszwiebel", "gurke", "tomaten", "kartoffeln", "daikon", "gobo"],
-  staple: ["reis", "klebreis", "mehrkorn", "udon", "soba", "somen", "weizennudeln", "reisnudeln", "vollkorn", "gerste"],
+  veg: ["karotte", "zucchini", "pak choi", "spinat", "shiitake", "enoki", "brokkoli", "chinakohl", "zwiebel", "paprika", "rettich", "frühlingszwiebel", "gurke", "tomaten", "kartoffeln", "daikon", "kürbis", "süßkartoffel"],
+  staple: ["reis", "klebreis", "mehrkorn", "udon", "soba", "somen", "weizennudeln", "reisnudeln", "vollkorn", "risotto", "gerste"],
   season: ["kombu", "nori", "brühe", "gemüsebrühe", "sojasauce", "miso", "sesamöl", "olivenöl", "mirin", "honig", "salz", "sesam", "knoblauch", "ingwer", "wasser", "tee", "wakame", "reisessig"],
 };
 function accumulateList(data) {
@@ -1011,7 +1032,7 @@ function formatBucket(obj) {
     .sort((a, b) => a.localeCompare(b));
 }
 function buildListSummary() {
-  const b = accumulateList(DATA);
+  const b = accumulateList(DATA); // nur Haupt-Daten (21 Rezepte)
   return {
     "Protein/Fisch/Tofu": formatBucket(b.protein),
     "Gemüse/Pilze": formatBucket(b.veg),
@@ -1057,7 +1078,7 @@ const dayNameI18n = (id, t) => t.day[id.split("-")[0]];
 const mealTitleI18n = (id, t) => t.mealTitle[id.split("-")[1]];
 const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
-/* ---------- Recipe Card ---------- */
+/* ---------- Recipe Cards ---------- */
 function RecipeCard({ r, t, lang }) {
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
@@ -1156,9 +1177,94 @@ function RecipeCard({ r, t, lang }) {
   );
 }
 
+function RiceCookerCard({ r, t, lang }) {
+  const recipeImgKey = getImageKey(`rc::${r.id}`);
+  const img = readLocalImage(recipeImgKey);
+  const title = toText(r.title);
+  const desc = toText(r.desc);
+  const story = toText(r.story);
+  const target = toText(r.target);
+  const checks = toText(r.checks);
+  const side = toText(r.side);
+  const swaps = toText(r.swaps);
+  const ingredients = toList(r.ingredients);
+  const steps = toList(r.steps);
+
+  return (
+    <div className="page" style={{ padding: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, alignItems: "stretch" }}>
+        <aside style={{ gridColumn: "span 4", ...cardPanelStyle }}>
+          <div className="print:hidden">
+            <ImageUpload storageKey={recipeImgKey} label={`Reiskocher-Bild hochladen: ${title}`} />
+          </div>
+          {img ? <img src={img} alt={title} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
+          <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
+            <div>
+              <b>
+                {dayNameI18n(r.id, t)} – Reiskocher
+              </b>
+            </div>
+            <div style={{ marginTop: 6 }}>{desc}</div>
+            <div style={{ marginTop: 6 }}>
+              <b>Ziel:</b> {target}
+            </div>
+            <div>
+              <b>Hinweise:</b> {checks}
+            </div>
+            <div>
+              <b>{t.sections.side}:</b> {side}
+            </div>
+          </div>
+        </aside>
+        <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
+          <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
+            {dayNameI18n(r.id, t)} – Reiskocher
+          </div>
+          <h2 style={{ marginTop: 0 }}>{title}</h2>
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients} (2 Personen)</h3>
+              <ul className="avoid-break">
+                {ingredients.length ? (
+                  ingredients.map((x, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof x === "string" ? x : String(x ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ul>
+            </section>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
+              <ol className="avoid-break" style={{ paddingLeft: 18 }}>
+                {steps.length ? (
+                  steps.map((s, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof s === "string" ? s : String(s ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ol>
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                <b>{t.sections.swaps}:</b> {swaps}
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Kochbuch ---------- */
 function Cookbook({ t, lang }) {
   const weekly = useMemo(() => groupByDay(DATA), []);
+  const weeklyRC = useMemo(() => groupByDay(RICE_COOKER), []);
   return (
     <div id="cookbook-root">
       {/* Cover + Wochenübersicht */}
@@ -1167,7 +1273,7 @@ function Cookbook({ t, lang }) {
           <div style={{ flex: 1, ...cardPanelStyle }}>
             <h1 style={{ margin: 0, color: COLORS.emerald }}>{UI_TITLES.main}</h1>
             <p style={{ marginTop: 6, color: COLORS.neutral }}>
-              Woche ab {meta.startDate} — <b>Modus: Non-Strict (balanced)</b>; Fokus CN/JP/KR, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: je Mahlzeit (2 P.) 60–90 g KH.
+              Woche ab {meta.startDate} — <b>Modus: Non-Strict (balanced)</b>; Fokus CN/JP/KR, milde Würzung, natriumarme Sojasauce, schwangerschaftssicher; Diabetes: je Mahlzeit (2 P.) 60–90 g KH. Zusätzlich pro Tag ein Reiskocher-Gericht (alles in den Kocher).
             </p>
             <ImageUpload storageKey={getImageKey("cover")} label="Titelbild hochladen" />
           </div>
@@ -1177,7 +1283,7 @@ function Cookbook({ t, lang }) {
               {DAYS_ORDER.map((d) => (
                 <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
                   <div style={{ fontWeight: 700, marginBottom: 6 }}>{DAY_NAME[d]}</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
                     {safeArr(weekly[d]).map((m) => {
                       const title = toText(m?.title);
                       const target = toText(m?.target);
@@ -1189,6 +1295,18 @@ function Cookbook({ t, lang }) {
                         </div>
                       );
                     })}
+                    {/* Reiskocher-Kachel */}
+                    {safeArr(weeklyRC[d]).map((rc) => {
+                      const title = toText(rc?.title);
+                      const target = toText(rc?.target);
+                      return (
+                        <div key={rc.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
+                          <div style={{ color: COLORS.sky, fontSize: 12 }}>Reiskocher</div>
+                          <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
+                          <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>🌾 {target}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               ))}
@@ -1197,9 +1315,14 @@ function Cookbook({ t, lang }) {
         </div>
       </div>
 
-      {/* Rezeptseiten */}
+      {/* Rezeptseiten (21) */}
       {DATA.map((r) => (
         <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      ))}
+
+      {/* Reiskocher-Seiten (7) */}
+      {RICE_COOKER.map((r) => (
+        <RiceCookerCard key={r.id} r={r} t={t} lang={lang} />
       ))}
     </div>
   );
@@ -1213,7 +1336,7 @@ function GroceryList() {
       <div className="page" style={{ padding: 24 }}>
         <div style={{ ...cardMainStyle }}>
           <h1 style={{ marginTop: 0, color: COLORS.emerald }}>{UI_TITLES.list}</h1>
-          <p style={{ color: COLORS.neutral, marginTop: 4 }}>Automatisch aus den Rezepten der Woche ab {meta.startDate} berechnet.</p>
+          <p style={{ color: COLORS.neutral, marginTop: 4 }}>Automatisch aus den <b>21 Hauptrezepten</b> der Woche ab {meta.startDate} berechnet. (Reiskocher-Gerichte sind optional und nicht in der Liste enthalten – gern umstellbar.)</p>
           <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
             {Object.entries(LIST_SUMMARY).map(([group, items]) => (
               <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
@@ -1376,8 +1499,9 @@ function Tests() {
     if (!/^Woche 8 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
     if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
-    const ids = new Set(DATA.map((r) => r.id));
-    if (ids.size !== 21) throw new Error("IDs not unique");
+    if (RICE_COOKER.length !== 7) throw new Error("RICE_COOKER length must be 7");
+    const ids = new Set([...DATA.map((r) => r.id), ...RICE_COOKER.map((r) => r.id)]);
+    if (ids.size !== DATA.length + RICE_COOKER.length) throw new Error("IDs not unique across DATA and RICE_COOKER");
     DATA.forEach((r) => {
       const isLunch = /-m$/.test(r.id);
       if (isLunch && r.remind) throw new Error("Mittagessen ohne Medikamenten-Reminder");
@@ -1385,20 +1509,15 @@ function Tests() {
       if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten: ${r.id}`);
       if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte: ${r.id}`);
     });
-    if (!Array.isArray(RICE_COOKER) || RICE_COOKER.length !== 7) throw new Error("RICE_COOKER length must be 7");
-    RICE_COOKER.forEach((x) => {
-      if (!/^..-rc$/.test(x.id)) throw new Error(`RC-ID-Format: ${x.id}`);
-      if (!Array.isArray(x.ingredients) || x.ingredients.length < 5) throw new Error(`RC zu wenige Zutaten: ${x.id}`);
-      if (!Array.isArray(x.steps) || x.steps.length < 3) throw new Error(`RC zu wenige Schritte: ${x.id}`);
+    RICE_COOKER.forEach((r) => {
+      if (!/^((mo|di|mi|do|fr|sa|so))-rc$/.test(r.id)) throw new Error(`RC-ID-Pattern: ${r.id}`);
+      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten (RC): ${r.id}`);
+      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte (RC): ${r.id}`);
     });
-    console.log("[GhibliKitchen] All tests passed (DE JSX).");
+    const groups = Object.keys(LIST_SUMMARY);
+    if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
+    console.log("[GhibliKitchen] All tests passed (DE JSX Woche 8). ");
   } catch (e) {
     console.error("[GhibliKitchen] Tests failed:", e);
   }
 }
-
-// Für Tests exportieren
-export const DATASET = DATA;
-export const COLORS_CONST = COLORS;
-export const PROMPT_HEADER_CONST = PROMPT_HEADER;
-export const DATASET_RC = RICE_COOKER;
