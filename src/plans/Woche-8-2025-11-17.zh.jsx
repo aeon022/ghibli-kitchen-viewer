@@ -964,7 +964,7 @@ const RICE_COOKER = [
   },
 ];
 
-/* ---------- Wochen-Helfer ---------- */
+/* ---------- 周工具 ---------- */
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
 const DAY_NAME = { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" };
 const groupByDay = (arr) => {
@@ -983,7 +983,7 @@ const groupByDay = (arr) => {
   return map;
 };
 
-/* ---------- Einkaufsliste (只统计 21 主菜；与 Woche-5/6 一致) ---------- */
+/* ---------- 购物清单 (只统计 21 主菜；与 Woche-5/6 一致) ---------- */
 function normalizeName(n) {
   return String(n).replace(/\(.*?\)/g, "").trim().replace(/ +/g, " ");
 }
@@ -1376,4 +1376,72 @@ export default function Woche8_2025_11_17_ZH() {
       {/* 下载链接 */}
       <div className="print:hidden" style={{ marginTop: 12 }}>
         {tab === "kochbuch" && (
-          <div style={{ d
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.kochbuch ? (
+              <a href={pdfLink.kochbuch} download={`${FILE_BASE} – cookbook.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 下载 PDF（菜谱）
+              </a>
+            ) : null}
+            {htmlLink.kochbuch ? (
+              <a href={htmlLink.kochbuch} download={`${FILE_BASE} – cookbook.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 下载 HTML（菜谱）
+              </a>
+            ) : null}
+          </div>
+        )}
+        {tab === "einkauf" && (
+          <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            {pdfLink.einkauf ? (
+              <a href={pdfLink.einkauf} download={`${FILE_BASE} – list.pdf`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                📄 下载 PDF（购物清单）
+              </a>
+            ) : null}
+            {htmlLink.einkauf ? (
+              <a href={htmlLink.einkauf} download={`${FILE_BASE} – list.html`} style={{ color: COLORS.indigo, textDecoration: "underline" }}>
+                🌐 下载 HTML（购物清单）
+              </a>
+            ) : null}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Tests ---------- */
+function Tests() {
+  try {
+    if (!/^Woche 8 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
+    if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
+
+    if (DATA.length !== 21) throw new Error("DATA length must be 21");
+    if (RICE_COOKER.length !== 7) throw new Error("RICE_COOKER length must be 7");
+
+    const all = [...DATA, ...RICE_COOKER];
+    const ids = new Set(all.map((r) => r.id));
+    if (ids.size !== all.length) throw new Error("IDs not unique across DATA + RICE_COOKER");
+
+    DATA.forEach((r) => {
+      const type = (r?.id || "").split("-")[1];
+      const isLunch = type === "m";
+      const isBreakfastOrDinner = type === "f" || type === "a";
+      if (isLunch && r.remind) throw new Error("Mittagessen ohne Medikamenten-Reminder");
+      if (isBreakfastOrDinner && !r.remind) throw new Error("Frühstück/Abendessen ohne Reminder");
+      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten: ${r.id}`);
+      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte: ${r.id}`);
+    });
+
+    RICE_COOKER.forEach((r) => {
+      if (r.remind) throw new Error("Rice cooker cards should not show medication reminder");
+      if (!Array.isArray(r.ingredients) || r.ingredients.length < 5) throw new Error(`Zu wenige Zutaten (RC): ${r.id}`);
+      if (!Array.isArray(r.steps) || r.steps.length < 3) throw new Error(`Zu wenige Schritte (RC): ${r.id}`);
+    });
+
+    const groups = Object.keys(LIST_SUMMARY);
+    if (groups.length !== 4) throw new Error("LIST_SUMMARY groups missing");
+
+    console.log("[GhibliKitchen] All tests passed (ZH JSX).");
+  } catch (e) {
+    console.error("[GhibliKitchen] Tests failed:", e);
+  }
+}
