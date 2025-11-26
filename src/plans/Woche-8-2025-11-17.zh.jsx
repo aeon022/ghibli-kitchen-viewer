@@ -1,10 +1,14 @@
-import React from "react";
+// src/plans/Woche-8-2025-11-17.zh.jsx
+// 完整渲染版本：严格对齐 Woche-5/6 结构（1:1），仅 Meta & DATA 新（保留你给定的第8周菜谱）
+// 额外：每天 1 个电饭煲菜（RICE_COOKER），在周览显示第4块卡片，并在下方生成各自页面
+
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "../utils/exporters";
 import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
 import { pickText, pickList } from "../i18n-data";
 
-// ---------- META ----------
+/* ---------- Meta ---------- */
 export const meta = {
   title: "第8周",
   startDate: "2025-11-17",
@@ -14,13 +18,12 @@ export const meta = {
 };
 const FILE_BASE = "Woche 8 2025-11-17";
 
-// ---------- UI TITLES ----------
+/* ---------- UI ----------- */
 const UI_TITLES = {
   main: "吉卜力厨房 – 第8周",
   list: "吉卜力厨房 – 购物清单 – 第8周",
 };
 
-// ---------- STYLES ----------
 const COLORS = {
   pageBg: "#FAF7F1",
   text: "#111827",
@@ -36,24 +39,55 @@ const COLORS = {
   btnShadow: "0 6px 20px rgba(0,0,0,.12)",
 };
 
-// ---------- PROMPTS ----------
+const cardPanelStyle = {
+  background: COLORS.panelBG70,
+  borderRadius: 18,
+  padding: 20,
+  boxShadow: COLORS.btnShadow,
+  border: `1px solid ${COLORS.border}`,
+};
+
+const cardMainStyle = {
+  background: COLORS.white,
+  borderRadius: 18,
+  padding: 22,
+  boxShadow: COLORS.btnShadow,
+  border: `1px solid ${COLORS.border}`,
+};
+
 const PROMPT_HEADER =
   "Ultra-clean cookbook photo, soft daylight, top-down, pastel background, visible steam, pregnancy-safe (no raw fish or raw egg), mild Asian home cooking (JP/CN/KR), family-friendly";
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
-// ---------- DAY HELPERS ----------
-const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
-const DAY_NAME_ZH = {
-  mo: "周一",
-  di: "周二",
-  mi: "周三",
-  do: "周四",
-  fr: "周五",
-  sa: "周六",
-  so: "周日",
+/* ---------- Safe helpers ---------- */
+const asList = (v, lang) => {
+  try {
+    const out = pickList(v, lang);
+    return Array.isArray(out) ? out : [];
+  } catch {
+    return [];
+  }
+};
+const safeArr = (v) => (Array.isArray(v) ? v : []);
+
+const toText = (v) => {
+  if (typeof v === "string") return v;
+  if (v && typeof v === "object") {
+    if (typeof v.de === "string") return v.de;
+    if (typeof v.zh === "string") return v.zh;
+  }
+  return String(v ?? "");
+};
+const toList = (v) => {
+  if (Array.isArray(v)) return v;
+  if (v && typeof v === "object") {
+    if (Array.isArray(v.de)) return v.de;
+    if (Array.isArray(v.zh)) return v.zh;
+  }
+  return [];
 };
 
-// ---------- DATA (21 道主菜；CN/JP/KR，最多1道IT) ----------
+/* ---------- DATA (21 新菜谱，保留周8主菜；下方另有 RICE_COOKER 7 道) ---------- */
 const DATA = [
   // 周一
   {
@@ -61,13 +95,13 @@ const DATA = [
     title: "三文鱼豆腐粥（お粥）",
     desc: "日式米粥，清淡低钠，暖胃开局。",
     story:
-      "Okayu 源自日本，常作早餐或病后恢复餐。口感绵软、温和易消化。Inspiration: inspiriert von Just One Cookbook",
+      "Okayu 源自日本，常作早餐或恢复期餐。口感绵软、温和易消化。Inspiration: inspiriert von Just One Cookbook",
     target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈20 g/人",
     ingredients: [
       "大米（生）90 g",
       "清水 800 ml",
       "三文鱼柳 120 g",
-      "内酯豆腐/绢豆腐 200 g",
+      "绢豆腐 200 g",
       "姜 10 g",
       "葱 20 g",
       "低钠酱油 10 ml",
@@ -726,7 +760,7 @@ const DATA = [
   },
 ];
 
-// ---------- RICE COOKER（每日1道；全部食材进电饭煲） ----------
+/* ---------- RICE COOKER（每日1道；全部食材进电饭煲） ---------- */
 const RICE_COOKER = [
   {
     id: "mo-rc",
@@ -930,24 +964,416 @@ const RICE_COOKER = [
   },
 ];
 
-// ---------- EXPORT (Minimal Render Container; App 读取 DATA/常量) ----------
-export default function PlanZH() {
+/* ---------- Wochen-Helfer ---------- */
+const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
+const DAY_NAME = { mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" };
+const groupByDay = (arr) => {
+  const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
+  safeArr(arr).forEach((r) => {
+    const d = (r?.id || "").split("-")[0];
+    if (map[d]) map[d].push(r);
+  });
+  Object.values(map).forEach((list) =>
+    list.sort(
+      (a, b) =>
+        ["f", "m", "a", "rc"].indexOf(a.id.split("-")[1]) -
+        ["f", "m", "a", "rc"].indexOf(b.id.split("-")[1])
+    )
+  );
+  return map;
+};
+
+/* ---------- Einkaufsliste (只统计 21 主菜；与 Woche-5/6 一致) ---------- */
+function normalizeName(n) {
+  return String(n).replace(/\(.*?\)/g, "").trim().replace(/ +/g, " ");
+}
+function parseQty(item) {
+  const m = String(item).match(/^(.*)\s(\d+(?:[.,]\d+)?)\s*(g|ml|l|EL|TL|Stück)$/i);
+  if (!m) return null;
+  const name = normalizeName(m[1]).trim();
+  let qty = parseFloat(m[2].replace(",", "."));
+  let unit = m[3];
+  if ((unit || "").toLowerCase() === "l") {
+    qty = qty * 1000;
+    unit = "ml";
+  }
+  return { name, qty, unit };
+}
+const groupMap = {
+  protein: ["鸡", "火鸡", "牛", "猪", "鳟", "鳕", "三文", "鱼", "tofu", "豆腐", "蛋", "garnelen", "虾", "mandu"],
+  veg: ["胡萝卜", "西葫芦", "小白菜", "菠菜", "香菇", "金针菇", "西兰花", "大白菜", "洋葱", "彩椒", "白萝卜", "葱", "黄瓜", "番茄", "土豆", "daikon"],
+  staple: ["米", "大米", "糯米", "多谷米", "乌冬", "荞麦面", "素面", "面条", "米粉", "糙米", "意面", "大麦", "gerste", "reis"],
+  season: ["昆布", "海苔", "高汤", "蔬菜高汤", "sojasauce", "味噌", "香油", "橄榄油", "味醂", "蜂蜜", "盐", "芝麻", "蒜", "姜", "水", "茶", "裙带菜", "米醋"],
+};
+function accumulateList(data) {
+  const buckets = { protein: {}, veg: {}, staple: {}, season: {} };
+  safeArr(data).forEach((r) =>
+    safeArr(r?.ingredients).forEach((ing) => {
+      const q = parseQty(ing);
+      if (!q) return;
+      const n = normalizeName(q.name);
+      const key = n;
+      const add = (b) => {
+        if (!buckets[b][key]) buckets[b][key] = { qty: 0, unit: q.unit };
+        buckets[b][key].qty += q.qty;
+      };
+      const nLower = n.toLowerCase();
+      if (groupMap.protein.some((w) => nLower.includes(String(w).toLowerCase()))) add("protein");
+      else if (groupMap.staple.some((w) => nLower.includes(String(w).toLowerCase()))) add("staple");
+      else if (groupMap.veg.some((w) => nLower.includes(String(w).toLowerCase()))) add("veg");
+      else if (groupMap.season.some((w) => nLower.includes(String(w).toLowerCase()))) add("season");
+    })
+  );
+  return buckets;
+}
+function formatBucket(obj) {
+  return Object.entries(obj)
+    .map(([k, v]) => `${k} ${Math.round(v.qty)} ${v.unit}`)
+    .sort((a, b) => a.localeCompare(b));
+}
+function buildListSummary() {
+  const b = accumulateList(DATA);
+  return {
+    "蛋白/鱼/豆腐": formatBucket(b.protein),
+    "蔬菜/菌菇": formatBucket(b.veg),
+    "米/面/主食": formatBucket(b.staple),
+    "海藻/高汤/调味": formatBucket(b.season),
+  };
+}
+const LIST_SUMMARY = buildListSummary();
+
+/* ---------- 图片本地存储 ---------- */
+const getImageKey = (suffix) => `${FILE_BASE}::img::${suffix}`;
+const readLocalImage = (key) => localStorage.getItem(key) || "";
+const saveLocalImage = (key, dataUrl) => localStorage.setItem(key, dataUrl);
+
+function ImageUpload({ storageKey, label }) {
+  const [src, setSrc] = useState(() => readLocalImage(storageKey));
+  const onChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      setSrc(dataUrl);
+      saveLocalImage(storageKey, dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
   return (
-    <div
-      style={{ display: "none" }}
-      data-file-base={FILE_BASE}
-      data-title-main={UI_TITLES.main}
-      data-title-list={UI_TITLES.list}
-      data-count={DATA.length}
-      data-rc-count={RICE_COOKER.length}
-      data-lang="zh"
-    >
-      {/* 无需可见 UI —— 应用在外层渲染并跑测试 */}
+    <div className="print:hidden" style={{ marginBottom: 12 }}>
+      <label style={{ display: "block", marginBottom: 6, color: COLORS.neutral }}>{label}</label>
+      <input type="file" accept="image/*" onChange={onChange} />
+      {src ? (
+        <div style={{ marginTop: 8 }}>
+          <img src={src} alt={label} style={{ maxWidth: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} />
+        </div>
+      ) : null}
     </div>
   );
 }
 
-// 供测试使用
-export const DATASET = DATA;
-export const COLORS_CONST = COLORS;
-export const PROMPT_HEADER_CONST = PROMPT_HEADER;
+/* ---------- i18n helpers ---------- */
+const dayNameI18n = (id, t) => ({ mo: "周一", di: "周二", mi: "周三", do: "周四", fr: "周五", sa: "周六", so: "周日" })[id.split("-")[0]];
+const mealTitleI18n = (id, t) => {
+  const k = id.split("-")[1];
+  if (k === "rc") return "电饭煲";
+  return t.mealTitle[k];
+};
+const mealLabelI18n = (id, t) => {
+  const k = id.split("-")[1];
+  if (k === "rc") return "电饭煲";
+  return t.meal[k];
+};
+
+/* ---------- Recipe Card ---------- */
+function RecipeCard({ r, t, lang }) {
+  const recipeImgKey = getImageKey(`recipe::${r.id}`);
+  const img = readLocalImage(recipeImgKey);
+  const title = toText(r.title);
+  const desc = toText(r.desc);
+  const story = toText(r.story);
+  const target = toText(r.target);
+  const checks = toText(r.checks);
+  const side = toText(r.side);
+  const swaps = toText(r.swaps);
+  const ingredients = toList(r.ingredients);
+  const steps = toList(r.steps);
+
+  return (
+    <div className="page" style={{ padding: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 16, alignItems: "stretch" }}>
+        <aside style={{ gridColumn: "span 4", ...cardPanelStyle }}>
+          <div className="print:hidden">
+            <ImageUpload storageKey={recipeImgKey} label={`上传菜图: ${title}`} />
+          </div>
+          {img ? <img src={img} alt={title} style={{ width: "100%", borderRadius: 12, border: `1px solid ${COLORS.border}` }} /> : null}
+          <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
+            <div>
+              <b>
+                {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+              </b>
+            </div>
+            <div style={{ marginTop: 6 }}>{desc}</div>
+            <div style={{ marginTop: 6 }}>
+              <b>目标:</b> {target}
+            </div>
+            <div>
+              <b>提示:</b> {checks}
+            </div>
+            <div>
+              <b>{t.sections.side}:</b> {side}
+            </div>
+            {r.remind ? (
+              <div
+                style={{
+                  marginTop: 8,
+                  padding: "6px 8px",
+                  background: "rgba(5,150,105,.08)",
+                  border: `1px solid ${COLORS.emerald}`,
+                  borderRadius: 10,
+                  fontSize: 13,
+                }}
+              >
+                💊 与餐同服 Metformin。
+              </div>
+            ) : null}
+          </div>
+        </aside>
+        <main style={{ gridColumn: "span 8", ...cardMainStyle }}>
+          <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
+            {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
+          </div>
+          <h2 style={{ marginTop: 0 }}>{title}</h2>
+          <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.ingredients} (2 人)</h3>
+              <ul className="avoid-break">
+                {ingredients.length ? (
+                  ingredients.map((x, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof x === "string" ? x : String(x ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ul>
+            </section>
+            <section>
+              <h3 style={{ fontSize: 16, margin: "8px 0", color: COLORS.sky }}>{t.sections.steps}</h3>
+              <ol className="avoid-break" style={{ paddingLeft: 18 }}>
+                {steps.length ? (
+                  steps.map((s, i) => (
+                    <li key={i} style={{ marginBottom: 4 }}>
+                      {typeof s === "string" ? s : String(s ?? "")}
+                    </li>
+                  ))
+                ) : (
+                  <li style={{ marginBottom: 4, opacity: 0.7 }}>—</li>
+                )}
+              </ol>
+              <div style={{ marginTop: 6, fontSize: 12 }}>
+                <b>{t.sections.swaps}:</b> {swaps}
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Kochbuch ---------- */
+function Cookbook({ t, lang }) {
+  // 合并 DATA + RICE_COOKER，用于周览
+  const weekly = useMemo(() => {
+    const merged = [...DATA, ...RICE_COOKER];
+    return groupByDay(merged);
+  }, []);
+  return (
+    <div id="cookbook-root">
+      {/* 封面 + 周览 */}
+      <div className="page" style={{ padding: 24 }}>
+        <div style={{ display: "flex", gap: 16 }}>
+          <div style={{ flex: 1, ...cardPanelStyle }}>
+            <h1 style={{ margin: 0, color: COLORS.emerald }}>{UI_TITLES.main}</h1>
+            <p style={{ marginTop: 6, color: COLORS.neutral }}>
+              周始于 {meta.startDate} — <b>模式: Non-Strict (balanced)</b>; 重点 CN/JP/KR，清淡低钠，孕期安全；糖友：每餐(2人) 60–90 g 碳水。
+            </p>
+            <ImageUpload storageKey={getImageKey("cover")} label="上传封面图" />
+          </div>
+          <div style={{ flex: 2, ...cardMainStyle }}>
+            <h2 style={{ marginTop: 0, color: COLORS.indigo }}>周览</h2>
+            <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(1, 1fr)", gap: 8, fontSize: 14 }}>
+              {DAYS_ORDER.map((d) => (
+                <div key={d} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 10, background: COLORS.panelBG80 }}>
+                  <div style={{ fontWeight: 700, marginBottom: 6 }}>{DAY_NAME[d]}</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+                    {safeArr(weekly[d]).map((m) => {
+                      const title = toText(m?.title);
+                      const target = toText(m?.target);
+                      return (
+                        <div key={m.id} style={{ background: COLORS.white, border: `1px solid ${COLORS.border}`, borderRadius: 10, padding: 8 }}>
+                          <div style={{ color: COLORS.sky, fontSize: 12 }}>{mealLabelI18n(m.id, t)}</div>
+                          <div style={{ fontWeight: 600, lineHeight: 1.3 }}>{title}</div>
+                          <div style={{ color: COLORS.neutral, fontSize: 12, marginTop: 2 }}>🌾 {target}{m?.remind ? " · 💊" : ""}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 主菜 21 页 */}
+      {DATA.map((r) => (
+        <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      ))}
+
+      {/* 电饭煲 7 页 */}
+      {RICE_COOKER.map((r) => (
+        <RecipeCard key={r.id} r={r} t={t} lang={lang} />
+      ))}
+    </div>
+  );
+}
+
+/* ---------- 购物清单 ---------- */
+function GroceryList() {
+  const rootRef = useRef(null);
+  return (
+    <div id="list-root" ref={rootRef}>
+      <div className="page" style={{ padding: 24 }}>
+        <div style={{ ...cardMainStyle }}>
+          <h1 style={{ marginTop: 0, color: COLORS.emerald }}>{UI_TITLES.list}</h1>
+          <p style={{ color: COLORS.neutral, marginTop: 4 }}>自动从本周（自 {meta.startDate} 起）的 21 道主菜计算（电饭煲菜不计入，需可选再启用）。</p>
+          <div className="avoid-break" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+            {Object.entries(LIST_SUMMARY).map(([group, items]) => (
+              <div key={group} style={{ border: `1px solid ${COLORS.border}`, borderRadius: 12, padding: 12, background: COLORS.panelBG70 }}>
+                <h3 style={{ marginTop: 0, color: COLORS.indigo }}>{group}</h3>
+                <ul>
+                  {safeArr(items).map((t, i) => (
+                    <li key={i}>{typeof t === "string" ? t : String(t ?? "")}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 12, fontSize: 12, color: COLORS.neutral }}>
+            提示：使用低钠酱油；海藻（裙带菜/海苔）少量；所有食材充分加热至全熟。
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Root ---------- */
+export default function Woche8_2025_11_17_ZH() {
+  const [tab, setTab] = useState("kochbuch");
+  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
+  const t = UI[lang] || UI.zh;
+  const toggleLang = () => {
+    const next = lang === "de" ? "zh" : "de";
+    setLang(next);
+    localStorage.setItem("ghibli-lang", next);
+  };
+  const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
+  const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
+
+  useEffect(() => {
+    Tests();
+  }, []);
+
+  const doPDF = async () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "cookbook" : "list"}`;
+    const res = await exportPDFById(id, name, isCook ? "landscape" : "portrait", {
+      pageBg: COLORS.pageBg,
+      after: [".page"],
+      avoid: [".avoid-break"],
+    });
+    if (res?.blobUrl) {
+      setPdfLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: res.blobUrl }));
+    }
+  };
+
+  const doHTML = () => {
+    const isCook = tab === "kochbuch";
+    const id = isCook ? "cookbook-root" : "list-root";
+    const name = `${FILE_BASE} – ${isCook ? "cookbook" : "list"}`;
+    const css = buildEmbedCss({ pageBg: COLORS.pageBg, text: COLORS.text });
+    const url = exportHTMLById(id, name, css, COLORS.pageBg);
+    if (url) setHtmlLink((s) => ({ ...s, [isCook ? "kochbuch" : "einkauf"]: url }));
+  };
+
+  return (
+    <div style={{ background: COLORS.pageBg, minHeight: "100vh", padding: 16 }}>
+      <div className="print:hidden" style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={() => setTab("kochbuch")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "kochbuch" ? COLORS.indigo : COLORS.white,
+              color: tab === "kochbuch" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.cookbook}
+          </button>
+          <button
+            onClick={() => setTab("einkauf")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 14,
+              border: `1px solid ${COLORS.border}`,
+              boxShadow: COLORS.btnShadow,
+              background: tab === "einkauf" ? COLORS.indigo : COLORS.white,
+              color: tab === "einkauf" ? "#fff" : COLORS.text,
+            }}
+          >
+            {t.tabs.list}
+          </button>
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            onClick={doPDF}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.pdf}
+          </button>
+          <button
+            onClick={doHTML}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.html}
+          </button>
+          <button
+            onClick={() => window.print()}
+            style={{ padding: "10px 14px", borderRadius: 14, border: `1px solid ${COLORS.border}`, background: COLORS.emerald, color: "#fff", boxShadow: COLORS.btnShadow, fontWeight: 600 }}
+          >
+            {t.btn.print}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ display: tab === "kochbuch" ? "block" : "none" }}>
+        <Cookbook t={t} lang={lang} />
+      </div>
+      <div style={{ display: tab === "einkauf" ? "block" : "none" }}>
+        <GroceryList />
+      </div>
+
+      {/* 下载链接 */}
+      <div className="print:hidden" style={{ marginTop: 12 }}>
+        {tab === "kochbuch" && (
+          <div style={{ d
