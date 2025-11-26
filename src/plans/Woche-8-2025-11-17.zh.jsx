@@ -4,20 +4,20 @@ import { buildEmbedCss } from "../utils/embedCss";
 import { UI } from "../i18n-ui";
 import { pickText, pickList } from "../i18n-data";
 
-// ---------- 元信息 META ----------
+// ---------- META ----------
 export const meta = {
   title: "第8周",
   startDate: "2025-11-17",
   id: "woche-8-2025-11-17-zh",
   lang: "zh",
-  sidebar: "[中文] 第8周 (2025-11-17)",
+  sidebar: "[ZH] 第8周 (2025-11-17)",
 };
 const FILE_BASE = "Woche 8 2025-11-17";
 
 // ---------- UI TITLES ----------
 const UI_TITLES = {
-  main: "GhibliKitchen – 第8周",
-  list: "GhibliKitchen – 采购清单 – 第8周",
+  main: "吉卜力厨房 – 第8周",
+  list: "吉卜力厨房 – 购物清单 – 第8周",
 };
 
 // ---------- STYLES ----------
@@ -41,35 +41,47 @@ const PROMPT_HEADER =
   "Ultra-clean cookbook photo, soft daylight, top-down, pastel background, visible steam, pregnancy-safe (no raw fish or raw egg), mild Asian home cooking (JP/CN/KR), family-friendly";
 const buildPrompt = (a, b) => `${a}\n${b}`;
 
-// ---------- DATA (沿用 DE 周计划配方；语言以原文为准) ----------
+// ---------- DAY HELPERS ----------
+const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
+const DAY_NAME_ZH = {
+  mo: "周一",
+  di: "周二",
+  mi: "周三",
+  do: "周四",
+  fr: "周五",
+  sa: "周六",
+  so: "周日",
+};
+
+// ---------- DATA (21 道主菜；CN/JP/KR，最多1道IT) ----------
 const DATA = [
-  // 星期一
+  // 周一
   {
     id: "mo-f",
-    title: "Reisbrei mit Lachs & Seidentofu (お粥)",
-    desc: "Japanischer Okayu, sehr mild & salzarm – wärmender Start.",
+    title: "三文鱼豆腐粥（お粥）",
+    desc: "日式米粥，清淡低钠，暖胃开局。",
     story:
-      "Okayu stammt aus Japan und wird gern zum Frühstück oder bei Erkältungen gegessen. Sanft, cremig und bekömmlich für ruhige Morgen. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
+      "Okayu 源自日本，常作早餐或病后恢复餐。口感绵软、温和易消化。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈20 g/人",
     ingredients: [
-      "Reis (roh) 90 g",
-      "Wasser 800 ml",
-      "Lachsfilet 120 g",
-      "Tofu seiden 200 g",
-      "Ingwer 10 g",
-      "Frühlingszwiebel 20 g",
-      "Sojasauce natriumarm 10 ml",
+      "大米（生）90 g",
+      "清水 800 ml",
+      "三文鱼柳 120 g",
+      "内酯豆腐/绢豆腐 200 g",
+      "姜 10 g",
+      "葱 20 g",
+      "低钠酱油 10 ml",
     ],
     steps: [
-      "Reis waschen, mit Wasser aufkochen und 25–30 Min. sanft köcheln.",
-      "Lachs über dem Brei 8–10 Min. dämpfen, zerpflücken.",
-      "Tofu einlegen, mit Ingwer/Sojasauce mild abschmecken; Lauchgrün 1 Min. ziehen lassen.",
+      "淘米，加水小火熬 25–30 分钟至粥状。",
+      "粥面放三文鱼蒸 8–10 分钟至全熟，拨散。",
+      "加入豆腐，以姜末和少量酱油调味，葱花焖 1 分钟。",
     ],
     checks:
-      "Gastritis – mild & warm · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Fisch durchgegart, quecksilberarm",
+      "胃炎——温和暖胃 · 糖友✓ ≈70 g KH · 孕期✓ 鱼全熟、低汞",
     swaps:
-      "Seidentofu ↔ fester Tofu; Lachs ↔ Kabeljau; Alternative: Gyudon (牛丼, mager) oder Buta no Shōgayaki (豚の生姜焼き, mager) – kleinere Reisportion.",
-    side: "Warmer Gerstentee; kleine Gurken-Pickles (ohne Chili).",
+      "绢豆腐 ↔ 老豆腐；三文鱼 ↔ 鳕鱼；也可做牛丼/姜烧猪（减量米饭）。",
+    side: "温热大麦茶；清淡黄瓜浅渍（无辣）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -78,31 +90,31 @@ const DATA = [
   },
   {
     id: "mo-m",
-    title: "Mildes Bibimbap (비빔밥) – Chili separat",
-    desc: "Koreanische Reisschale mit Gemüse & Rind; salzarm, Chili extra.",
+    title: "温和拌饭 Bibimbap（비빔밥）– 辣椒酱分开给",
+    desc: "韩式拌饭，蔬菜+牛肉，低钠，酱辣可选。",
     story:
-      "Bibimbap ist ein koreanischer Klassiker für jede Saison – warm und vielseitig. Diese milde Version setzt auf Gemüse und voll durchgegarte Toppings. Inspiration: inspiriert von My Korean Kitchen",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈31 g p. P.",
+      "Bibimbap 是四季常见的韩式饭碗——配菜多变、家常耐吃。本版强调熟透与清淡。Inspiration: inspiriert von My Korean Kitchen",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈31 g/人",
     ingredients: [
-      "Vollkornreis (roh) 90 g",
-      "Rinderhack mager 220 g",
-      "Spinat 200 g",
-      "Karotte 120 g",
-      "Shiitake 120 g",
-      "Eier 2 Stück",
-      "Sojasauce natriumarm 20 ml",
-      "Sesamöl 10 ml",
+      "糙米（生）90 g",
+      "瘦牛肉末 220 g",
+      "菠菜 200 g",
+      "胡萝卜 120 g",
+      "香菇 120 g",
+      "鸡蛋 2 枚",
+      "低钠酱油 20 ml",
+      "香油 10 ml",
     ],
     steps: [
-      "Reis garen; Gemüse dünsten oder kurz in wenig Öl anbraten (5–6 Min.).",
-      "Hack krümelig vollständig durchgaren (6–8 Min.), mild würzen.",
-      "Eier vollständig braten (Eigelb fest); alles anrichten.",
+      "煮饭；蔬菜汆/少油快炒 5–6 分钟。",
+      "牛肉末炒散至全熟 6–8 分钟，温和调味。",
+      "鸡蛋煎至全熟，装碗拌匀（辣椒酱另给）。",
     ],
     checks:
-      "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest, Fleisch durchgegart",
+      "胃炎——温和 · 糖友✓ ≈70 g KH · 孕期✓ 鸡蛋全熟、牛肉全熟",
     swaps:
-      "Rinderhack ↔ Putenhack; Vollkornreis ↔ Sushireis; Chili in Minischälchen separat.",
-    side: "Kleine Schale Gurke natur; mildes Kimchi ohne Chili optional.",
+      "牛肉 ↔ 火鸡肉末；糙米 ↔ 寿司米；辣椒酱小碟另给。",
+    side: "清爽黄瓜片；可选无辣白泡菜。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -111,64 +123,65 @@ const DATA = [
   },
   {
     id: "mo-a",
-    title: "Mildes Mapo-Tofu (麻婆豆腐) – ohne Schärfe",
-    desc: "Hausmannskost aus China in milder, miso-basierter Sauce; salzarm.",
+    title: "温和麻婆豆腐（麻婆豆腐）– 不辣",
+    desc: "中式家常，味噌打底的清淡酱汁，低钠。",
     story:
-      "Mapo-Tofu stammt aus Sichuan, hier als sanfte Alltagsvariante ohne Schärfe. Wärmend und unkompliziert für den Feierabend. Inspiration: inspiriert von Omnivore’s Cookbook",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+      "麻婆豆腐出自川菜，这里做成不辣、家常的舒适风味，晚餐友好。Inspiration: inspiriert von Omnivore’s Cookbook",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈32 g/人",
     ingredients: [
-      "Tofu fest 400 g",
-      "Shiitake 150 g",
-      "Miso hell 20 g",
-      "Gemüsebrühe 300 ml",
-      "Sojasauce natriumarm 20 ml",
-      "Knoblauch 1 Zehe",
-      "Ingwer 10 g",
-      "Maisstärke 10 g",
-      "Brauner Reis (roh) 90 g",
+      "老豆腐 400 g",
+      "香菇 150 g",
+      "白味噌 20 g",
+      "清淡蔬菜高汤 300 ml",
+      "低钠酱油 20 ml",
+      "蒜 1 瓣",
+      "姜 10 g",
+      "玉米淀粉 10 g",
+      "糙米（生）90 g",
     ],
     steps: [
-      "Reis garen (30–35 Min.). Pilze 5 Min. dünsten.",
-      "Brühe mit Miso/Sojasauce erhitzen; Tofu 4–5 Min. ziehen lassen.",
-      "Mit Stärke leicht binden und über Reis servieren.",
+      "煮饭（30–35 分钟）。香菇焯/炒 5 分钟。",
+      "高汤+味噌+酱油加热；豆腐入汤温和加热 4–5 分钟。",
+      "淀粉勾薄芡，浇在米饭上。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
+    checks: "胃炎——温和 · 糖友✓ ≈70 g KH · 孕期✓ 全熟",
     swaps:
-      "Brauner Reis ↔ weißer Reis; Miso ↔ milde Bohnenpaste; optional mageres Schweinehack (ohne Chili).",
-    side: "Gedünsteter Pak Choi; warmer Tee.",
+      "糙米 ↔ 白米；味噌 ↔ 清淡豆瓣；可加少量瘦猪肉末（不辣）。",
+    side: "清蒸小白菜；温热茶饮。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Mild mapo tofu with mushrooms, glossy light-brown sauce over brown rice, no chili"
     ),
   },
-  // Dienstag
+
+  // 周二
   {
     id: "di-f",
-    title: "Lachs-Onigiri & Miso-Suppe (おにぎり・味噌汁)",
-    desc: "Reisbälle mit gegartem Lachs, dazu milde Misosuppe; salzarm.",
+    title: "三文鱼饭团 & 味噌汤（おにぎり・味噌汁）",
+    desc: "熟三文鱼饭团配清淡味噌汤；低钠。",
     story:
-      "Onigiri gehören zur Bento-Kultur – praktisch für unterwegs. Mit Misosuppe ein leichtes, warmes Frühstück. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈78 g KH gesamt (2 P.) · Protein ≈27 g p. P.",
+      "饭团是便当文化代表，配味噌汤就是温暖的早餐组合。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈78 g KH gesamt (2 P.) · 蛋白质 ≈27 g/人",
     ingredients: [
-      "Sushi-Reis (roh) 100 g",
-      "Lachsfilet 150 g",
-      "Nori 1 Blatt",
-      "Miso hell 20 g",
-      "Tofu fest 150 g",
-      "Wakame (getrocknet) 2 g",
-      "Wasser 900 ml",
-      "Sojasauce natriumarm 10 ml",
+      "寿司米（生）100 g",
+      "三文鱼柳 150 g",
+      "海苔 1 张",
+      "白味噌 20 g",
+      "老豆腐 150 g",
+      "裙带菜（干）2 g",
+      "清水 900 ml",
+      "低钠酱油 10 ml",
     ],
     steps: [
-      "Reis kochen; Lachs 8–10 Min. garen, zerpflücken; Onigiri formen, mit Nori umwickeln.",
-      "Miso in heißem Wasser lösen (nicht kochen); Tofu/Wakame 2–3 Min. ziehen lassen.",
-      "Mild mit wenig Sojasauce abschmecken.",
+      "煮饭；三文鱼煮/蒸 8–10 分钟至熟，拨散做饭团，外裹海苔。",
+      "味噌用热水化开（勿沸腾）；豆腐/裙带菜浸 2–3 分钟。",
+      "以少量酱油温和调味。",
     ],
     checks:
-      "Gastritis – mild · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Lachs durchgegart, Wakame sparsam",
-    swaps: "Sushi-Reis ↔ Vollkornreis; Lachs ↔ Seelachs.",
-    side: "Milder grüner Tee (optional koffeinfrei).",
+      "胃炎——温和 · 糖友✓ ≈78 g KH · 孕期✓ 三文鱼全熟；海藻少量",
+    swaps: "寿司米 ↔ 糙米；三文鱼 ↔ 明太鱼/狭鳕。",
+    side: "温和绿茶（可选无咖啡因）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -177,29 +190,29 @@ const DATA = [
   },
   {
     id: "di-m",
-    title: "Reisnudelpfanne mit Hähnchen (河粉)",
-    desc: "Kantonesisch inspirierte Wokpfanne, gemüsebetont und mild.",
+    title: "广式河粉鸡肉炒（河粉）— 清淡蔬菜多",
+    desc: "南中风味，锅气清爽、低油低钠。",
     story:
-      "Locker angelehnt an Ho-Fun aus Südchina – schnell, ausgewogen und familientauglich. Inspiration: inspiriert von The Woks of Life",
-    target: "≈74 g KH gesamt (2 P.) · Protein ≈39 g p. P.",
+      "参考广式 Ho Fun 思路的家常快炒，均衡好吃。Inspiration: inspiriert von The Woks of Life",
+    target: "≈74 g KH gesamt (2 P.) · 蛋白质 ≈39 g/人",
     ingredients: [
-      "Reisnudeln (trocken) 80 g",
-      "Hähnchenbrust 250 g",
-      "Paprika 150 g",
-      "Pak Choi 200 g",
-      "Zwiebel 80 g",
-      "Karotte 100 g",
-      "Sojasauce natriumarm 25 ml",
-      "Sesamöl 10 ml",
+      "干米粉 80 g",
+      "鸡胸肉 250 g",
+      "彩椒 150 g",
+      "小白菜/青梗菜 200 g",
+      "洋葱 80 g",
+      "胡萝卜 100 g",
+      "低钠酱油 25 ml",
+      "香油 10 ml",
     ],
     steps: [
-      "Reisnudeln einweichen oder kurz blanchieren (3–4 Min.).",
-      "Hähnchenstreifen in wenig Öl 5–6 Min. durchgaren.",
-      "Gemüse 3–4 Min. mitgaren; mild würzen und schwenken.",
+      "米粉泡软或焯 3–4 分钟。",
+      "鸡丝少油翻炒 5–6 分钟至熟。",
+      "蔬菜下锅 3–4 分钟，温和调味拌匀。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Reisnudeln ↔ Udon; Hähnchen ↔ Tofu.",
-    side: "Gurkenscheiben natur.",
+    checks: "胃炎——温和 · 糖友✓ ≈74 g KH · 孕期✓ 鸡肉全熟",
+    swaps: "米粉 ↔ 乌冬；鸡肉 ↔ 豆腐。",
+    side: "黄瓜片。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -208,63 +221,63 @@ const DATA = [
   },
   {
     id: "di-a",
-    title: "Doenjang-Jjigae mit Gerste (된장찌개)",
-    desc: "Koreanischer Sojabohnen-Eintopf, herzhaft-mild, mit Gerste.",
+    title: "大酱汤配珍珠麦（된장찌개）",
+    desc: "韩式大酱炖菜，咸香不辣，搭配大麦。",
     story:
-      "Ein Alltags-Eintopf aus Korea – kräftig, aber nicht scharf; perfekt für gemütliche Abende. Inspiration: inspiriert von Seon Kyoung Longest",
-    target: "≈86 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+      "韩国日常汤锅——踏实、不过火的家常味。Inspiration: inspiriert von Seon Kyoung Longest",
+    target: "≈86 g KH gesamt (2 P.) · 蛋白质 ≈24 g/人",
     ingredients: [
-      "Doenjang 30 g",
-      "Tofu fest 300 g",
-      "Zucchini 200 g",
-      "Kartoffeln 200 g",
-      "Shiitake 100 g",
-      "Zwiebel 70 g",
-      "Wasser 800 ml",
-      "Sojasauce natriumarm 10 ml",
-      "Perlgerste (roh) 70 g",
+      "大酱 30 g",
+      "老豆腐 300 g",
+      "西葫芦 200 g",
+      "土豆 200 g",
+      "香菇 100 g",
+      "洋葱 70 g",
+      "清水 800 ml",
+      "低钠酱油 10 ml",
+      "珍珠麦（生）70 g",
     ],
     steps: [
-      "Doenjang in Wasser lösen; Gemüse 12–15 Min. sanft köcheln.",
-      "Tofuwürfel 3–4 Min. ziehen lassen.",
-      "Gerste separat garen (25–30 Min.) und dazu reichen.",
+      "大酱溶于水；蔬菜小火炖 12–15 分钟。",
+      "豆腐入锅再煮 3–4 分钟。",
+      "珍珠麦另煮 25–30 分钟，同食。",
     ],
     checks:
-      "Gastritis – herzhaft, nicht scharf · Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Gerste ↔ Reis; Tofu ↔ Putenbrust.",
-    side: "Mildes Gurken-Pickle (ohne Chili).",
+      "胃炎——咸香不辣 · 糖友✓ ≈86 g KH · 孕期✓ 全熟",
+    swaps: "大麦 ↔ 米饭；豆腐 ↔ 火鸡胸。",
+    side: "清淡黄瓜浅渍（无辣）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Korean soybean stew with tofu and vegetables in a clay pot, side of barley"
     ),
   },
-  // Mittwoch
+
+  // 周三
   {
     id: "mi-f",
-    title: "Kürbis-Juk mit Tofu & Edamame (단호박죽)",
-    desc: "Samtiger Kürbisreisbrei, proteinreich & mild.",
+    title: "南瓜粥配豆腐毛豆（단호박죽）",
+    desc: "细腻南瓜米粥，蛋白提升、清淡舒适。",
     story:
-      "Koreanischer Reisbrei mit saisonalem Kürbis – cremig und angenehm. Inspiration: inspiriert von Mom's Korean Recipes",
-    target: "≈75 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+      "韩国秋冬常见的南瓜粥，口味柔和。Inspiration: inspiriert von Mom's Korean Recipes",
+    target: "≈75 g KH gesamt (2 P.) · 蛋白质 ≈22 g/人",
     ingredients: [
-      "Kürbis (Kabocha/Hokkaido) 400 g",
-      "Reis (roh) 70 g",
-      "Tofu fest 200 g",
-      "Edamame (geschält) 100 g",
-      "Ingwer 8 g",
-      "Wasser 900 ml",
-      "Salz 1 Prise",
+      "南瓜（日本南瓜/北海道南瓜）400 g",
+      "大米（生）70 g",
+      "老豆腐 200 g",
+      "毛豆（去壳）100 g",
+      "姜 8 g",
+      "清水 900 ml",
+      "盐 少许",
     ],
     steps: [
-      "Kürbis + Reis 25 Min. weich kochen.",
-      "Pürieren; Tofu/Edamame 3–4 Min. ziehen lassen.",
-      "Mild abschmecken und servieren.",
+      "南瓜+米煮 25 分钟至软。",
+      "打细；入豆腐与毛豆再焖 3–4 分钟。",
+      "温和调味，热饮。",
     ],
-    checks:
-      "Gastritis – weich & warm · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Edamame ↔ weiße Bohnen; Tofu ↔ Hähnchenwürfel.",
-    side: "Warmer Reis- oder Gerstentee.",
+    checks: "胃炎——软糯温和 · 糖友✓ ≈75 g KH · 孕期✓ 全熟",
+    swaps: "毛豆 ↔ 白豆；豆腐 ↔ 鸡丁。",
+    side: "温热玄米茶/大麦茶。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -273,28 +286,28 @@ const DATA = [
   },
   {
     id: "mi-m",
-    title: "Udon-Suppe mit Huhn & Brokkoli (うどん)",
-    desc: "Klare japanische Nudelsuppe, mild & sättigend.",
+    title: "鸡肉西兰花乌冬汤（うどん）",
+    desc: "清亮日式汤面，饱腹但清淡。",
     story:
-      "Leichte Udon-Brühen sind in Japan ganzjährig beliebt – besonders in kühlen Monaten. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈79 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
+      "日本一年四季都常见的乌冬清汤，尤其适合寒冷天气。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈79 g KH gesamt (2 P.) · 蛋白质 ≈34 g/人",
     ingredients: [
-      "Udon (trocken) 100 g",
-      "Hähnchenbrust 220 g",
-      "Brokkoli 200 g",
-      "Zwiebel 60 g",
-      "Miso hell 25 g",
-      "Wasser 1000 ml",
-      "Sojasauce natriumarm 15 ml",
+      "乌冬（干）100 g",
+      "鸡胸肉 220 g",
+      "西兰花 200 g",
+      "洋葱 60 g",
+      "白味噌 25 g",
+      "清水 1000 ml",
+      "低钠酱油 15 ml",
     ],
     steps: [
-      "Brühe mit Miso/Sojasauce erhitzen (nicht kochen).",
-      "Hähnchen 6–8 Min. gar ziehen; Gemüse 3–4 Min. mitgaren.",
-      "Udon separat 8–10 Min. kochen, abspülen und zugeben.",
+      "味噌+酱油入汤（勿大滚）。",
+      "鸡肉浸煮 6–8 分钟至熟；蔬菜再 3–4 分钟。",
+      "乌冬另煮 8–10 分钟，过冷水后入汤。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈79 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Udon ↔ Soba; Hähnchen ↔ Tofu.",
-    side: "Kleine Schale Gurke.",
+    checks: "胃炎——温和 · 糖友✓ ≈79 g KH · 孕期✓ 鸡肉全熟",
+    swaps: "乌冬 ↔ 荞麦面；鸡肉 ↔ 豆腐。",
+    side: "小碟黄瓜。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -303,62 +316,63 @@ const DATA = [
   },
   {
     id: "mi-a",
-    title: "Gedämpfter Kabeljau mit Ingwer (清蒸鳕鱼) & Reis",
-    desc: "Kantonesisch dämpfen – zart & bekömmlich.",
+    title: "清蒸鳕鱼姜葱 & 米饭（清蒸鳕鱼）",
+    desc: "广式清蒸，鲜嫩易消化。",
     story:
-      "Sanftes Dämpfen ist ein Klassiker der südchinesischen Küche – leicht und elegant. Inspiration: inspiriert von Made With Lau",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+      "南中国常见的清蒸手法，轻盈又有风味。Inspiration: inspiriert von Made With Lau",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈32 g/人",
     ingredients: [
-      "Kabeljaufilet 320 g",
-      "Reis (roh) 90 g",
-      "Ingwer 15 g",
-      "Frühlingszwiebel 30 g",
-      "Sojasauce natriumarm 15 ml",
-      "Sesamöl 8 ml",
-      "Gemüsebrühe 100 ml",
+      "鳕鱼柳 320 g",
+      "大米（生）90 g",
+      "姜 15 g",
+      "葱 30 g",
+      "低钠酱油 15 ml",
+      "香油 8 ml",
+      "清淡蔬菜高汤 100 ml",
     ],
     steps: [
-      "Fisch auf Ingwerscheiben 8–10 Min. dämpfen.",
-      "Sojasauce + Brühe erhitzen, über Fisch geben; Sesamöl dazu.",
-      "Reis garen und servieren.",
+      "鳕鱼垫姜片蒸 8–10 分钟至熟。",
+      "酱油+高汤加热浇面；滴香油。",
+      "煮饭配食。",
     ],
     checks:
-      "Gastritis – gedämpft · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Kabeljau durchgegart, quecksilberarm",
-    swaps: "Kabeljau ↔ Seelachs; Reis ↔ Vollkornreis.",
-    side: "Gedünsteter Brokkoli.",
+      "胃炎——清蒸温和 · 糖友✓ ≈70 g KH · 孕期✓ 鳕鱼全熟、低汞",
+    swaps: "鳕鱼 ↔ 明太鱼；米饭 ↔ 糙米。",
+    side: "清蒸西兰花。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Steamed cod with ginger and scallions, light glossy sauce, side bowl of rice"
     ),
   },
-  // Donnerstag
+
+  // 周四
   {
     id: "do-f",
-    title: "Tamagoyaki & Misosuppe mit kleinem Reis (卵焼き・味噌汁)",
-    desc: "Japanisches Frühstück, Ei vollständig gestockt.",
+    title: "玉子烧 & 味噌汤+小碗米饭（卵焼き・味噌汁）",
+    desc: "日式早餐，鸡蛋全熟。",
     story:
-      "Tamagoyaki ist ein Frühstücksklassiker und beliebt in Bento-Boxen – mild und ausgewogen. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈62 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+      "玉子烧常见于日常与便当，滋味温和。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈62 g KH gesamt (2 P.) · 蛋白质 ≈24 g/人",
     ingredients: [
-      "Eier 4 Stück",
-      "Tofu fest 150 g",
-      "Reis (roh) 80 g",
-      "Miso hell 20 g",
-      "Wakame (getrocknet) 1 g",
-      "Frühlingszwiebel 20 g",
-      "Wasser 800 ml",
-      "Sojasauce natriumarm 10 ml",
+      "鸡蛋 4 枚",
+      "老豆腐 150 g",
+      "大米（生）80 g",
+      "白味噌 20 g",
+      "裙带菜（干）1 g",
+      "葱 20 g",
+      "清水 800 ml",
+      "低钠酱油 10 ml",
     ],
     steps: [
-      "Reis garen (30 Min.). Omelett vollständig stocken (5–6 Min.).",
-      "Misosuppe ansetzen; Tofu/Wakame 2–3 Min. ziehen lassen.",
-      "Mit Frühlingszwiebel servieren.",
+      "煮饭（30 分钟）。煎玉子烧 5–6 分钟至全熟。",
+      "煮味噌汤；豆腐/裙带菜浸 2–3 分钟。",
+      "撒葱花上桌。",
     ],
     checks:
-      "Gastritis – mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ Eier vollständig gestockt",
-    swaps: "Reis ↔ Vollkornreis; Tofu ↔ Hähnchenwürfel.",
-    side: "Warmer Grüntee (koffeinarm).",
+      "胃炎——温和 · 糖友✓ ≈62 g KH · 孕期✓ 鸡蛋全熟",
+    swaps: "米饭 ↔ 糙米；豆腐 ↔ 鸡丁。",
+    side: "温和绿茶（低咖）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -367,29 +381,29 @@ const DATA = [
   },
   {
     id: "do-m",
-    title: "Tomaten-Rührei (番茄炒蛋) mit Tofu & Reis",
-    desc: "Chinesisches Hausgericht, mild-säuerlich & schnell.",
+    title: "番茄炒蛋豆腐配米饭（番茄炒蛋）",
+    desc: "家常快手，酸甜柔和。",
     story:
-      "Fànqié Chǎo Dàn ist ein bekannter Alltagsklassiker – mit reifen Tomaten besonders rund. Inspiration: inspiriert von The Woks of Life",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+      "番茄炒蛋是华语区家喻户晓的日常菜，用熟透番茄更圆润。Inspiration: inspiriert von The Woks of Life",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈28 g/人",
     ingredients: [
-      "Reis (roh) 90 g",
-      "Eier 4 Stück",
-      "Tofu fest 200 g",
-      "Tomaten (reif) 400 g",
-      "Zwiebel 60 g",
-      "Sojasauce natriumarm 10 ml",
-      "Rapsöl 10 ml",
+      "大米（生）90 g",
+      "鸡蛋 4 枚",
+      "老豆腐 200 g",
+      "番茄（熟）400 g",
+      "洋葱 60 g",
+      "低钠酱油 10 ml",
+      "菜籽油 10 ml",
     ],
     steps: [
-      "Reis garen (30 Min.); Eier 3–4 Min. braten bis fest.",
-      "Tomaten/Zwiebel 6–8 Min. sanft schmoren; Tofu 2–3 Min. mitziehen lassen.",
-      "Mild abschmecken und mit Reis servieren.",
+      "煮饭（30 分钟）；鸡蛋炒至全熟 3–4 分钟。",
+      "番茄/洋葱小火焖 6–8 分钟；豆腐再 2–3 分钟。",
+      "温和调味配饭。",
     ],
     checks:
-      "Gastritis – milde Säure, gut geschmort · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Eier fest",
-    swaps: "Tofu ↔ Putenbrustwürfel; Reis ↔ Vollkornreis.",
-    side: "Gedämpfter Pak Choi.",
+      "胃炎——酸度温和、充分炖煮 · 糖友✓ ≈70 g KH · 孕期✓ 鸡蛋全熟",
+    swaps: "豆腐 ↔ 火鸡胸丁；米饭 ↔ 糙米。",
+    side: "清蒸青菜。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -398,62 +412,62 @@ const DATA = [
   },
   {
     id: "do-a",
-    title: "Bulgogi-Style Pute (불고기) & Vollkornreis – mild",
-    desc: "Koreanisch inspirierte Pfanne, süß-mild, Chili optional separat.",
+    title: "温和韩式“烤肉”火鸡+糙米（불고기风）",
+    desc: "甜咸平衡、低钠不辣；辣酱可分开。",
     story:
-      "Bulgogi stammt aus Korea – die Pfannenvariante ist schnell und familienfreundlich. Inspiration: inspiriert von Maangchi",
-    target: "≈80 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+      "Bulgogi 源于韩国——家常平底锅版更快更轻。Inspiration: inspiriert von Maangchi",
+    target: "≈80 g KH gesamt (2 P.) · 蛋白质 ≈28 g/人",
     ingredients: [
-      "Putenbrust 250 g",
-      "Vollkornreis (roh) 90 g",
-      "Zwiebel 80 g",
-      "Karotte 120 g",
-      "Champignons 150 g",
-      "Sojasauce natriumarm 25 ml",
-      "Sesamöl 10 ml",
-      "Knoblauch 1 Zehe",
-      "Birne (gerieben) 60 g",
+      "火鸡胸 250 g",
+      "糙米（生）90 g",
+      "洋葱 80 g",
+      "胡萝卜 120 g",
+      "蘑菇 150 g",
+      "低钠酱油 25 ml",
+      "香油 10 ml",
+      "蒜 1 瓣",
+      "梨泥 60 g",
     ],
     steps: [
-      "Pute 15 Min. in Sojasauce/Birne/Knoblauch marinieren.",
-      "In wenig Öl 5–6 Min. zügig durchgaren.",
-      "Gemüse 3–4 Min. mitgaren; mit Reis servieren.",
+      "火鸡肉以酱油/梨泥/蒜腌 15 分钟。",
+      "少油快炒 5–6 分钟至熟。",
+      "蔬菜入锅 3–4 分钟；配米饭。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Pute durchgegart",
-    swaps: "Pute ↔ Hähnchen; Vollkornreis ↔ Reis.",
-    side: "Salatgurke natur; kleines Rettich-Pickle ohne Chili.",
+    checks: "胃炎——温和 · 糖友✓ ≈80 g KH · 孕期✓ 肉类全熟",
+    swaps: "火鸡 ↔ 鸡胸；糙米 ↔ 白米。",
+    side: "黄瓜片；温和萝卜浅渍。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Mild bulgogi turkey with mushrooms and carrots, brown rice, no chili"
     ),
   },
-  // Freitag
+
+  // 周五
   {
     id: "fr-f",
-    title: "Hühner-Congee (鸡肉粥)",
-    desc: "Chinesischer Reisbrei mit zartem Huhn – sehr mild.",
+    title: "鸡肉粥（鸡肉粥）",
+    desc: "华南常见米粥，鸡肉鲜嫩、非常温和。",
     story:
-      "Congee ist in Südchina und Südostasien ein Klassiker – wärmt sanft an ruhigen Morgen. Inspiration: inspiriert von The Woks of Life",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
+      "粥在华南和东南亚十分常见，适合清晨暖身。Inspiration: inspiriert von The Woks of Life",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈34 g/人",
     ingredients: [
-      "Reis (roh) 90 g",
-      "Hähnchenbrust 220 g",
-      "Ingwer 12 g",
-      "Karotte 120 g",
-      "Wasser 1100 ml",
-      "Sojasauce natriumarm 10 ml",
-      "Frühlingszwiebel 20 g",
+      "大米（生）90 g",
+      "鸡胸肉 220 g",
+      "姜 12 g",
+      "胡萝卜 120 g",
+      "清水 1100 ml",
+      "低钠酱油 10 ml",
+      "葱 20 g",
     ],
     steps: [
-      "Reis mit Wasser 30 Min. sanft köcheln.",
-      "Hähnchen fein würfeln, 8–10 Min. mitgaren bis durch.",
-      "Mild abschmecken, Lauchgrün zugeben.",
+      "米加水小火熬 30 分钟。",
+      "鸡肉切细丁，下锅再煮 8–10 分钟至熟。",
+      "温和调味，撒葱花。",
     ],
-    checks:
-      "Gastritis – sehr mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Hähnchen ↔ Tofu; Karotte ↔ Kürbis.",
-    side: "Warmer Kräutertee.",
+    checks: "胃炎——非常温和 · 糖友✓ ≈70 g KH · 孕期✓ 鸡肉全熟",
+    swaps: "鸡肉 ↔ 豆腐；胡萝卜 ↔ 南瓜。",
+    side: "温热草本茶。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -462,31 +476,30 @@ const DATA = [
   },
   {
     id: "fr-m",
-    title: "Leichte Minestrone (IT) mit Tofu",
-    desc: "Italienischer Gemüseeintopf, lange geköchelt, mild & ballaststoffreich.",
+    title: "清淡意式蔬菜汤配豆腐（Minestrone）",
+    desc: "意式家常蔬菜汤，慢炖温和、富含膳食纤维。",
     story:
-      "Minestrone ist eine italienische Gemüsesuppe – diese sanfte Version passt zu entspannten Mittagspausen. Inspiration: inspiriert von Giallo Zafferano",
-    target: "≈69 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+      "Minestrone 是意大利经典蔬菜汤；这版清淡适合午间。Inspiration: inspiriert von Giallo Zafferano",
+    target: "≈69 g KH gesamt (2 P.) · 蛋白质 ≈30 g/人",
     ingredients: [
-      "Vollkornnudeln (trocken) 80 g",
-      "Tofu fest 200 g",
-      "Weiße Bohnen (gekocht) 200 g",
-      "Karotte 150 g",
-      "Stangensellerie 100 g",
-      "Zucchini 150 g",
-      "Tomatenwürfel (aus der Dose) 200 g",
-      "Gemüsebrühe 800 ml",
-      "Olivenöl 10 ml",
+      "全麦意面（干）80 g",
+      "老豆腐 200 g",
+      "白腰豆（熟）200 g",
+      "胡萝卜 150 g",
+      "西芹 100 g",
+      "西葫芦 150 g",
+      "番茄丁（罐）200 g",
+      "蔬菜高汤 800 ml",
+      "橄榄油 10 ml",
     ],
     steps: [
-      "Gemüse in wenig Öl 4–5 Min. anschwitzen, Brühe zugeben.",
-      "15–20 Min. sanft köcheln; Nudeln 8–10 Min. mitgaren.",
-      "Tofu und Bohnen 3–4 Min. erwärmen, mild abschmecken.",
+      "蔬菜少油炒香 4–5 分钟，加高汤。",
+      "小火 15–20 分钟；意面再煮 8–10 分钟。",
+      "入豆腐与豆类 3–4 分钟，加盐度控。",
     ],
-    checks:
-      "Gastritis – mild, nicht scharf · Diabetes ✓ – ≈69 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Vollkornnudeln ↔ Gerste; Tofu ↔ Hähnchen.",
-    side: "Gurkensalat ohne Essigschärfe.",
+    checks: "胃炎——温和不辣 · 糖友✓ ≈69 g KH · 孕期✓ 全熟",
+    swaps: "全麦意面 ↔ 大麦；豆腐 ↔ 鸡肉。",
+    side: "温和黄瓜沙拉（低酸）。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -495,62 +508,62 @@ const DATA = [
   },
   {
     id: "fr-a",
-    title: "Ofen-Lachs Teriyaki (照り焼き鮭) & Brokkoli, Reis",
-    desc: "Schonend gebacken, natriumarm angepasst; süß-mild.",
+    title: "烤三文鱼照烧 & 西兰花 + 米饭（照り焼き鮭）",
+    desc: "低钠配方、烤制更温和；甜咸适中。",
     story:
-      "Teriyaki ist eine japanische Glasurtechnik – hier zurückhaltend gesüßt und salzarm. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈77 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+      "照烧是日式糖酱油上色技法——这里减盐减糖，轻盈不腻。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈77 g KH gesamt (2 P.) · 蛋白质 ≈30 g/人",
     ingredients: [
-      "Lachsfilet 320 g",
-      "Reis (roh) 90 g",
-      "Brokkoli 250 g",
-      "Sojasauce natriumarm 20 ml",
-      "Honig 10 g",
-      "Wasser 30 ml",
-      "Ingwer 6 g",
+      "三文鱼柳 320 g",
+      "大米（生）90 g",
+      "西兰花 250 g",
+      "低钠酱油 20 ml",
+      "蜂蜜 10 g",
+      "清水 30 ml",
+      "姜 6 g",
     ],
     steps: [
-      "Reis garen (30 Min.).",
-      "Lachs mit Sojasauce/Wasser/Honig/Ingwer bestreichen; 12–14 Min. bei 180°C backen bis durch.",
-      "Brokkoli 4–5 Min. dämpfen, mit Lachs und Reis servieren.",
+      "煮饭（30 分钟）。",
+      "三文鱼刷酱油/水/蜂蜜/姜，180°C 烤 12–14 分钟至熟。",
+      "西兰花蒸 4–5 分钟，与米饭同食。",
     ],
     checks:
-      "Gastritis – mild · Diabetes ✓ – ≈77 g KH · Schwangerschaft ✓ Lachs durchgegart, quecksilberarm",
-    swaps: "Lachs ↔ Kabeljau; Reis ↔ Vollkornreis.",
-    side: "Warmer grüner Tee; Rettich-Pickles mild.",
+      "胃炎——温和 · 糖友✓ ≈77 g KH · 孕期✓ 鱼全熟、低汞",
+    swaps: "三文鱼 ↔ 鳕鱼；米饭 ↔ 糙米。",
+    side: "温热绿茶；清淡萝卜浅渍。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Oven-baked teriyaki salmon fillets, steamed broccoli florets, small bowl of rice, glossy light glaze"
     ),
   },
-  // Samstag
+
+  // 周六
   {
     id: "sa-f",
-    title: "Zōsui-Reissuppe mit Huhn & Gemüse (雑炊)",
-    desc: "Japanische Restereissuppe, leicht & wärmend.",
+    title: "杂炊鸡肉蔬菜饭汤（雑炊）",
+    desc: "日式“剩饭汤饭”，清淡暖胃。",
     story:
-      "Zōsui ist eine japanische Reissuppe – ideal zur Resteverwertung und für sanfte Morgen. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈68 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+      "杂炊是日本的家庭饭汤，适合清晨与恢复期。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈68 g KH gesamt (2 P.) · 蛋白质 ≈22 g/人",
     ingredients: [
-      "Gekochter Reis 250 g",
-      "Hähnchenbrust 150 g",
-      "Möhre 100 g",
-      "Shiitake 80 g",
-      "Ei 1 Stück",
-      "Dashi oder milde Brühe 700 ml",
-      "Sojasauce natriumarm 10 ml",
-      "Frühlingszwiebel 15 g",
+      "熟米饭 250 g",
+      "鸡胸肉 150 g",
+      "胡萝卜 100 g",
+      "香菇 80 g",
+      "鸡蛋 1 枚",
+      "日式高汤/清淡汤 700 ml",
+      "低钠酱油 10 ml",
+      "葱 15 g",
     ],
     steps: [
-      "Brühe erhitzen; Hähnchenwürfel 6–7 Min. gar ziehen.",
-      "Reis zugeben und 5 Min. sieden; Ei verquirlt einlaufen lassen und vollständig stocken lassen (1–2 Min.).",
-      "Mild mit Sojasauce abschmecken; Lauchgrün darüber.",
+      "汤烧热；鸡丁浸煮 6–7 分钟至熟。",
+      "入米饭煮 5 分钟；蛋液回旋倒入并完全凝固。",
+      "少量酱油调味，撒葱。",
     ],
-    checks:
-      "Gastritis – mild & warm · Diabetes ✓ – ≈68 g KH · Schwangerschaft ✓ Ei vollständig gestockt",
-    swaps: "Hähnchen ↔ Tofu; Reis ↔ Vollkornreis.",
-    side: "Jasmintee schwach.",
+    checks: "胃炎——温和暖胃 · 糖友✓ ≈68 g KH · 孕期✓ 蛋完全凝固",
+    swaps: "鸡肉 ↔ 豆腐；米饭 ↔ 糙米。",
+    side: "清淡茉莉花茶。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -559,28 +572,28 @@ const DATA = [
   },
   {
     id: "sa-m",
-    title: "Warme Soba mit Tofu & Spinat (そば)",
-    desc: "Buchweizennudeln in milder Brühe, gemüsig & salzarm.",
+    title: "热荞麦面配豆腐菠菜（そば）",
+    desc: "清淡味噌汤底，蔬菜丰富、低钠。",
     story:
-      "Soba sind in Japan beliebt – hier als leichte Mittagsnudel mit viel Grün. Inspiration: inspiriert von MAFF Japan",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+      "日本常见的荞麦面午餐版，青菜与豆腐让它更轻盈。Inspiration: inspiriert von MAFF Japan",
+    target: "≈72 g KH gesamt (2 P.) · 蛋白质 ≈24 g/人",
     ingredients: [
-      "Soba (trocken) 90 g",
-      "Tofu fest 200 g",
-      "Spinat 200 g",
-      "Shiitake 80 g",
-      "Miso hell 20 g",
-      "Dashi oder Wasser 900 ml",
-      "Sojasauce natriumarm 10 ml",
+      "荞麦面（干）90 g",
+      "老豆腐 200 g",
+      "菠菜 200 g",
+      "香菇 80 g",
+      "白味噌 20 g",
+      "日式高汤/清水 900 ml",
+      "低钠酱油 10 ml",
     ],
     steps: [
-      "Brühe mit Miso/Sojasauce erhitzen (nicht kochen).",
-      "Soba 6–7 Min. kochen, kalt abspülen, in Brühe geben.",
-      "Tofu/Spinat/Pilze 2–3 Min. ziehen lassen.",
+      "高汤+味噌加热（勿大滚）。",
+      "荞麦面煮 6–7 分钟，过冷水后入汤。",
+      "豆腐/菠菜/香菇浸 2–3 分钟即可。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Soba ↔ Udon; Tofu ↔ Hähnchen.",
-    side: "Gurke natur; milde Pickles.",
+    checks: "胃炎——温和 · 糖友✓ ≈72 g KH · 孕期✓ 全熟",
+    swaps: "荞麦面 ↔ 乌冬；豆腐 ↔ 鸡肉。",
+    side: "黄瓜片；温和浅渍物。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -589,59 +602,60 @@ const DATA = [
   },
   {
     id: "sa-a",
-    title: "Geschmorter Napa-Kohl mit Tofu (白菜豆腐煮) & Reis",
-    desc: "Sanft geschmort, leicht & bekömmlich; vegetabil.",
+    title: "白菜豆腐小炖配米饭（白菜豆腐煮）",
+    desc: "北方口味灵感，小火炖至柔软，素口清淡。",
     story:
-      "Ein nordchinesisch inspiriertes Pfannengericht – sehr mild und gut verträglich. Inspiration: inspiriert von The Hong Kong Cookery",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+      "受北方家常启发，温和不油腻。Inspiration: inspiriert von The Hong Kong Cookery",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈24 g/人",
     ingredients: [
-      "Chinakohl 500 g",
-      "Tofu fest 300 g",
-      "Reis (roh) 90 g",
-      "Ingwer 8 g",
-      "Knoblauch 1 Zehe",
-      "Sojasauce natriumarm 15 ml",
-      "Gemüsebrühe 250 ml",
-      "Maisstärke 8 g",
+      "大白菜 500 g",
+      "老豆腐 300 g",
+      "大米（生）90 g",
+      "姜 8 g",
+      "蒜 1 瓣",
+      "低钠酱油 15 ml",
+      "蔬菜高汤 250 ml",
+      "玉米淀粉 8 g",
     ],
     steps: [
-      "Reis garen. Kohl in Brühe 8–10 Min. sanft schmoren.",
-      "Tofu zugeben, 3–4 Min. ziehen lassen.",
-      "Leicht binden und über Reis servieren.",
+      "煮饭。白菜入汤小火炖 8–10 分钟。",
+      "加豆腐再 3–4 分钟。",
+      "勾薄芡，浇在米饭上。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Hähnchen; Reis ↔ Vollkornreis.",
-    side: "Lauwarmes Gurken-Pickle (ohne Chili).",
+    checks: "胃炎——温和 · 糖友✓ ≈70 g KH · 孕期✓ 全熟",
+    swaps: "豆腐 ↔ 鸡肉；米饭 ↔ 糙米。",
+    side: "温热黄瓜浅渍（无辣）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
       "Braised napa cabbage with tofu in light glossy sauce, served with rice"
     ),
   },
-  // Sonntag
+
+  // 周日
   {
     id: "so-f",
-    title: "Süßkartoffel-Okayu mit Tofu (さつまいも粥)",
-    desc: "Sanfter Reisbrei mit Süßkartoffel – milde Süße, salzarm.",
+    title: "红薯豆腐粥（さつまいも粥）",
+    desc: "红薯自然甜，清淡低钠。",
     story:
-      "Eine Hausmannskost-Variante des Okayu – wärmend und freundlich zum Morgenmagen. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈75 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
+      "Okayu 的家常变体，柔和又暖胃。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈75 g KH gesamt (2 P.) · 蛋白质 ≈20 g/人",
     ingredients: [
-      "Reis (roh) 80 g",
-      "Süßkartoffel 250 g",
-      "Tofu seiden 180 g",
-      "Wasser 900 ml",
-      "Ingwer 6 g",
-      "Sojasauce natriumarm 8 ml",
+      "大米（生）80 g",
+      "红薯 250 g",
+      "绢豆腐 180 g",
+      "清水 900 ml",
+      "姜 6 g",
+      "低钠酱油 8 ml",
     ],
     steps: [
-      "Reis + Wasser aufkochen, 25–30 Min. sämig köcheln.",
-      "Süßkartoffelwürfel 10–12 Min. weich garen.",
-      "Tofu zugeben, mild abschmecken.",
+      "米+水熬 25–30 分钟。",
+      "红薯丁再煮 10–12 分钟至软。",
+      "入豆腐，温和调味。",
     ],
-    checks: "Gastritis – mild & weich · Diabetes ✓ – ≈75 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Süßkartoffel ↔ Kürbis; Seidentofu ↔ fester Tofu.",
-    side: "Warmer Hōjicha.",
+    checks: "胃炎——柔和 · 糖友✓ ≈75 g KH · 孕期✓ 全熟",
+    swaps: "红薯 ↔ 南瓜；绢豆腐 ↔ 老豆腐。",
+    side: "温热焙茶（Hōjicha）。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -650,28 +664,28 @@ const DATA = [
   },
   {
     id: "so-m",
-    title: "Tonjiru (豚汁) – Schweine-Miso-Suppe & Reis",
-    desc: "Kräftig, aber mild; mageres Schwein, klare Brühe.",
+    title: "猪肉味噌汤 + 米饭（豚汁 Tonjiru）",
+    desc: "味浓但温和；瘦猪肉与根茎蔬菜。",
     story:
-      "Tonjiru ist eine beliebte Wintersuppe in Japan – sättigend ohne Schärfe. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+      "冬季人气日式汤品，饱腹而不辣。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈30 g/人",
     ingredients: [
-      "Mageres Schweinefleisch 220 g",
-      "Miso hell 25 g",
-      "Kartoffeln 200 g",
-      "Karotte 120 g",
-      "Zwiebel 60 g",
-      "Dashi oder Wasser 900 ml",
-      "Reis (roh) 90 g",
+      "瘦猪肉 220 g",
+      "白味噌 25 g",
+      "土豆 200 g",
+      "胡萝卜 120 g",
+      "洋葱 60 g",
+      "高汤/清水 900 ml",
+      "大米（生）90 g",
     ],
     steps: [
-      "Reis garen. Brühe mit Miso erwärmen.",
-      "Schweinefleisch 8–10 Min. sanft köcheln bis durch.",
-      "Gemüse 10–12 Min. weich ziehen lassen.",
+      "煮饭；味噌入汤加热。",
+      "猪肉小火煮 8–10 分钟至熟。",
+      "蔬菜再煮 10–12 分钟至软。",
     ],
-    checks: "Gastritis – mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Schwein durchgegart",
-    swaps: "Schwein ↔ Hähnchen; Reis ↔ Vollkornreis.",
-    side: "Kleine Gurken-Pickles (ohne Chili).",
+    checks: "胃炎——温和 · 糖友✓ ≈70 g KH · 孕期✓ 猪肉全熟",
+    swaps: "猪肉 ↔ 鸡肉；米饭 ↔ 糙米。",
+    side: "无辣黄瓜浅渍。",
     remind: false,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -680,30 +694,30 @@ const DATA = [
   },
   {
     id: "so-a",
-    title: "Sukiyaki-Style Rind-Gemüse-Topf (すき焼き風) & kleiner Reis",
-    desc: "Mild abgeschmeckt, süß-salzig zurückhaltend; Reis klein.",
+    title: "寿喜烧风牛肉蔬菜锅 + 小碗米饭（すき焼き風）",
+    desc: "甜咸适中、低钠不腻；无生鸡蛋蘸食。",
     story:
-      "Sukiyaki ist ein Festessen aus Japan – hier als sanfte Pfannenvariante ohne rohe Eier. Inspiration: inspiriert von Just One Cookbook",
-    target: "≈62 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+      "寿喜烧是日本的团聚菜肴——这里不配生蛋，所有食材全熟。Inspiration: inspiriert von Just One Cookbook",
+    target: "≈62 g KH gesamt (2 P.) · 蛋白质 ≈32 g/人",
     ingredients: [
-      "Mageres Rindfleisch in Scheiben 240 g",
-      "Zwiebel 80 g",
-      "Shiitake 100 g",
-      "Chinakohl 300 g",
-      "Sojasauce natriumarm 20 ml",
-      "Mirin 10 ml",
-      "Wasser 200 ml",
-      "Reis (roh) 80 g",
+      "瘦牛肉片 240 g",
+      "洋葱 80 g",
+      "香菇 100 g",
+      "大白菜 300 g",
+      "低钠酱油 20 ml",
+      "味醂 10 ml",
+      "清水 200 ml",
+      "大米（生）80 g",
     ],
     steps: [
-      "Reis garen.",
-      "Gemüse 6–8 Min. sanft schmoren, Sauce zugeben.",
-      "Rind 2–3 Min. durchgaren, sofort servieren.",
+      "煮饭。",
+      "蔬菜小火焖 6–8 分钟，加入调味汁。",
+      "牛肉下锅 2–3 分钟至熟，立即食用。",
     ],
     checks:
-      "Gastritis – mild · Diabetes ✓ – ≈62 g KH · Schwangerschaft ✓ ohne rohe Eier, Fleisch durchgegart",
-    swaps: "Rind ↔ Pute; Reis ↔ Vollkornreis.",
-    side: "Warmer Grüntee; Rettich-Pickles mild.",
+      "胃炎——温和 · 糖友✓ ≈62 g KH · 孕期✓ 无生蛋，肉类全熟",
+    swaps: "牛肉 ↔ 火鸡；米饭 ↔ 糙米。",
+    side: "温和绿茶；清淡萝卜浅渍。",
     remind: true,
     prompt: buildPrompt(
       PROMPT_HEADER,
@@ -712,14 +726,14 @@ const DATA = [
   },
 ];
 
-// ---------- 电饭煲菜单（每天 1 道；全部食材进锅） ----------
+// ---------- RICE COOKER（每日1道；全部食材进电饭煲） ----------
 const RICE_COOKER = [
   {
     id: "mo-rc",
     title: "电饭煲：日式蘑菇炊饭（きのこご飯）",
     desc: "蘑菇与米同煮，鲜味十足，操作极简。",
     story:
-      "Takikomi Gohan 是日本常见的混合炊饭，米与配料一起煮成熟——香气四溢。Inspiration: Just One Cookbook（Kinoko Gohan）& Okonomi Kitchen",
+      "Takikomi Gohan 是日本常见的混合炊饭，米与配料一起煮成熟——香气四溢。Inspiration: inspiriert von Just One Cookbook（Kinoko Gohan）& Okonomi Kitchen",
     target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈18 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -734,7 +748,7 @@ const RICE_COOKER = [
     steps: [
       "淘米；内胆加入米、高汤、酱油、味醂。",
       "铺上蘑菇、胡萝卜与姜片，不搅拌。",
-      "启动‘白米/混合饭’程序；焖 10 分钟后翻松。",
+      "启动“白米/混合饭”程序；焖 10 分钟后翻松。",
     ],
     checks: "胃炎——温和 · 糖友✓ ≈70 g KH · 孕期✓ 全熟",
     swaps: "蘑菇混合 ↔ 只用香菇；高汤 ↔ 清水。",
@@ -749,7 +763,7 @@ const RICE_COOKER = [
     title: "电饭煲：香菇鸡饭",
     desc: "广式灵感，鸡肉鲜嫩、低钠。",
     story:
-      "改良自中式鸡肉香菇饭，用电饭煲更省事。Inspiration: Wok & Kin",
+      "改良自中式鸡肉香菇饭，用电饭煲更省事。Inspiration: inspiriert von Wok & Kin",
     target: "≈75 g KH gesamt (2 P.) · 蛋白质 ≈34 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -778,7 +792,7 @@ const RICE_COOKER = [
     title: "电饭煲：豆芽拌饭（콩나물밥）",
     desc: "韩式黄豆芽米饭，清爽多汁。",
     story:
-      "豆芽拌饭是韩国经典家常，米与豆芽同煮，酱汁另给。Inspiration: My Korean Kitchen & Korean Bapsang",
+      "豆芽拌饭是韩国经典家常，米与豆芽同煮，酱汁另给。Inspiration: inspiriert von My Korean Kitchen & Korean Bapsang",
     target: "≈68 g KH gesamt (2 P.) · 蛋白质 ≈22 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -806,7 +820,7 @@ const RICE_COOKER = [
     title: "电饭煲：三文鱼炊饭（鮭の炊き込みご飯）",
     desc: "米、蘑菇与三文鱼同煮——香气四溢。",
     story:
-      "日式 Sake Takikomi Gohan – 一锅到位，工作日晚餐友好。Inspiration: Japanese Cooking 101 & Just One Cookbook",
+      "日式 Sake Takikomi Gohan – 一锅到位，工作日晚餐友好。Inspiration: inspiriert von Japanese Cooking 101 & Just One Cookbook",
     target: "≈72 g KH gesamt (2 P.) · 蛋白质 ≈30 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -835,7 +849,7 @@ const RICE_COOKER = [
     title: "电饭煲：南瓜香菇糙米饭",
     desc: "中式灵感，软糯清甜，低钠。",
     story:
-      "南瓜拌饭在华语圈很受欢迎；电饭煲版本更省心。Inspiration: What To Cook Today & Greedy Girl Gourmet",
+      "南瓜拌饭在华语圈很受欢迎；电饭煲版本更省心。Inspiration: inspiriert von What To Cook Today & Greedy Girl Gourmet",
     target: "≈78 g KH gesamt (2 P.) · 蛋白质 ≈18 g/人",
     ingredients: [
       "糙米（生）90 g",
@@ -863,7 +877,7 @@ const RICE_COOKER = [
     title: "电饭煲：鸡肉红薯饭（고구마밥）",
     desc: "韩式红薯饭，柔和带甜味。",
     story:
-      "Goguma-bap 是常见的电饭煲米饭做法，这里加入鸡胸增蛋白。Inspiration: Maangchi",
+      "Goguma-bap 是常见的电饭煲米饭做法，这里加入鸡胸增蛋白。Inspiration: inspiriert von Maangchi",
     target: "≈80 g KH gesamt (2 P.) · 蛋白质 ≈28 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -890,7 +904,7 @@ const RICE_COOKER = [
     title: "电饭煲：鸡肉牛蒡炊饭（鶏ごぼう炊き込みご飯）",
     desc: "日式混合炊饭，鸡肉与牛蒡的泥土香。",
     story:
-      "鸡肉牛蒡炊饭是居家经典；把食材铺在米上一起煮即可。Inspiration: Just One Cookbook（Gobo & Miso Takikomi Gohan）",
+      "鸡肉牛蒡炊饭是居家经典；把食材铺在米上一起煮即可。Inspiration: inspiriert von Just One Cookbook（Gobo & Miso Takikomi Gohan）",
     target: "≈70 g KH gesamt (2 P.) · 蛋白质 ≈30 g/人",
     ingredients: [
       "大米（生）90 g",
@@ -916,7 +930,7 @@ const RICE_COOKER = [
   },
 ];
 
-// ---------- EXPORT (Minimal Render Container; App 读取 Meta/DATA) ----------
+// ---------- EXPORT (Minimal Render Container; App 读取 DATA/常量) ----------
 export default function PlanZH() {
   return (
     <div
@@ -925,16 +939,15 @@ export default function PlanZH() {
       data-title-main={UI_TITLES.main}
       data-title-list={UI_TITLES.list}
       data-count={DATA.length}
-      data-lang="zh"
       data-rc-count={RICE_COOKER.length}
+      data-lang="zh"
     >
-      {/* Intentionally no visible UI here – Tests read Meta/DATA only. */}
+      {/* 无需可见 UI —— 应用在外层渲染并跑测试 */}
     </div>
   );
 }
 
-// 导出供测试
+// 供测试使用
 export const DATASET = DATA;
 export const COLORS_CONST = COLORS;
 export const PROMPT_HEADER_CONST = PROMPT_HEADER;
-export const DATASET_RC = RICE_COOKER;
