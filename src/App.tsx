@@ -73,6 +73,28 @@ function PlanPage({ weeklyPlans }: { weeklyPlans: PlanIndexItem[] }) {
   );
 }
 
+function isoWeekYear(dateStr: string): number {
+  // ISO-Week-Year: Jahr der Donnerstags-Woche
+  const d = new Date(dateStr + 'T00:00:00Z');
+  const dow = (d.getUTCDay() + 6) % 7; // Mo=0 ... So=6
+  d.setUTCDate(d.getUTCDate() - dow + 3); // auf Donnerstag der Woche springen
+  return d.getUTCFullYear();
+}
+
+function groupByYear(plans: PlanIndexItem[]) {
+  const groups = new Map<string, PlanIndexItem[]>();
+  for (const p of plans) {
+    const y = String(isoWeekYear(p.startDate ?? ''));
+    const arr = groups.get(y) ?? [];
+    arr.push(p);
+    groups.set(y, arr);
+  }
+  for (const arr of groups.values()) {
+    arr.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
+  }
+  return groups;
+}
+
 function groupByYear(plans: PlanIndexItem[]) {
   const groups = new Map<string, PlanIndexItem[]>();
   for (const p of plans) {
