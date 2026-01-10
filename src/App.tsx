@@ -73,27 +73,108 @@ function PlanPage({ weeklyPlans }: { weeklyPlans: PlanIndexItem[] }) {
   );
 }
 
+function groupByYear(plans: PlanIndexItem[]) {
+  const groups = new Map<string, PlanIndexItem[]>();
+  for (const p of plans) {
+    const y = (p.startDate ?? '').slice(0, 4) || 'Unsortiert';
+    const arr = groups.get(y) ?? [];
+    arr.push(p);
+    groups.set(y, arr);
+  }
+  // innerhalb jedes Jahres neueste zuerst
+  for (const arr of groups.values()) {
+    arr.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
+  }
+  return groups;
+}
+
 export default function App() {
   const { lang } = useLanguageStore(); // "de" | "zh"
 
   // Eine Liste mit GENAU EINEM Eintrag pro Woche (repräsentiert die aktuelle Sprache)
   const weeklyPlans = useWeeklyPlans(lang);
 
+    // Nach Jahr gruppieren
+  const groupedByYear = React.useMemo(() => groupByYear(weeklyPlans), [weeklyPlans]);
+  const years = React.useMemo(
+    () => Array.from(groupedByYear.keys()).sort((a, b) => (a < b ? 1 : -1)), // neueste zuerst
+    [groupedByYear]
+  );
+
+  // Offen/zu Zustand je Jahr – initial: neuestes Jahr offen
+  const [openYears, setOpenYears] = React.useState<Record<string, boolean>>(() => {
+    const init: Record<string, boolean> = {};
+    years.forEach((y, idx) => (init[y] = idx === 0));
+    return init;
+  });
+
+  // Wenn sich die Jahre-Liste ändert (z. B. Sprache / Daten neu), Zustand auffrischen
+  React.useEffect(() => {
+    setOpenYears(prev => {
+      const next: Record<string, boolean> = {};
+      years.forEach((y, idx) => (next[y] = prev[y] ?? (idx === 0)));
+      return next;
+    });
+  }, [years]);
+
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: '100vh' }}>
       <aside style={{ borderRight: '1px solid #ddd', padding: 12, overflow: 'auto' }}>
-        <h3 style={{ marginTop: 0 }}>GhibliKitchen Pläne</h3>
-        <div style={{ marginBottom: 12 }}>
-          <LanguageSwitcher />
-        </div>
-        <ol style={{ paddingLeft: 18 }}>
-          {weeklyPlans.map((p) => (
-            <li key={p.id} style={{ marginBottom: 6 }}>
-              <Link to={`/plan/${p.id}`}>{p.startDate} — {cleanSidebarTitle(p)}</Link>
-            </li>
-          ))}
-        </ol>
-      </aside>
+  <h3 style={{ marginTop: 0 }}>GhibliKitchen Pläne</h3>
+  <div style={{ marginBottom: 12 }}>
+    <LanguageSwitcher />
+  </div>
+
+  {/* Buttons: alle Jahre auf/zu */}
+  <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+    <button
+      onClick={() => setOpenYears(Object.fromEntries(years.map(y => [y, true])))}
+      title="Alle aufklappen"
+    >
+      Alle auf
+    </button>
+    <button
+      onClick={() => setOpenYears(Object.fromEntries(years.map(y => [y, false])))}
+      title="Alle zuklappen"
+    >
+      Alle zu
+    </button>
+  </div>
+
+  {/* Jahr → Wochen (repräsentativer Plan pro Woche, in aktueller Sprache) */}
+  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+    {years.map((year) => {
+      const items = groupedByYear.get(year) ?? [];
+      return (
+        <li key={year} style={{ marginBottom: 8 }}>
+          <button
+            onClick={() => setOpenYears(m => ({ ...m, [year]: !m[year] }))}
+            style={{
+              width: '100%', textAlign: 'left', padding: '6px 8px',
+              background: 'transparent', border: '1px solid #ddd', borderRadius: 8,
+              cursor: 'pointer', fontWeight: 600
+            }}
+          >
+            {openYears[year] ? '▾' : '▸'} {year}{' '}
+            <span style={{ color: '#666', fontWeight: 400 }}>({items.length})</span>
+          </button>
+
+          {openYears[year] && (
+            <ol style={{ paddingLeft: 18, marginTop: 6 }}>
+              {items.map((p) => (
+                <li key={p.id} style={{ marginBottom: 6 }}>
+                  <Link to={`/plan/${p.id}`}>
+                    {p.startDate} — {cleanSidebarTitle(p)}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</aside>
       <main>
         <Routes>
           <Route
