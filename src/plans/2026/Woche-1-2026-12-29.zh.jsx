@@ -1,30 +1,31 @@
-// src/plans/2026/Woche-1-2025-12-29.de.jsx
+// src/plans/2026/Woche-1-2025-12-29.zh.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – Woche 1 (Start: 2025-12-29, ISO-KW 1)
+  GhibliKitchen – 第1周 (Start: 2025-12-29)
+  Optimized version matching the DE layout.
 */
 
 // ---- Meta ----
 export const meta = {
-  title: "Woche 1",
+  title: "第1周",
   startDate: "2025-12-29",
-  id: "woche-1-2025-12-29",
-  lang: "de",
-  sidebar: "[DE] Woche 1 (2025-12-29)",
+  id: "woche-1-2025-12-29", // WICHTIG: Identisch zu DE, ohne "-zh"
+  lang: "zh",
+  sidebar: "第1周（2025-12-29）",
 };
 
-const FILE_BASE = "Woche 1 2025-12-29";
+const FILE_BASE = "第1周 2025-12-29";
 
-// ---- UI Labels (NEU: Umbenannt wie gewünscht) ----
+// ---- UI Labels ----
 const UI_TITLES = {
-  main: "Rezepte Woche 1",
-  list: "Einkaufsliste Woche 1",
+  main: "第1周食谱", // Analog zu "Rezepte Woche 1"
+  list: "第1周购物清单",
 };
 
-// ---- THEME (CSS Variablen) ----
+// ---- THEME (CSS 变量) ----
 const THEME_VARS_LIGHT = {
   "--bg": "#FAF7F1",
   "--text": "#111827",
@@ -38,7 +39,7 @@ const THEME_VARS_LIGHT = {
   "--grad-hero":
     "linear-gradient(135deg, rgba(224,122,154,.2), rgba(42,167,105,.18))",
   "--btn-on-bg": "#EEF8F3",
-  "--btn-border": "rgba(0,0,0,.15)",
+  "--btn-border": "rgba(0,0,0,.15)"
 };
 const THEME_VARS_DARK = {
   "--bg": "#0f1115",
@@ -53,7 +54,7 @@ const THEME_VARS_DARK = {
   "--grad-hero":
     "linear-gradient(135deg, rgba(224,122,154,.18), rgba(42,167,105,.15))",
   "--btn-on-bg": "rgba(255,255,255,.10)",
-  "--btn-border": "rgba(255,255,255,.18)",
+  "--btn-border": "rgba(255,255,255,.18)"
 };
 
 function useSystemPrefersDark() {
@@ -72,7 +73,7 @@ function themeVars(mode) {
   return mode === "dark" ? THEME_VARS_DARK : THEME_VARS_LIGHT;
 }
 
-/* ----------------------- Sprach-Hint (nur URL) ------------------------ */
+/* ----------------------- Gate / Lang Hint ------------------------ */
 function getLangFromQuery() {
   if (typeof window === "undefined") return null;
   try {
@@ -97,7 +98,6 @@ function useLangHint() {
   return q;
 }
 
-/* ----------------------------- UI Bits ------------------------------ */
 const cardPanelStyle = {
   background: "var(--panel)",
   borderRadius: 18,
@@ -105,6 +105,7 @@ const cardPanelStyle = {
   boxShadow: "var(--shadow)",
   border: "1px solid var(--border)",
 };
+
 const tagChip = (text) => (
   <span
     className="ghk-chip"
@@ -125,27 +126,26 @@ const tagChip = (text) => (
 
 // ---- Weekday helpers ----
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
-const DAY_NAME_DE = {
-  mo: "Montag (2025-12-29)",
-  di: "Dienstag (2025-12-30)",
-  mi: "Mittwoch (2025-12-31)",
-  do: "Donnerstag (2026-01-01)",
-  fr: "Freitag (2026-01-02)",
-  sa: "Samstag (2026-01-03)",
-  so: "Sonntag (2026-01-04)",
+const DAY_NAME_ZH = {
+  mo: "星期一 (2025-12-29)",
+  di: "星期二 (2025-12-30)",
+  mi: "星期三 (2025-12-31)",
+  do: "星期四 (2026-01-01)",
+  fr: "星期五 (2026-01-02)",
+  sa: "星期六 (2026-01-03)",
+  so: "星期日 (2026-01-04)",
 };
 
-/* ------------------------------ DATA ------------------------------- */
+// ---- DATA (21 道菜) ----
 const DATA = [
-  // Montag
+  // 周一
   {
     id: "mo-f",
-    title: "Genmai-Okayu mit Hähnchen & Shiitake (玄米粥)",
-    desc:
-      "Japanischer Vollkorn-Reisbrei – sehr mild; Hähnchen fein gewürfelt, Shiitake für Umami.",
+    title: "玄米粥·鸡肉香菇（玄米粥）",
+    desc: "日式糙米粥，口味清淡；鸡胸切丁，香菇提升鲜味。",
     story:
-      "In japanischen Haushalten ist Okayu klassisches Wohlfühlessen. Mit Genmai (Braunreis) sättigt es länger – perfekt bei kühlen Morgen.",
-    target: "≈68 g KH gesamt (2 P.) · Protein ≈25 g p. P.",
+      "在日本家庭里，粥是经典的安慰食物。糙米更耐饿，适合寒冷的清晨。",
+    target: "≈68 g 碳水（2人）· 蛋白≈25 g/人",
     ingredients: [
       "Brauner Reis (roh) 80 g",
       "Wasser 900 ml",
@@ -156,32 +156,29 @@ const DATA = [
       "Frühlingszwiebel 15 g",
     ],
     steps: [
-      "Reis waschen. Mit Wasser im Topf 35–40 Min. sanft köcheln (oder Reiskocher Porridge).",
-      "Hähnchen fein würfeln, nach 20 Min. zugeben; Pilze/Ingwer mitziehen lassen.",
-      "Mild würzen, Lauchgrün darüber.",
+      "淘米后小火煮35–40分钟（或电饭煲粥/Congee程序）。",
+      "鸡肉切小丁，20分钟时加入；香菇与姜同煮。",
+      "清淡调味，撒上葱花即可。",
     ],
     checks:
-      "Gastritis ✓ sehr mild · Diabetes ✓ – ≈68 g KH · Schwangerschaft ✓ Huhn durchgegart",
+      "胃炎 ✓ 很温和 · 糖代谢 ✓ ≈68 g 碳水 · 孕期 ✓ 鸡肉全熟",
     swaps:
-      "Brauner Reis ↔ Reis; Hähnchen ↔ Tofu; Shiitake ↔ Champignons.",
-    side: "Gurken-Pickles ohne Chili; Gerstentee.",
+      "糙米 ↔ 普通米；鸡肉 ↔ 豆腐；香菇 ↔ 蘑菇。",
+    side: "清淡黄瓜渍；麦茶。",
     remind: true,
     riceCooker: {
       enabled: true,
       program: "Porridge/Congee",
-      water: "1 Teil Reis : 10–11 Teile Wasser",
-      notes:
-        "Hähnchen nach 20 Min. zufügen, insgesamt 60–70 Min. je nach Gerät.",
+      water: "米:水 = 1:10–11",
+      notes: "鸡肉在20分钟时加入，总时长依机型约60–70分钟。",
     },
   },
   {
     id: "mo-m",
-    title: "Tofu-Soboro Don (そぼろ丼風) – mit Vollkornreis",
-    desc:
-      "Japanisch inspiriert: gewürzter Tofu-‚Soboro‘ mit Spinat & Karotte auf Reis – mild & salzarm.",
-    story:
-      "Soboro-Don ist normalerweise mit Hack; die Tofu-Version ist leichter und passt gut zum Lunch.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+    title: "豆腐碎盖饭（そぼろ丼风）· 全麦米",
+    desc: "日式改良：调味豆腐“肉末”配菠菜与胡萝卜，低盐清淡。",
+    story: "传统そぼろ丼多用肉末；豆腐版更轻盈，适合午餐。",
+    target: "≈72 g 碳水（2人）· 蛋白≈28 g/人",
     ingredients: [
       "Vollkornreis (roh) 90 g",
       "Tofu fest 300 g",
@@ -192,25 +189,22 @@ const DATA = [
       "Sesamöl 8 ml",
     ],
     steps: [
-      "Reis garen.",
-      "Tofu zerkrümeln und in wenig Öl 6–7 Min. braten; mild würzen.",
-      "Spinat/Karotte kurz dünsten, alles auf Reis anrichten.",
+      "煮饭。",
+      "豆腐捏碎少油煎 6–7 分钟，清淡调味。",
+      "菠菜与胡萝卜焯熟，铺在米饭上。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Putenhack; Vollkornreis ↔ Reis.",
-    side: "Kleine Misosuppe (mild).",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈72 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "豆腐 ↔ 火鸡肉末；全麦米 ↔ 白米。",
+    side: "淡味味噌汤。",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "mo-a",
-    title: "Udon-Nabeyaki light (鍋焼きうどん) – ohne Ei",
-    desc:
-      "Leichter Topf mit Udon, Hähnchen & Gemüse in klarer Brühe, ohne rohes Ei.",
-    story:
-      "Nabeyaki-Udon ist Winter-Comfortfood in Japan – hier extra mild und schwangerschaftstauglich.",
-    target: "≈80 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    title: "清汤锅烧乌冬（不加蛋）",
+    desc: "清淡高汤配乌冬、鸡肉与蔬菜；无生蛋。",
+    story: "冬季人气暖面，这里做成更清爽、孕期可食的版本。",
+    target: "≈80 g 碳水（2人）· 蛋白≈30 g/人",
     ingredients: [
       "Udon (trocken) 110 g",
       "Hähnchenbrust 220 g",
@@ -222,27 +216,24 @@ const DATA = [
       "Wasser 1000 ml",
     ],
     steps: [
-      "Brühe anrühren, Hähnchen 6–8 Min. gar ziehen.",
-      "Gemüse 3–4 Min. mitgaren.",
-      "Udon separat kochen und zugeben.",
+      "调好汤底，鸡肉小火煮 6–8 分钟至熟。",
+      "蔬菜入锅再煮 3–4 分钟。",
+      "乌冬另煮后拌入。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈80 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Udon ↔ Soba; Hähnchen ↔ Tofu.",
-    side: "Gurke natur; Kräutertee.",
+    checks: "胃炎 ✓ 清淡 · 糖代谢 ✓ ≈80 g 碳水 · 孕期 ✓ 鸡肉全熟",
+    swaps: "乌冬 ↔ 荞麦面；鸡肉 ↔ 豆腐。",
+    side: "清拌黄瓜；花草茶。",
     remind: true,
     riceCooker: { enabled: false },
   },
 
-  // Dienstag
+  // 周二
   {
     id: "di-f",
-    title: "Hafer-Reis-Juk mit Apfel & Tofu (오트죽) – zuckerarm",
-    desc:
-      "Koreanisch inspiriert: Haferflocken + Reis als milder Frühstücksbrei mit Tofuwürfeln.",
-    story:
-      "Juk gibt es in unzähligen Varianten – Hafer sorgt für lösliche Ballaststoffe und sanfte Sättigung.",
-    target: "≈66 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    title: "燕麦米粥·苹果豆腐（韩式粥风，低糖）",
+    desc: "燕麦+大米的柔和早餐粥，加入豆腐丁。",
+    story: "韩式粥有许多变化；燕麦提供可溶纤维，饱腹温和。",
+    target: "≈66 g 碳水（2人）· 蛋白≈22 g/人",
     ingredients: [
       "Reis (roh) 60 g",
       "Zarte Haferflocken 30 g",
@@ -252,25 +243,22 @@ const DATA = [
       "Zimt 1 Prise",
     ],
     steps: [
-      "Reis + Wasser aufkochen, 20 Min. köcheln.",
-      "Haferflocken einrühren, 5–8 Min. weiter köcheln.",
-      "Tofu/Apfel würfeln, 2–3 Min. ziehen lassen.",
+      "米+水煮 20 分钟。",
+      "加入燕麦再煮 5–8 分钟。",
+      "豆腐与苹果丁再焖 2–3 分钟。",
     ],
-    checks:
-      "Gastritis ✓ weich & warm · Diabetes ✓ – ≈66 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Apfel ↔ Birne; Tofu ↔ Hühnerwürfel.",
-    side: "Gerstentee; kleines Gurken-Pickle.",
+    checks: "胃炎 ✓ 软暖 · 糖代谢 ✓ ≈66 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "苹果 ↔ 梨；豆腐 ↔ 鸡丁。",
+    side: "麦茶；小黄瓜渍。",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "di-m",
-    title: "Soba-Pfanne mit Huhn & Brokkoli (そば) – mild",
-    desc:
-      "Schnelle Pfanne, wenig Öl, zartes Huhn, Brokkoli & Zwiebel.",
-    story:
-      "Warme Soba sind ein japanischer Lunch-Liebling – hier als Pfanne statt Suppe.",
-    target: "≈74 g KH gesamt (2 P.) · Protein ≈33 g p. P.",
+    title: "鸡肉西兰花荞麦面（清淡版）",
+    desc: "快手少油；鸡肉、花椰菜与洋葱拌荞麦面。",
+    story: "热荞麦面很适合午餐；这里做成炒拌版本。",
+    target: "≈74 g 碳水（2人）· 蛋白≈33 g/人",
     ingredients: [
       "Soba (trocken) 100 g",
       "Hähnchenbrust 220 g",
@@ -280,26 +268,22 @@ const DATA = [
       "Miso hell 15 g",
     ],
     steps: [
-      "Soba garen.",
-      "Hähnchenstreifen 6–8 Min. braten bis durch.",
-      "Brokkoli/Zwiebel kurz mitgaren, Soba und Sauce untermischen.",
+      "煮熟荞麦面。",
+      "鸡肉条煎 6–8 分钟至熟。",
+      "加入蔬菜略炒，拌入面与酱。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈74 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Soba ↔ Udon; Hähnchen ↔ Tofu.",
-    side: "Kleines Gurken-Salätchen (ohne Essig).",
+    checks: "胃炎 ✓ 清淡 · 糖代谢 ✓ ≈74 g 碳水 · 孕期 ✓ 鸡肉全熟",
+    swaps: "荞麦面 ↔ 乌冬；鸡肉 ↔ 豆腐。",
+    side: "清淡黄瓜沙拉（不加醋）。",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "di-a",
-    title:
-      "Gedämpfter Kabeljau & Reisschale (清蒸鳕鱼) – Reiskocher-Dämpfeinsatz",
-    desc:
-      "Sanft gedämpfter Kabeljau mit Ingwer/Lauch, dazu frischer Reis.",
-    story:
-      "Kantonesisches Dämpfen bringt Zartheit ohne Schärfe; perfekt am Abend.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    title: "清蒸鳕鱼配米饭（电饭煲蒸屉）",
+    desc: "姜丝与葱段提味的清蒸鳕鱼，配新煮白米。",
+    story: "粤式清蒸让鱼肉更嫩、无辣更好消化。",
+    target: "≈72 g 碳水（2人）· 蛋白≈30 g/人",
     ingredients: [
       "Reis (roh) 90 g",
       "Kabeljaufilet 320 g",
@@ -310,33 +294,29 @@ const DATA = [
       "Gemüsebrühe 80 ml",
     ],
     steps: [
-      "Reis kochen (Reiskocher).",
-      "Fisch auf Ingwer im Dämpfeinsatz 8–10 Min. garen.",
-      "Warme Sauce aus Brühe/Sojasauce/Sesamöl über Fisch geben, mit Reis servieren.",
+      "电饭煲煮饭。",
+      "蒸屉铺姜片放鱼，蒸 8–10 分钟至熟。",
+      "以清汤、淡酱油、芝麻油调热汁，浇在鱼上配饭食用。",
     ],
-    checks:
-      "Gastritis ✓ gedämpft · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ Kabeljau durchgegart",
-    swaps: "Kabeljau ↔ Lachs/Seelachs; Reis ↔ Vollkornreis.",
-    side: "Gedünsteter Pak Choi; Kräutertee.",
+    checks: "胃炎 ✓ 蒸 · 糖代谢 ✓ ≈72 g 碳水 · 孕期 ✓ 鳕鱼全熟",
+    swaps: "鳕鱼 ↔ 三文鱼/狭鳕；白米 ↔ 全麦米。",
+    side: "清蒸青菜；花草茶。",
     remind: true,
     riceCooker: {
       enabled: true,
       program: "White/Brown Rice + Steam basket",
-      water: "Reis 1 : 1.2–1.4 Wasser (je nach Sorte)",
-      notes:
-        "Fisch im Einsatz garen, wenn Reis noch ~10 Min. Restzeit hat.",
+      water: "米:水 = 1:1.2–1.4（依品种）",
+      notes: "饭程剩约10分钟时蒸鱼恰好同时完成。",
     },
   },
 
-  // Mittwoch
+  // 周三
   {
     id: "mi-f",
-    title: "Miso-Gemüse-Reisbrei (味噌粥) – mild",
-    desc:
-      "Cremiger Reisbrei mit etwas hellem Miso, Karotte & Tofu – ganz sanft.",
-    story:
-      "Zōsui/Okayu-Varianten sind beliebte Aufwärmer – hier extra weich und salzarm.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    title: "味噌蔬菜米粥（清淡）",
+    desc: "稠滑米粥加少量淡味噌，胡萝卜与豆腐，十分温和。",
+    story: "杂炊/粥类是御寒佳品，这里盐分更低、口味更柔。",
+    target: "≈70 g 碳水（2人）· 蛋白≈22 g/人",
     ingredients: [
       "Reis (roh) 80 g",
       "Wasser 900 ml",
@@ -346,26 +326,22 @@ const DATA = [
       "Ingwer 6 g",
     ],
     steps: [
-      "Reis 30–35 Min. köcheln, Karotte weich garen.",
-      "Miso einrühren (nicht kochen).",
-      "Tofu 2–3 Min. ziehen lassen.",
+      "米煮 30–35 分钟，胡萝卜煮至软。",
+      "离火拌入味噌（不再煮）。",
+      "加入豆腐焖 2–3 分钟。",
     ],
-    checks:
-      "Gastritis ✓ sehr mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps:
-      "Tofu ↔ Hähnchenwürfel; Reis ↔ Brauner Reis (mehr Wasser).",
-    side: "Leichter Grüntee koffeinarm.",
+    checks: "胃炎 ✓ 很温和 · 糖代谢 ✓ ≈70 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "豆腐 ↔ 鸡丁；白米 ↔ 糙米（需更多水）。",
+    side: "低咖啡因绿茶。",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "mi-m",
-    title: "Kongnamul-Bap – Bohnenkeim-Reis (콩나물밥)",
-    desc:
-      "Koreanischer Gemüsereis – Bohnenkeime & Karotte auf Reis; Sauce mild separat.",
-    story:
-      "Ein Klassiker der koreanischen Hausküche – normalerweise im Topf oder Reiskocher.",
-    target: "≈82 g KH gesamt (2 P.) · Protein ≈20 g p. P.",
+    title: "豆芽拌饭（Kongnamul-bap）",
+    desc: "韩式蔬菜饭：豆芽与胡萝卜铺在米饭上，清淡蘸汁分开。",
+    story: "家常经典，常用锅或电饭煲完成。",
+    target: "≈82 g 碳水（2人）· 蛋白≈20 g/人",
     ingredients: [
       "Reis (roh) 100 g",
       "Bohnenkeime 250 g",
@@ -375,31 +351,27 @@ const DATA = [
       "Sesamöl 6 ml",
     ],
     steps: [
-      "Reis mit Wasser garen.",
-      "Keime/Karotte 3–4 Min. dämpfen, unterheben.",
-      "Milde Sauce getrennt servieren.",
+      "煮饭。",
+      "豆芽与胡萝卜蒸 3–4 分钟，拌入米饭。",
+      "清淡蘸汁另上桌。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈82 g KH · Schwangerschaft ✓ Gemüse gedämpft",
-    swaps: "Reis ↔ Vollkornreis; Keime ↔ Spinat.",
-    side: "Kleine Gurken-Pickles (ohne Chili).",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈82 g 碳水 · 孕期 ✓ 蔬菜蒸熟",
+    swaps: "白米 ↔ 全麦米；豆芽 ↔ 菠菜。",
+    side: "小份黄瓜渍（无辣）。",
     remind: false,
     riceCooker: {
       enabled: true,
       program: "White Rice",
-      water: "1 : 1.2–1.4",
-      notes:
-        "Keime in den letzten 5–8 Min. obenauf garen (Dämpfeinsatz/aufgelegt).",
+      water: "1:1.2–1.4",
+      notes: "最后 5–8 分钟把豆芽铺在上层蒸熟即可。",
     },
   },
   {
     id: "mi-a",
-    title: "Yu-Xiang Aubergine mild (鱼香茄子) & Reis – ohne Chili",
-    desc:
-      "Samtige Auberginen in milder, leicht süß-herzhafter Sauce; kein Chili.",
-    story:
-      "Die Hausversion ohne Schärfe ist perfekt für Familien – alles weich geschmort.",
-    target: "≈78 g KH gesamt (2 P.) · Protein ≈22 g p. P.",
+    title: "鱼香茄子（无辣）配米饭",
+    desc: "软糯茄子裹上微甜鲜香的酱汁；不放辣椒。",
+    story: "家常无辣版，炖到全软，适合全家食用。",
+    target: "≈78 g 碳水（2人）· 蛋白≈22 g/人",
     ingredients: [
       "Reis (roh) 90 g",
       "Auberginen 350 g",
@@ -411,27 +383,24 @@ const DATA = [
       "Maisstärke 10 g",
     ],
     steps: [
-      "Reis garen.",
-      "Aubergine/Paprika 8–10 Min. schmoren.",
-      "Sauce anrühren, kurz binden, über Reis.",
+      "煮饭。",
+      "茄子与甜椒炖 8–10 分钟至软。",
+      "勾芡收汁，浇在米饭上。",
     ],
-    checks:
-      "Gastritis ✓ weich geschmort · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Aubergine ↔ Zucchini; Reis ↔ Vollkornreis.",
-    side: "Gedünsteter Brokkoli.",
+    checks: "胃炎 ✓ 软炖 · 糖代谢 ✓ ≈78 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "茄子 ↔ 西葫芦；白米 ↔ 全麦米。",
+    side: "清蒸西兰花。",
     remind: true,
     riceCooker: { enabled: false },
   },
 
-  // Donnerstag
+  // 周四
   {
     id: "do-f",
-    title: "Omuraisu light (オムライス) – Ei vollständig gestockt",
-    desc:
-      "Japanisch-westlich: mildes Gemüse-Reis-Omelett mit wenig Tomate, Ei durchgegart.",
-    story:
-      "Beliebtes Yoshoku-Gericht – hier ballaststoffbetont und schwangerschaftsgeeignet.",
-    target: "≈70 g KH gesamt (2 P.) · Protein ≈26 g p. P.",
+    title: "清淡蛋包饭（鸡蛋全熟）",
+    desc: "和洋风：蔬菜炒饭卷入蛋皮，少量番茄味；鸡蛋全熟。",
+    story: "人气洋食，这里更注重纤维与孕期安全。",
+    target: "≈70 g 碳水（2人）· 蛋白≈26 g/人",
     ingredients: [
       "Reis (roh) 80 g",
       "Eier 4 Stück",
@@ -442,25 +411,22 @@ const DATA = [
       "Tomatenmark 10 g",
     ],
     steps: [
-      "Reis garen; Gemüse/Huhn 8–10 Min. dünsten.",
-      "Mit Reis mischen; Omelett in Pfanne vollständig stocken.",
-      "Reismischung einrollen, kurz nachziehen lassen.",
+      "煮饭；鸡肉与蔬菜炒 8–10 分钟。",
+      "与米饭拌匀；摊蛋皮并完全凝固后卷起。",
+      "略焖即可。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈70 g KH · Schwangerschaft ✓ Ei vollständig gestockt",
-    swaps: "Reis ↔ Vollkornreis; Huhn ↔ Tofu.",
-    side: "Kleiner Blattsalat ohne Essig (nur wenig Öl).",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈70 g 碳水 · 孕期 ✓ 蛋全熟",
+    swaps: "白米 ↔ 全麦米；鸡肉 ↔ 豆腐。",
+    side: "生菜小沙拉（少油不加醋）。",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "do-m",
-    title: "Jjimdak-Gemüsepfanne (찜닭풍) – mild, ohne Chili",
-    desc:
-      "Von koreanischem Jjimdak inspiriert: zartes Huhn mit Kartoffel, Karotte & Glasnudeln (kleine Menge).",
-    story:
-      "Normalerweise herzhaft-süß und scharf – hier ganz mild und familienfreundlich.",
-    target: "≈86 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
+    title: "清炖鸡蔬一锅（Jjimdak风，无辣）",
+    desc: "灵感自韩式焖鸡：鸡肉、土豆、胡萝卜与少量粉丝，口味清淡。",
+    story: "传统做法偏甜咸且带辣；这里无辣、家常友好。",
+    target: "≈86 g 碳水（2人）· 蛋白≈34 g/人",
     ingredients: [
       "Glasnudeln (roh) 40 g",
       "Hähnchenbrust 250 g",
@@ -472,25 +438,22 @@ const DATA = [
       "Maisstärke 8 g",
     ],
     steps: [
-      "Huhn mit Gemüse 15–18 Min. sanft schmoren.",
-      "Glasnudeln 3–4 Min. mitziehen lassen.",
-      "Leicht binden und servieren.",
+      "鸡肉与蔬菜小火焖 15–18 分钟。",
+      "粉丝入锅 3–4 分钟。",
+      "略勾芡即可。",
     ],
-    checks:
-      "Gastritis ✓ mild geschmort · Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps: "Glasnudeln ↔ Udon; Huhn ↔ Tofu.",
-    side: "Gurken-Pickles ohne Chili.",
+    checks: "胃炎 ✓ 清炖 · 糖代谢 ✓ ≈86 g 碳水 · 孕期 ✓ 鸡肉全熟",
+    swaps: "粉丝 ↔ 乌冬；鸡肉 ↔ 豆腐。",
+    side: "无辣黄瓜渍。",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "do-a",
-    title: "Hainan-Chicken-Rice light (海南鸡饭) – Reiskocher-Methode",
-    desc:
-      "Zartes Huhn auf Ingwer-Knoblauch-Reis, alles mild und salzarm.",
-    story:
-      "Berühmt in Südostasien; hier sehr leicht und natriumarm, perfekt für Abend.",
-    target: "≈84 g KH gesamt (2 P.) · Protein ≈32 g p. P.",
+    title: "清爽海南鸡饭（电饭煲法）",
+    desc: "嫩鸡胸铺香米饭；整体清淡低钠。",
+    story: "东南亚名菜的清爽版，适合晚上吃。",
+    target: "≈84 g 碳水（2人）· 蛋白≈32 g/人",
     ingredients: [
       "Reis (roh) 100 g",
       "Hähnchenbrust 280 g",
@@ -502,32 +465,29 @@ const DATA = [
       "Sojasauce natriumarm 10 ml",
     ],
     steps: [
-      "Reis waschen, in Reiskocher geben; Wasser, Ingwer, Knoblauch zugeben.",
-      "Hähnchen obenauf legen und mitgaren bis durch (Kerntemp. ≥75°C).",
-      "Huhn in Scheiben, Reis locker, Lauchgrün und etwas Sesamöl darüber.",
+      "淘米入锅，加水、姜与蒜。",
+      "鸡胸放在米上同煮至≥75°C。",
+      "切片装盘，米饭松散，点少许香油与葱。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈84 g KH · Schwangerschaft ✓ Huhn vollständig durchgegart",
-    swaps: "Hähnchen ↔ Pute; Reis ↔ Vollkornreis (mehr Wasser).",
-    side: "Gedünsteter Pak Choi; milder Brühen-Dip separat.",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈84 g 碳水 · 孕期 ✓ 鸡全熟",
+    swaps: "鸡 ↔ 火鸡；白米 ↔ 全麦米（需更多水）。",
+    side: "清蒸青菜；温和清汤蘸食。",
     remind: true,
     riceCooker: {
       enabled: true,
-      program: "White/Brown Rice (je nach Sorte)",
-      water: "1 : 1.6",
-      notes:
-        "Huhn als ganze Brust obenauf garen; nach Garende 10 Min. warmhalten.",
+      program: "White/Brown Rice",
+      water: "1:1.2–1.6",
+      notes: "整块鸡胸置于米上；跳保温后再焖 10 分钟。",
     },
   },
 
-  // Freitag
+  // 周五
   {
     id: "fr-f",
-    title: "Tojiru-Gemüsesuppe mit Tofu (豚汁風) – ohne Schwein",
-    desc:
-      "Herzhafte Misosuppe mit Wurzelgemüse & Tofu, dazu kleiner Reis.",
-    story: "Tojiru wärmt – unsere Version ist vegetarisch und sanft.",
-    target: "≈64 g KH gesamt (2 P.) · Protein ≈24 g p. P.",
+    title: "蔬菜味噌汤配豆腐（Tojiru风，无猪肉）+ 小碗米饭",
+    desc: "富含根茎蔬菜的暖汤，配少量米饭。",
+    story: "Tojiru 很暖身；此版素食且温和。",
+    target: "≈64 g 碳水（2人）· 蛋白≈24 g/人",
     ingredients: [
       "Reis (roh) 80 g",
       "Miso hell 25 g",
@@ -538,25 +498,22 @@ const DATA = [
       "Wasser 1000 ml",
     ],
     steps: [
-      "Gemüse 12–15 Min. in Wasser/Brühe sanft garen.",
-      "Miso einrühren; Tofu 2–3 Min. ziehen lassen.",
-      "Mit kleinem Reis servieren.",
+      "蔬菜在水/清汤中小火煮 12–15 分钟。",
+      "拌入味噌；加入豆腐焖 2–3 分钟。",
+      "配小碗米饭食用。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Tofu ↔ Hähnchenwürfel; Reis ↔ Vollkornreis.",
-    side: "Grüntee koffeinarm.",
+    checks: "胃炎 ✓ 清淡 · 糖代谢 ✓ ≈64 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "豆腐 ↔ 鸡丁；白米 ↔ 全麦米。",
+    side: "低咖啡因绿茶。",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "fr-m",
-    title: "Takikomi-Gohan mit Huhn & Wurzelgemüse (炊き込みご飯)",
-    desc:
-      "Japanischer Gemüsereis – alles zusammen im Reiskocher gegart.",
-    story:
-      "Ein beliebtes Alltagsgericht: Reis nimmt Umami von Pilzen/Gemüse auf – perfekt für Meal-Prep.",
-    target: "≈88 g KH gesamt (2 P.) · Protein ≈28 g p. P.",
+    title: "日式什锦饭（Takikomi-gohan）· 鸡肉根茎类",
+    desc: "电饭煲一锅完成，米饭吸收蔬菜与香菇的鲜味。",
+    story: "适合备餐的家常菜。",
+    target: "≈88 g 碳水（2人）· 蛋白≈28 g/人",
     ingredients: [
       "Reis (roh) 110 g",
       "Hähnchenbrust 220 g",
@@ -571,27 +528,23 @@ const DATA = [
       "鸡肉与蔬菜切小丁铺在上面。",
       "启动程序；结束后翻松即可。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈88 g KH · Schwangerschaft ✓ Huhn durchgegart",
-    swaps:
-      "Huhn ↔ Tofu; Reis ↔ Vollkornreis (mehr Wasser).",
-    side: "Gurken-Pickles; Kräutertee.",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈88 g 碳水 · 孕期 ✓ 鸡肉全熟",
+    swaps: "鸡 ↔ 豆腐；白米 ↔ 全麦米。",
+    side: "黄瓜渍；花草茶。",
     remind: false,
     riceCooker: {
       enabled: true,
       program: "Mixed/White Rice",
-      water: "1 : 1.3–1.5 (inkl. Würzflüssigkeit)",
-      notes: "Nachgaren 10 Min. im Warmhaltemodus.",
+      water: "1:1.3–1.5（含调味液）",
+      notes: "保温静置 10 分钟再开盖翻松。",
     },
   },
   {
     id: "fr-a",
-    title: "Lachs-Miso-Schmorpfännchen & Brauner Reis (照り焼き風, mild)",
-    desc:
-      "Sanft gegarter Lachs in leichter Miso-Glasur, dazu brauner Reis & Brokkoli.",
-    story:
-      "Teriyaki-Anklänge, aber salzarm und mit viel Gemüse – gemütlicher Abendteller.",
-    target: "≈76 g KH gesamt (2 P.) · Protein ≈33 g p. P.",
+    title: "清爽味噌三文鱼+糙米（淡照烧风）",
+    desc: "温火煨三文鱼配淡味噌汁，搭配糙米与西兰花。",
+    story: "有照烧神韵，但更低盐、多蔬菜，适合晚餐。",
+    target: "≈76 g 碳水（2人）· 蛋白≈33 g/人",
     ingredients: [
       "Lachsfilet 300 g",
       "Brauner Reis (roh) 90 g",
@@ -603,27 +556,24 @@ const DATA = [
       "Wasser 600 ml",
     ],
     steps: [
-      "Reis garen (brauner Reis 30–35 Min.).",
-      "Lachs 8–10 Min. sanft garen; Sauce kurz einköcheln.",
-      "Mit Brokkoli servieren.",
+      "煮糙米（30–35 分钟）。",
+      "三文鱼温火煨 8–10 分钟；酱汁略收浓。",
+      "配西兰花一起食用。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈76 g KH · Schwangerschaft ✓ Lachs durchgegart, quecksilberarm",
-    swaps: "Lachs ↔ Kabeljau; Brauner Reis ↔ Reis.",
-    side: "Gerstentee.",
+    checks: "胃炎 ✓ 清淡 · 糖代谢 ✓ ≈76 g 碳水 · 孕期 ✓ 三文鱼全熟、低汞",
+    swaps: "三文鱼 ↔ 鳕鱼；糙米 ↔ 白米。",
+    side: "麦茶。",
     remind: true,
     riceCooker: { enabled: false },
   },
 
-  // Samstag
+  // 周六
   {
     id: "sa-f",
-    title: "Süßkartoffel-Okayu (さつまいも粥) – Reiskocher",
-    desc:
-      "Cremiger Reisbrei mit Süßkartoffelwürfeln – natürlich süß & ballaststoffreich.",
-    story:
-      "In Japan beliebt für sanfte Morgen – Süßkartoffel macht schön sämig.",
-    target: "≈72 g KH gesamt (2 P.) · Protein ≈18 g p. P.",
+    title: "红薯米粥（电饭煲）",
+    desc: "糯滑米粥加红薯丁，自然甘甜、富含纤维。",
+    story: "在日本很受欢迎的柔和早晨粥。",
+    target: "≈72 g 碳水（2人）· 蛋白≈18 g/人",
     ingredients: [
       "Reis (roh) 80 g",
       "Süßkartoffel 220 g",
@@ -632,32 +582,27 @@ const DATA = [
       "Zimt 1 Prise",
     ],
     steps: [
-      "Alles (bis auf Tofu) im Topf 35–40 Min. köcheln oder Reiskocher Porridge.",
-      "Tofu 2–3 Min. ziehen lassen.",
-      "Mild abschmecken.",
+      "除豆腐外同煮 35–40 分钟或电饭煲粥程序。",
+      "加入豆腐再焖 2–3 分钟。",
+      "清淡调味即可。",
     ],
-    checks:
-      "Gastritis ✓ sehr mild · Diabetes ✓ – ≈72 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps: "Süßkartoffel ↔ Kürbis; Tofu ↔ Hühnerwürfel.",
-    side: "Warmwasser oder Gerstentee.",
+    checks: "胃炎 ✓ 很温和 · 糖代谢 ✓ ≈72 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "红薯 ↔ 南瓜；豆腐 ↔ 鸡丁。",
+    side: "温水或麦茶。",
     remind: true,
     riceCooker: {
       enabled: true,
       program: "Porridge/Congee",
-      water: "1 : 10–11",
-      notes:
-        "Süßkartoffel klein würfeln; Gesamtzeit 60–70 Min. je nach Gerät.",
+      water: "1:10–11",
+      notes: "红薯切小丁；总时长 60–70 分钟视机型而定。",
     },
   },
   {
     id: "sa-m",
-    title:
-      "Jajang-Tofu-Nudeln light (자장면) – mit Vollkornnudeln",
-    desc:
-      "Schwarzbohnen-Nudeln als leichtere, milde Version; Tofu statt Fettfleisch.",
-    story:
-      "Koreanisch-chinesischer Klassiker – hier gemüsebetont und salzarm.",
-    target: "≈86 g KH gesamt (2 P.) · Protein ≈26 g p. P.",
+    title: "清淡炸酱豆腐面（全麦面）",
+    desc: "以豆腐代替肥肉的黑酱面，更多蔬菜、低盐。",
+    story: "韩中融合家常面，这里更轻盈。",
+    target: "≈86 g 碳水（2人）· 蛋白≈26 g/人",
     ingredients: [
       "Vollkornnudeln (roh) 120 g",
       "Tofu fest 250 g",
@@ -669,27 +614,22 @@ const DATA = [
       "Maisstärke 8 g",
     ],
     steps: [
-      "Nudeln kochen.",
-      "Gemüse anschwitzen, Brühe/Paste zugeben, 6–8 Min. köcheln.",
-      "Tofu zugeben, leicht binden, servieren.",
+      "煮面。",
+      "炒香蔬菜，加入清汤与黑酱，小火 6–8 分钟。",
+      "下豆腐略勾芡即可。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ vollständig gegart",
-    swaps:
-      "Tofu ↔ Hähnchenwürfel; Vollkornnudeln ↔ Udon.",
-    side: "Gurkensalat ohne Essig.",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈86 g 碳水 · 孕期 ✓ 全熟",
+    swaps: "豆腐 ↔ 鸡丁；全麦面 ↔ 乌冬。",
+    side: "黄瓜丝（不加醋）。",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "sa-a",
-    title:
-      "Chawanmushi-Teller (茶碗蒸し) & Reis – Ei vollständig gestockt",
-    desc:
-      "Japanischer Eierpudding im Dampf, vollständig gestockt; dazu Schälchen Reis & Spinat.",
-    story:
-      "Feine Textur, mild und leicht – perfekt am Abend, mit gesicherter Garung.",
-    target: "≈64 g KH gesamt (2 P.) · Protein ≈27 g p. P.",
+    title: "茶碗蒸套餐 + 米饭（鸡蛋全凝）",
+    desc: "日式蒸蛋，确保完全凝固；配一小碗米饭与菠菜。",
+    story: "细腻口感、清淡轻盈，适合晚餐。",
+    target: "≈64 g 碳水（2人）· 蛋白≈27 g/人",
     ingredients: [
       "Eier 4 Stück",
       "Dashi (mild) 400 ml",
@@ -699,33 +639,29 @@ const DATA = [
       "Sojasauce natriumarm 10 ml",
     ],
     steps: [
-      "Reis garen.",
-      "Eier mit Dashi verrühren, in Schälchen 15–18 Min. dämpfen bis fest.",
-      "Spinat kurz blanchieren, mit Sojasauce würzen und zusammen servieren.",
+      "煮饭。",
+      "鸡蛋与高汤混匀，杯蒸 15–18 分钟至完全凝固。",
+      "菠菜焯水后用淡酱油调味，同食。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ Eier vollständig gestockt",
-    swaps: "Tofu ↔ Hähnchenwürfel; Reis ↔ Vollkornreis.",
-    side: "Kräutertee; Gurken-Pickles.",
+    checks: "胃炎 ✓ 清淡 · 糖代谢 ✓ ≈64 g 碳水 · 孕期 ✓ 蛋全熟",
+    swaps: "豆腐 ↔ 鸡丁；白米 ↔ 全麦米。",
+    side: "花草茶；黄瓜渍。",
     remind: true,
     riceCooker: {
       enabled: true,
       program: "Steam basket über Reis",
-      water: "1 : 1.2–1.4 (Reis)",
-      notes:
-        "Reis kochen; Chawanmushi im Dämpfeinsatz parallel 15–18 Min. garen, Deckel geschlossen.",
+      water: "1:1.2–1.4（米）",
+      notes: "煮饭同时蒸蛋 15–18 分钟，盖子保持关闭。",
     },
   },
 
-  // Sonntag
+  // 周日
   {
     id: "so-f",
-    title: "Tofu-Natto-Reis (納豆ごはん) – ohne rohes Ei",
-    desc:
-      "Japanisches Frühstücksset mit pasteurisiertem Natto & warmem Reis.",
-    story:
-      "Traditionelles Power-Frühstück; ohne rohes Ei, sehr mild gewürzt.",
-    target: "≈64 g KH gesamt (2 P.) · Protein ≈23 g p. P.",
+    title: "豆腐纳豆拌饭（无生蛋）",
+    desc: "使用巴氏杀菌纳豆与热米饭的日式早餐组合。",
+    story: "传统能量早餐；无生蛋、调味温和。",
+    target: "≈64 g 碳水（2人）· 蛋白≈23 g/人",
     ingredients: [
       "Reis (roh) 80 g",
       "Natto (pasteurisiert) 100 g",
@@ -735,26 +671,22 @@ const DATA = [
       "Wasser 500 ml",
     ],
     steps: [
-      "Reis kochen.",
-      "Natto nach Packung erwärmen und mit Sojasauce mischen.",
-      "Mit Tofu-Würfeln und Lauchgrün über warmem Reis servieren.",
+      "煮饭。",
+      "按包装说明拌纳豆，调入少量淡酱油。",
+      "与豆腐丁、葱花一起浇在热米饭上。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈64 g KH · Schwangerschaft ✓ ohne rohes Ei, pasteurisiert",
-    swaps:
-      "Natto ↔ Edamame; Tofu ↔ Omelettstreifen (gut gestockt).",
-    side: "Milder Grüntee oder Gerstentee.",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈64 g 碳水 · 孕期 ✓ 无生蛋、经巴氏杀菌",
+    swaps: "纳豆 ↔ 毛豆；豆腐 ↔ 全熟蛋条。",
+    side: "淡绿茶或麦茶。",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "so-m",
-    title: "Mildes Tomaten-Rind-Tofu (番茄牛肉豆腐) & Reis",
-    desc:
-      "Leicht säuerlich durch lang geschmorte Tomate, mageres Rind und Tofu – sehr mild.",
-    story:
-      "Ein Hausgericht mit sanfter Sauce – gut bekömmlich und proteinreich.",
-    target: "≈78 g KH gesamt (2 P.) · Protein ≈34 g p. P.",
+    title: "番茄牛肉豆腐配米饭（清爽版）",
+    desc: "慢炖番茄带来柔和酸味，瘦牛与豆腐，温和易消化。",
+    story: "家常鲜嫩的酱汁饭。",
+    target: "≈78 g 碳水（2人）· 蛋白≈34 g/人",
     ingredients: [
       "Reis (roh) 90 g",
       "Rinderhack mager 220 g",
@@ -765,25 +697,22 @@ const DATA = [
       "Maisstärke 8 g",
     ],
     steps: [
-      "Reis garen.",
-      "Rind krümelig braten bis durch; Tomaten/Zwiebel 10 Min. sanft schmoren.",
-      "Tofu zugeben, leicht binden, servieren.",
+      "煮饭。",
+      "牛肉末炒至全熟；番茄与洋葱小火炖 10 分钟。",
+      "加入豆腐略勾芡即可。",
     ],
-    checks:
-      "Gastritis ✓ milde Säure, gut geschmort · Diabetes ✓ – ≈78 g KH · Schwangerschaft ✓ Fleisch durchgegart",
-    swaps: "Rind ↔ Pute; Reis ↔ Vollkornreis.",
-    side: "Gedünsteter Pak Choi.",
+    checks: "胃炎 ✓ 微酸但软烂 · 糖代谢 ✓ ≈78 g 碳水 · 孕期 ✓ 肉全熟",
+    swaps: "牛肉 ↔ 火鸡；白米 ↔ 全麦米。",
+    side: "清蒸青菜。",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "so-a",
-    title: "Satsumaimo-Gohan & Ofen-Kabeljau (さつまいもご飯)",
-    desc:
-      "Japanischer Süßkartoffel-Reis im Reiskocher; dazu zarter Ofenfisch – alles mild.",
-    story:
-      "Saisonal und gemütlich – Süßkartoffelreis liefert sanfte Süße, Fisch das Protein.",
-    target: "≈86 g KH gesamt (2 P.) · Protein ≈30 g p. P.",
+    title: "红薯饭 + 烤鳕鱼（电饭煲红薯饭）",
+    desc: "电饭煲做红薯饭，配嫩烤鳕鱼；整体清淡。",
+    story: "季节风味的温暖组合。",
+    target: "≈86 g 碳水（2人）· 蛋白≈30 g/人",
     ingredients: [
       "Reis (roh) 110 g",
       "Süßkartoffel 220 g",
@@ -793,28 +722,26 @@ const DATA = [
       "Sesam 5 g",
     ],
     steps: [
-      "Reis waschen, Süßkartoffel würfeln; zusammen im Reiskocher garen.",
-      "Kabeljau im Ofen 8–10 Min. garen bis durch.",
-      "Alles mild würzen und anrichten.",
+      "淘米、红薯丁一同入锅煮成红薯饭。",
+      "鳕鱼入烤箱 8–10 分钟至全熟。",
+      "清淡调味后装盘。",
     ],
-    checks:
-      "Gastritis ✓ mild · Diabetes ✓ – ≈86 g KH · Schwangerschaft ✓ Kabeljau durchgegart",
-    swaps: "Kabeljau ↔ Lachs; Reis ↔ Vollkornreis (mehr Wasser).",
-    side: "Gurken-Pickles; Kräutertee.",
+    checks: "胃炎 ✓ 温和 · 糖代谢 ✓ ≈86 g 碳水 · 孕期 ✓ 鳕鱼全熟",
+    swaps: "鳕鱼 ↔ 三文鱼；白米 ↔ 全麦米。",
+    side: "黄瓜渍；花草茶。",
     remind: true,
     riceCooker: {
       enabled: true,
       program: "White Rice",
-      water: "1 : 1.2–1.4",
-      notes:
-        "Süßkartoffelwürfel obenauf; nach Ende 10 Min. ruhen lassen.",
+      water: "1:1.2–1.4",
+      notes: "红薯丁铺上层；焖 10 分钟再开盖。",
     },
   },
 ];
 
-/* ----------------- Einkaufsliste (automatisch) ------------------ */
+// ---- 购物清单（自动汇总）----
 const CANON = {
-  // Proteine
+  // 蛋白
   Lachsfilet: { group: "Protein/Fisch/Tofu", label: "Lachsfilet", unitDefault: "g" },
   Kabeljaufilet: { group: "Protein/Fisch/Tofu", label: "Kabeljaufilet", unitDefault: "g" },
   "Rinderhack mager": { group: "Protein/Fisch/Tofu", label: "Rinderhack (mager)", unitDefault: "g" },
@@ -822,8 +749,10 @@ const CANON = {
   "Tofu seiden": { group: "Protein/Fisch/Tofu", label: "Tofu (seiden)", unitDefault: "g" },
   "Tofu fest": { group: "Protein/Fisch/Tofu", label: "Tofu (fest)", unitDefault: "g" },
   Natto: { group: "Protein/Fisch/Tofu", label: "Natto (pasteurisiert)", unitDefault: "g" },
+  // 鸡蛋
   Eier: { group: "Protein/Fisch/Tofu", label: "Eier", unitDefault: "Stück" },
-  // Gemüse/Pilze
+
+  // 蔬菜/菌菇
   Spinat: { group: "Gemüse/Pilze", label: "Spinat", unitDefault: "g" },
   "Pak Choi": { group: "Gemüse/Pilze", label: "Pak Choi", unitDefault: "g" },
   Brokkoli: { group: "Gemüse/Pilze", label: "Brokkoli", unitDefault: "g" },
@@ -847,7 +776,7 @@ const CANON = {
   Ingwer: { group: "Gemüse/Pilze", label: "Ingwer", unitDefault: "g" },
   Knoblauch: { group: "Gemüse/Pilze", label: "Knoblauch", unitDefault: "Zehe" },
 
-  // Reis/Nudeln/Sättigung
+  // 米/面/主食
   Reis: { group: "Reis/Nudeln/Sättigung", label: "Reis (roh)", unitDefault: "g" },
   Vollkornreis: { group: "Reis/Nudeln/Sättigung", label: "Vollkornreis (roh)", unitDefault: "g" },
   "Brauner Reis": { group: "Reis/Nudeln/Sättigung", label: "Brauner Reis (roh)", unitDefault: "g" },
@@ -856,7 +785,7 @@ const CANON = {
   Vollkornnudeln: { group: "Reis/Nudeln/Sättigung", label: "Vollkornnudeln (roh)", unitDefault: "g" },
   Glasnudeln: { group: "Reis/Nudeln/Sättigung", label: "Glasnudeln (roh)", unitDefault: "g" },
 
-  // Algen/Brühen/Würze
+  // 海藻/汤底/调味
   "Miso hell": { group: "Algen/Brühen/Würze", label: "Miso hell", unitDefault: "g" },
   Wakame: { group: "Algen/Brühen/Würze", label: "Wakame (getrocknet)", unitDefault: "g" },
   Nori: { group: "Algen/Brühen/Würze", label: "Nori-Blätter", unitDefault: "Blatt" },
@@ -927,7 +856,7 @@ function aggregateList(data) {
 
 const LIST_SUMMARY = aggregateList(DATA);
 
-/* ---------------------------- Media ---------------------------- */
+// ---- 图片占位（若无 artwork）----
 function animePlaceholder(title, prompt = "") {
   const safe = (s) =>
     String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -944,12 +873,13 @@ function animePlaceholder(title, prompt = "") {
         <text x='40' y='120' font-size='44' fill='#1F2937'>🍱  ${safe(title)}</text>
         <text x='40' y='180' font-size='22' fill='#374151'>Illustration placeholder</text>
         <text x='40' y='240' font-size='18' fill='#6B7280'>${safe(prompt).slice(0, 300)}</text>
-        <text x='40' y='640' font-size='14' fill='#6B7280'>GhibliKitchen · generated placeholder</text>
+        <text x='40' y='640' font-size='14' fill='#6B7280'>GhibliKitchen · placeholder</text>
       </g>
     </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }
 
+// ---- 图片：优先 public/plan-art，其次占位 ----
 function ImageBanner({ meal }) {
   const [src, setSrc] = useState("");
   useEffect(() => {
@@ -994,13 +924,13 @@ function ImageBanner({ meal }) {
           fontSize: 12,
         }}
       >
-        {src?.startsWith("/plan-art") ? "Artwork" : "Anime-Placeholder"}
+        {src?.startsWith("/plan-art") ? "Artwork" : "占位图"}
       </div>
     </div>
   );
 }
 
-/* ------------------------------- UI ------------------------------ */
+// ---- UI ----
 function MealCard({ meal }) {
   return (
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
@@ -1017,39 +947,39 @@ function MealCard({ meal }) {
         <h3 style={{ margin: 0 }}>{meal.title}</h3>
         <div>
           {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin mit der Mahlzeit einnehmen") : null}
+          {meal.riceCooker?.enabled ? tagChip("🍚 电饭煲") : null}
+          {meal.remind ? tagChip("💊 用餐同时服用二甲双胍") : null}
         </div>
       </div>
       <p style={{ marginTop: 8, color: "var(--muted)" }}>{meal.desc}</p>
       <p style={{ fontStyle: "italic", color: "var(--muted)", marginTop: -6 }}>
         {meal.story}
       </p>
-      <h4>Zutaten (2 Personen)</h4>
+      <h4>食材（2人）</h4>
       <ul>
         {meal.ingredients.map((i, idx) => (
           <li key={idx}>{i}</li>
         ))}
       </ul>
-      <h4>Zubereitung</h4>
+      <h4>做法</h4>
       <ol>
         {meal.steps.map((s, idx) => (
           <li key={idx}>{s}</li>
         ))}
       </ol>
-      <p><strong>Hinweise:</strong> {meal.checks}</p>
-      <p><strong>Austausche:</strong> {meal.swaps}</p>
-      <p><strong>Beilage & Getränke:</strong> {meal.side}</p>
+      <p><strong>提示：</strong> {meal.checks}</p>
+      <p><strong>替换：</strong> {meal.swaps}</p>
+      <p><strong>配菜与饮品：</strong> {meal.side}</p>
 
       {meal.riceCooker?.enabled ? (
         <div style={{ marginTop: 8 }}>
           <details>
-            <summary>Reiskocher-Details</summary>
+            <summary>电饭煲参数</summary>
             <ul>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasserverhältnis:</strong> {meal.riceCooker.water}</li>
+              <li><strong>程序：</strong> {meal.riceCooker.program}</li>
+              <li><strong>水米比：</strong> {meal.riceCooker.water}</li>
               {meal.riceCooker.notes ? (
-                <li><strong>Hinweise:</strong> {meal.riceCooker.notes}</li>
+                <li><strong>备注：</strong> {meal.riceCooker.notes}</li>
               ) : null}
             </ul>
           </details>
@@ -1063,15 +993,13 @@ function DaySection({ dayKey, meals }) {
   return (
     <section className="day-section" style={{ marginBottom: 28 }} id={`day-${dayKey}`}>
       <h2 style={{ marginBottom: 12 }}>
-        {DAY_NAME_DE[dayKey].replace(/\s*\(.+\)$/, "")}
+        {DAY_NAME_ZH[dayKey].replace(/\s*\(.+\)$/, "")}
         <span className="ghk-date-paren">
-          {" "}{DAY_NAME_DE[dayKey].match(/\(.+\)$/)?.[0] ?? ""}
+          {" "}{DAY_NAME_ZH[dayKey].match(/\(.+\)$/)?.[0] ?? ""}
         </span>
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
-        {meals.map((m) => (
-          <MealCard key={m.id} meal={m} />
-        ))}
+        {meals.map((m) => <MealCard key={m.id} meal={m} />)}
       </div>
     </section>
   );
@@ -1110,13 +1038,13 @@ function WeekOverview({ data }) {
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
         <div className="ghk-hero-inner" style={{ padding: 14, borderRadius: 12, marginBottom: 10, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
-            Woche 1 – Übersicht{" "}
+            第1周 – 总览{" "}
             <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>
               ({meta.startDate})
             </span>
           </h2>
           <p style={{ marginTop: 6, color: "var(--muted)" }}>
-            Täglich 3 Mahlzeiten · 1× Reiskocher-Gericht pro Tag · mild, salzarm, schwangerschaftsgeeignet.
+            每日 3 餐 · 每日 1 个 🍚 电饭煲菜 · 口味清淡、低盐、孕期可食。
           </p>
         </div>
 
@@ -1124,24 +1052,18 @@ function WeekOverview({ data }) {
           {DAYS_ORDER.map((d) => (
             <div key={d} style={{ padding: 10, borderRadius: 12, border: "1px solid var(--border)", background: "var(--panel)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 8, flexWrap: "wrap" }}>
-                <strong>{DAY_NAME_DE[d]}</strong>
+                <strong>{DAY_NAME_ZH[d]}</strong>
                 <a
                   href={`#day-${d}`}
-                  style={{
-                    fontSize: 12,
-                    color: "var(--text)",
-                    textDecoration: "none",
-                    border: "1px solid var(--border)",
-                    padding: "4px 8px",
-                    borderRadius: 8,
-                    background: "var(--chip-bg)"
-                  }}
+                  style={{ fontSize: 12, color: "var(--text)", textDecoration: "none", border: "1px solid var(--border)", padding: "4px 8px", borderRadius: 8, background: "var(--chip-bg)" }}
                 >
-                  zum Tag ▿
+                  跳转当天 ▿
                 </a>
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {byDay[d].map((m) => pill(m.title.replace(/ – .*$/, ""), `#meal-${m.id}`, !!m.riceCooker?.enabled))}
+                {byDay[d].map((m) =>
+                  pill(m.title.replace(/ – .*$/, ""), `#meal-${m.id}`, !!m.riceCooker?.enabled)
+                )}
               </div>
             </div>
           ))}
@@ -1162,9 +1084,9 @@ function RiceCookerSection({ data }) {
   }, [data]);
   return (
     <section style={{ marginTop: 32 }}>
-      <h2>Reiskocher-Gerichte (1× pro Tag)</h2>
+      <h2>电饭煲菜（每日一次）</h2>
       <p style={{ color: "var(--muted)" }}>
-        Programme & Wasserverhältnisse im Überblick. Alle Rezepte sind mild, salzarm und schwangerschaftsgeeignet.
+        程序与水米比总览。所有菜品清淡、低盐、孕期可食。
       </p>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
         {DAYS_ORDER.map((d) => {
@@ -1172,16 +1094,16 @@ function RiceCookerSection({ data }) {
           return (
             <div key={d} style={{ ...cardPanelStyle }}>
               <h3 style={{ marginTop: 0 }}>
-                {DAY_NAME_DE[d].split(" ")[0]} – {r ? r.title : "(markiert im Tagesplan)"}
+                {DAY_NAME_ZH[d].split(" ")[0]} – {r ? r.title : "（请在当天计划中选择）"}
               </h3>
               {r ? (
                 <ul>
-                  <li><strong>Programm:</strong> {r.riceCooker.program}</li>
-                  <li><strong>Wasserverhältnis:</strong> {r.riceCooker.water}</li>
-                  {r.riceCooker.notes ? <li><strong>Hinweise:</strong> {r.riceCooker.notes}</li> : null}
+                  <li><strong>程序：</strong> {r.riceCooker.program}</li>
+                  <li><strong>水米比：</strong> {r.riceCooker.water}</li>
+                  {r.riceCooker.notes ? <li><strong>备注：</strong> {r.riceCooker.notes}</li> : null}
                 </ul>
               ) : (
-                <p>Kein Reiskocher-Gericht markiert – bitte im Plan auswählen.</p>
+                <p>当天未标记电饭煲菜。</p>
               )}
             </div>
           );
@@ -1232,56 +1154,13 @@ function ShoppingList() {
   );
 }
 
-// ---- Theme Switch (Auto/Light/Dark) ----
-function ThemeSwitch({ mode, setMode, effectiveDark }) {
-  return (
-    <div
-      className="ghk-theme-switch"
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 10,
-        padding: 6,
-        border: "1px solid var(--btn-border)",
-        borderRadius: 999,
-        background: "var(--panel)",
-      }}
-    >
-      <button
-        type="button"
-        className="ghk-tab"
-        aria-pressed={mode === "auto"}
-        onClick={() => setMode(mode === "auto" ? (effectiveDark ? "dark" : "light") : "auto")}
-        title="Automatisch nach System"
-        style={{ padding: "6px 10px" }}
-      >
-        Auto
-      </button>
-
-      <label className="ghk-switch" title={effectiveDark ? "Dunkel" : "Hell"}>
-        <input
-          type="checkbox"
-          checked={effectiveDark}
-          onChange={(e) => setMode(e.target.checked ? "dark" : "light")}
-          disabled={mode === "auto"}
-        />
-        <span className="ghk-slider" />
-      </label>
-
-      <span style={{ fontSize: 12, color: "var(--muted)" }}>
-        {mode === "auto" ? "System" : effectiveDark ? "Dunkel" : "Hell"}
-      </span>
-    </div>
-  );
-}
-
-// --- Helper
+// --- Helper: 帧等待（导出更稳）
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
 
-// --- PDF-Export (Klon mit Export-Styles)
+// --- PDF 导出：克隆可见根节点，施加导出样式，仅渲染克隆
 async function exportPdfFromRoot(rootEl) {
   await ensureScript("https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js");
-  if (!window.html2pdf) throw new Error("html2pdf nicht verfügbar.");
+  if (!window.html2pdf) throw new Error("html2pdf 不可用");
 
   const clone = rootEl.cloneNode(true);
   clone.id = "kochbuch-export";
@@ -1297,7 +1176,11 @@ async function exportPdfFromRoot(rootEl) {
   const opt = {
     margin: [34, 28, 34, 28],
     filename: `${FILE_BASE}.pdf`,
-    pagebreak: { mode: ["css", "legacy"], after: [".day-section"], avoid: [".meal-card", ".ghk-hero"] },
+    pagebreak: {
+      mode: ["css", "legacy"],
+      after: [".day-section"],
+      avoid: [".meal-card", ".ghk-hero"]
+    },
     html2canvas: {
       backgroundColor: pageBg,
       useCORS: true,
@@ -1318,10 +1201,31 @@ async function exportPdfFromRoot(rootEl) {
   }
 }
 
-/* --------------------------- Hauptkomponente --------------------------- */
-export default function Woche1DE() {
-  // Gate NUR über Query (?lang)
+// 简单的主题开关（避免缺组件）
+function ThemeSwitch({ mode, setMode, effectiveDark }) {
+  return (
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+      <span style={{ fontSize: 12, color: "var(--muted)" }}>
+        主题：{mode === "auto" ? (effectiveDark ? "自动（深色）" : "自动（浅色）") : mode === "dark" ? "深色" : "浅色"}
+      </span>
+      <select
+        aria-label="Theme mode"
+        value={mode}
+        onChange={(e) => setMode(e.target.value)}
+        style={{ padding: "6px 10px", borderRadius: 8, border: "1px solid var(--btn-border)", background: "var(--panel)" }}
+      >
+        <option value="auto">自动</option>
+        <option value="light">浅色</option>
+        <option value="dark">深色</option>
+      </select>
+    </div>
+  );
+}
+
+export default function Woche1ZH() {
+  // Gate über Query (?lang) - wie DE
   const langFromUrl = useLangHint();
+  // Wenn URL ?lang=de sagt, aber wir sind im ZH Plan -> ausblenden
   const hiddenByLang = langFromUrl && langFromUrl !== meta.lang;
   if (hiddenByLang) return null;
 
@@ -1330,17 +1234,17 @@ export default function Woche1DE() {
   const effectiveDark = mode === "auto" ? systemDark : mode === "dark";
   const vars = themeVars(effectiveDark ? "dark" : "light");
 
-  // Ansicht: "kochbuch" | "liste"
+  // 视图： "kochbuch" | "liste"
   const [tab, setTab] = useState("kochbuch");
 
-  // CSS-Variablen setzen
+  // 设置 CSS 变量
   useEffect(() => {
     const root = document.documentElement;
     Object.entries(vars).forEach(([k, v]) => root.style.setProperty(k, v));
     return () => Object.keys(vars).forEach((k) => root.style.removeProperty(k));
   }, [vars]);
 
-  // <html lang> freundlich setzen (ändert Gate NICHT)
+  // <html lang> 
   useEffect(() => {
     if (!document.documentElement.getAttribute("lang")) {
       document.documentElement.setAttribute("lang", meta.lang);
@@ -1348,6 +1252,7 @@ export default function Woche1DE() {
   }, []);
 
   const doPrint = () => window.print();
+
   const doExportHTML = () => {
     const pageBg =
       getComputedStyle(document.documentElement).getPropertyValue("--bg")?.trim() || "#FFFFFF";
@@ -1361,25 +1266,26 @@ export default function Woche1DE() {
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1500);
     } else {
-      alert("HTML-Export nicht verfügbar.");
+      alert("HTML 导出不可用。");
     }
   };
+
   const doExportPDF = async () => {
     const el = document.getElementById("kochbuch-root");
-    if (!el) return alert("Export: #kochbuch-root nicht gefunden.");
+    if (!el) return alert("未找到导出容器 #kochbuch-root。");
     try {
       await exportPdfFromRoot(el);
     } catch (e) {
       console.error(e);
-      alert("PDF-Export fehlgeschlagen.");
+      alert("PDF 导出失败。");
     }
   };
 
   return (
     <div style={{ background: "var(--bg)", color: "var(--text)", padding: 24 }}>
-      {/* Styles */}
+      {/* Screen & Print Styles */}
       <style>{`
-  /* Coolere Tabs/Buttons */
+  /* Coolere Tabs/Buttons (wie DE) */
   .ghk-tab {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     padding: 8px 16px;
@@ -1413,48 +1319,52 @@ export default function Woche1DE() {
   .ghk-switch input:checked + .ghk-slider::before { transform:translateY(-50%) translateX(calc(var(--switch-w) - var(--knob) - 6px)); }
   .ghk-switch input:disabled + .ghk-slider { opacity:.6; }
 
-  /* Segmented Control (Radio Group) */
+  /* Segmented Control */
   .ghk-segment { display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); margin:0; }
   .ghk-segment label { position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
   .ghk-segment input[type="radio"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
   .ghk-segment span { display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; user-select:none; }
   .ghk-segment input[type="radio"]:checked + span { background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
 
-  /* Viewer erzwingen */
-  #ghk-content { display:block !important; visibility:visible !important; opacity:1 !important; position:relative !important; min-height:1px; }
-  #ghk-content > [hidden] { display:none !important; }
+  /* Viewer 中强制可见 */
+  #ghk-content { display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; min-height: 1px; }
+  #ghk-content > [hidden] { display: none !important; }
 
-  /* Export-Klon */
+  /* 导出模式 */
   .ghk-exporting {
-    width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important;
-    box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important;
+    width: 794px !important; max-width: 794px !important; margin: 0 auto !important;
+    background: #fff !important; box-sizing: border-box !important; font-size: 12pt !important; line-height: 1.45 !important;
     --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12);
     --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6;
   }
-  .ghk-exporting * { box-shadow:none !important; }
-  .ghk-exporting .ghk-art, .ghk-exporting img { display:none !important; visibility:hidden !important; }
-  .ghk-exporting .ghk-chip, .ghk-exporting .ghk-date-paren { display:none !important; }
+  .ghk-exporting * { box-shadow: none !important; }
+  .ghk-exporting .ghk-art,
+  .ghk-exporting img { display:none !important; visibility:hidden !important; }
+  .ghk-exporting .ghk-chip { display:none !important; }
+  .ghk-exporting .ghk-date-paren { display:none !important; }
 
   @media print {
-    .ghk-art, .ghk-date-paren { display:none !important; }
+    .ghk-art, .ghk-date-paren { display: none !important; }
   }
-  @page { size:A4; margin:12mm; }
+
+  @page { size: A4; margin: 12mm; }
   @media print {
-    html, body, #root { background:#fff !important; }
-    aside, nav, header, footer, .ghk-no-print { display:none !important; }
-    main { grid-template-columns:1fr !important; }
-    #kochbuch-root { width:calc(210mm - 24mm); margin:0 auto !important; box-shadow:none !important; border:none !important; background:#fff !important; }
-    .ghk-hero { box-shadow:none !important; border:0 !important; padding:0 !important; background:#fff !important; }
-    .ghk-hero-inner { background:#fff !important; border-radius:0 !important; padding:0 !important; margin:0 0 6mm 0 !important; }
-    .ghk-hero h1 { margin:0 0 2mm 0 !important; font-size:18pt !important; line-height:1.2 !important; }
-    .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; -webkit-column-break-inside:avoid; -webkit-region-break-inside:avoid; }
-    .meal-card { margin-bottom:12mm; } h2, h3 { break-after:avoid; page-break-after:avoid; }
-    #kochbuch-root * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    a[href]:after { content:""; } * { box-shadow:none !important; }
+    html, body, #root { background: #fff !important; }
+    aside, nav, header, footer, .ghk-no-print { display: none !important; }
+    main { grid-template-columns: 1fr !important; }
+    #kochbuch-root { width: calc(210mm - 24mm); margin: 0 auto !important; box-shadow: none !important; border: none !important; background: #fff !important; }
+    .ghk-hero { box-shadow: none !important; border: 0 !important; padding: 0 !important; background: #fff !important; }
+    .ghk-hero-inner { background: #fff !important; border-radius: 0 !important; padding: 0 !important; margin: 0 0 6mm 0 !important; }
+    .ghk-hero h1 { margin: 0 0 2mm 0 !important; font-size: 18pt !important; line-height: 1.2 !important; }
+    .day-section, .meal-card { break-inside: avoid; page-break-inside: avoid; -webkit-column-break-inside: avoid; -webkit-region-break-inside: avoid; }
+    .meal-card { margin-bottom: 12mm; }
+    h2, h3 { break-after: avoid; page-break-after: avoid; }
+    #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a[href]:after { content: ""; } * { box-shadow: none !important; }
   }
 `}</style>
 
-      {/* Hero + Controls */}
+      {/* 顶部区块 + 操作 */}
       <div className="ghk-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
         <div
           className="ghk-hero-inner"
@@ -1469,51 +1379,82 @@ export default function Woche1DE() {
         >
           <h1 style={{ margin: 0 }}>{UI_TITLES.main}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {tagChip(`Start: ${meta.startDate}`)}
-            {tagChip("Mahlzeiten/Woche: 21")}
-            {tagChip("CN/JP/KR (IT = 0 diese Woche)")}
-            {tagChip("Salzarm · mild · alles durchgegart")}
-            {tagChip("Täglich 1× 🍚 Reiskocher")}
+            {tagChip(`开始：${meta.startDate}`)}
+            {tagChip("每周餐次：21")}
+            {tagChip("中/日/韩（本周意餐 0 次）")}
+            {tagChip("低盐 · 清淡 · 全熟")}
+            {tagChip("每日 1 次 🍚 电饭煲")}
           </div>
         </div>
 
-        <div className="ghk-no-print" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-          {/* Umschalter: Radio-Group */}
-          <fieldset className="ghk-segment" role="radiogroup" aria-label="Ansicht wählen">
+        <div
+          className="ghk-no-print"
+          style={{
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* 单选：食谱 ⇄ 购物清单 */}
+          <fieldset className="ghk-segment" role="radiogroup" aria-label="选择视图">
+            <legend className="sr-only">视图</legend>
+
             <label htmlFor="view-kochbuch">
-              <input id="view-kochbuch" type="radio" name="ghk-view" value="kochbuch" checked={tab === "kochbuch"} onChange={() => setTab("kochbuch")} aria-controls="ghk-content" />
+              <input
+                id="view-kochbuch"
+                type="radio"
+                name="ghk-view"
+                value="kochbuch"
+                checked={tab === "kochbuch"}
+                onChange={() => setTab("kochbuch")}
+                aria-controls="ghk-content"
+              />
               <span>{UI_TITLES.main}</span>
             </label>
+
             <label htmlFor="view-liste">
-              <input id="view-liste" type="radio" name="ghk-view" value="liste" checked={tab === "liste"} onChange={() => setTab("liste")} aria-controls="ghk-content" />
+              <input
+                id="view-liste"
+                type="radio"
+                name="ghk-view"
+                value="liste"
+                checked={tab === "liste"}
+                onChange={() => setTab("liste")}
+                aria-controls="ghk-content"
+              />
               <span>{UI_TITLES.list}</span>
             </label>
           </fieldset>
 
-          {/* Export/Print + Theme -- JETZT RECHTSBÜNDIG DURCH marginLeft:auto */}
+          {/* 导出/打印 + 主题  (Rechtsbündig via marginLeft: auto) */}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginLeft: "auto" }}>
-            <button type="button" onClick={doExportPDF} title="Als PDF exportieren" className="ghk-tab">
+            <button type="button" onClick={doExportPDF} title="导出为 PDF" className="ghk-tab">
               <span className="icon">📄</span> PDF
             </button>
-            <button type="button" onClick={doExportHTML} title="Als HTML exportieren" className="ghk-tab">
+            <button type="button" onClick={doExportHTML} title="导出为 HTML" className="ghk-tab">
               <span className="icon">🌐</span> HTML
             </button>
-            <button type="button" onClick={doPrint} title="Drucken" className="ghk-tab">
-              <span className="icon">🖨️</span> Drucken
+            <button type="button" onClick={doPrint} title="打印" className="ghk-tab">
+              <span className="icon">🖨️</span> 打印
             </button>
+
             <ThemeSwitch mode={mode} setMode={setMode} effectiveDark={effectiveDark} />
           </div>
         </div>
       </div>
 
-      {/* Export-Root */}
+      {/* 导出根容器 */}
       <div id="kochbuch-root" style={{ ...cardPanelStyle }}>
+        {/* 周总览 */}
         <WeekOverview data={DATA} />
 
-        {/* Inhalt: zwei feste Panes, Umschalten via hidden */}
+        {/* 内容：两个固定面板，通过 hidden 切换 */}
         <div id="ghk-content" data-view={tab}>
           <section
             id="ghk-pane-kochbuch"
+            aria-labelledby="view-kochbuch"
             aria-hidden={tab !== "kochbuch"}
             hidden={tab !== "kochbuch"}
           >
@@ -1522,6 +1463,7 @@ export default function Woche1DE() {
 
           <section
             id="ghk-pane-liste"
+            aria-labelledby="view-liste"
             aria-hidden={tab !== "liste"}
             hidden={tab !== "liste"}
           >

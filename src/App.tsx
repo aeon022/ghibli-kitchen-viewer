@@ -1,201 +1,265 @@
 // src/App.tsx
-import React from 'react';
-import { Routes, Route, Navigate, Link, useParams, useNavigate } from 'react-router-dom';
-import { plans, type PlanIndexItem } from './planLoader';
-import ErrorBoundary from './ErrorBoundary';
-import { useLanguageStore } from './i18n/useLanguageStore';
-import { LanguageSwitcher } from './i18n/LanguageSwitcher'; // ⟵ fehlte
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { Routes, Route, Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 
-// Hilfsfunktionen
-const cleanSidebarTitle = (p: PlanIndexItem) =>
-  (p as any).sidebar ?? p.title.replace(/\s\((DE|中文)\)$/, '');
+type Lang = "de" | "zh";
+const LANG_KEY = "ghk.lang";
 
-// Gruppiert alle Pläne einer Woche (nach startDate) und wählt
-// für die Sidebar/Navi genau EINEN Repräsentanten in aktueller Sprache.
-function useWeeklyPlans(lang: 'de' | 'zh') {
-  return React.useMemo<PlanIndexItem[]>(() => {
-    // 1) Gruppe nach startDate bilden
-    const map = new Map<string, PlanIndexItem[]>();
-    for (const p of plans) {
-      const arr = map.get(p.startDate) ?? [];
-      arr.push(p);
-      map.set(p.startDate, arr);
-    }
-    // 2) Pro Woche den passenden Repräsentanten wählen
-    const representatives: PlanIndexItem[] = [];
-    for (const arr of map.values()) {
-      // bevorzugt aktuelle Sprache, dann 'unknown', sonst erstes Element
-      let pick =
-        arr.find((x) => x.lang === lang) ??
-        arr.find((x) => x.lang === 'unknown') ??
-        arr[0];
-      representatives.push(pick);
-    }
-    // 3) Nach datum (neueste zuerst) sortieren
-    representatives.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
-    return representatives;
-  }, [lang]);
+type PlanMeta = {
+  id: string;
+  title?: string;
+  startDate: string;
+  lang?: string;
+  sidebar?: string;
+};
+type PlanModule = { default: React.ComponentType<any>; meta: PlanMeta };
+
+function normalizeLang(v: unknown): Lang {
+  const s = String(v ?? "").toLowerCase();
+  if (s.includes("zh") || s.includes("cn") || s.includes("中文")) return "zh";
+  return "de";
 }
 
-function PlanPage({ weeklyPlans }: { weeklyPlans: PlanIndexItem[] }) {
-  const { id } = useParams();
+function slugFor(meta: PlanMeta, lang: Lang) {
+  return lang === "zh" ? `${meta.id}-zh` : meta.id;
+}
+
+function baseIdFromSlug(slug: string) {
+  return slug.replace(/-zh$/i, "");
+}
+
+// --- Hilfsfunktion: ISO-Jahr ermitteln (damit KW1 2026, die 2025 startet, als 2026 angezeigt wird) ---
+function getPlanYear(startDateStr: string) {
+  const date = new Date(startDateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0-11
+  const day = date.getDate();
+  
+  // Wenn Dezember (Monat 11) und "Woche 1" (typischerweise ab 29.12.), zähle es zum nächsten Jahr
+  // Einfache Heuristik: Wenn 29.12. oder später, ist es meist der Start der KW1 des Folgejahres.
+  if (month === 11 && day >= 29) {
+    return year + 1;
+  }
+  return year;
+}
+
+function pickCurrent(plans: PlanRecord[], lang: Lang) {
+  const list = plans.filter(p => p.lang === lang).sort((a,b)=>a.startDate.localeCompare(b.startDate));
+  if (!list.length) return null;
+  const today = new Date();
+  const todayISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+  const pastOrToday = list.filter(p => p.startDate <= todayISO);
+  return (pastOrToday.length ? pastOrToday[pastOrToday.length - 1] : list[0]) ?? null;
+}
+
+type PlanRecord = {
+  slug: string;
+  baseId: string;
+  lang: Lang;
+  startDate: string;
+  meta: PlanMeta;
+  Component: React.ComponentType<any>;
+};
+
+// ---- Lang Context ----
+const LangCtx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({ lang: "de", setLang: () => {} });
+function useLang() { return useContext(LangCtx); }
+
+function LangProvider({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
   const nav = useNavigate();
+  const isRoot = location.pathname === "/" || location.pathname === "/ghibli-kitchen-viewer" || location.pathname === "/ghibli-kitchen-viewer/";
 
-  if (!weeklyPlans.length) {
-    return <div style={{ padding: 16 }}>Keine Pläne gefunden.</div>;
-  }
+  const [lang, setLangState] = useState<Lang>(() => "de");
 
-  // aktuellen Index innerhalb der **wochenweise** Liste ermitteln
-  const idx = Math.max(0, weeklyPlans.findIndex((p) => p.id === id));
-  const current = weeklyPlans[idx] ?? weeklyPlans[0];
-  const Prev = weeklyPlans[idx + 1]; // ältere Woche
-  const Next = weeklyPlans[idx - 1]; // neuere Woche
-  const Cmp = current.Component;
-
-  // Wenn URL auf einen Plan zeigt, der nicht in der wochenweisen Liste ist → auf die neueste Woche umleiten
-  React.useEffect(() => {
-    if (!current || current.id !== id) {
-      nav(`/plan/${weeklyPlans[0].id}`, { replace: true });
+  useEffect(() => {
+    if (isRoot) {
+      setLangState("de");
+      localStorage.setItem(LANG_KEY, "de");
     }
-  }, [id, current, nav, weeklyPlans]);
+  }, [isRoot]);
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    localStorage.setItem(LANG_KEY, l);
+    const qs = new URLSearchParams(location.search);
+    qs.set("lang", l);
+    nav({ pathname: location.pathname, search: qs.toString() }, { replace: true });
+  };
+  return <LangCtx.Provider value={{ lang, setLang }}>{children}</LangCtx.Provider>;
+}
+
+// ---- Plans laden ----
+const planModules = import.meta.glob("./plans/**/*.{jsx,tsx}", { eager: true }) as Record<string, PlanModule>;
+
+function usePlans(): PlanRecord[] {
+  return useMemo(() => {
+    const out: PlanRecord[] = [];
+    for (const mod of Object.values(planModules)) {
+      if (!mod?.default || !mod?.meta?.id || !mod?.meta?.startDate) continue;
+      const lang = normalizeLang(mod.meta.lang);
+      const slug = slugFor(mod.meta, lang);
+      out.push({
+        slug,
+        baseId: mod.meta.id,
+        lang,
+        startDate: mod.meta.startDate,
+        meta: mod.meta,
+        Component: mod.default,
+      });
+    }
+    out.sort((a, b) => a.startDate.localeCompare(b.startDate));
+    return out;
+  }, []);
+}
+
+// --- Sidebar mit Collapse & Toggle ---
+function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], collapsed: boolean, setCollapsed: (v:boolean)=>void }) {
+  const { lang, setLang } = useLang();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Verwende getPlanYear für die Gruppierung
+  const years = useMemo(() => {
+    const ys = new Set<number>();
+    for (const p of plans) ys.add(getPlanYear(p.startDate));
+    return Array.from(ys).sort((a,b)=>b-a);
+  }, [plans]);
+
+  const [openYears, setOpenYears] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    const initial: Record<number, boolean> = {};
+    years.forEach(y => initial[y] = true);
+    setOpenYears(initial);
+  }, [years.join(",")]);
+
+  const filtered = plans.filter(p => p.lang === lang);
+
+  const toggleLang = () => {
+    const target = lang === "de" ? "zh" : "de";
+    const m = location.pathname.match(/\/plan\/([^/?#]+)/);
+    const currentSlug = m?.[1];
+    if (currentSlug) {
+      const baseId = baseIdFromSlug(currentSlug);
+      const sibling = plans.find(p => p.baseId === baseId && p.lang === target);
+      if (sibling) navigate(`/plan/${sibling.slug}?lang=${target}`, { replace: true });
+    }
+    setLang(target);
+  };
 
   return (
-    <div style={{ padding: 16 }}>
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
-        <button onClick={() => Prev && nav(`/plan/${Prev.id}`)} disabled={!Prev}>← Älter</button>
-        <button onClick={() => Next && nav(`/plan/${Next.id}`)} disabled={!Next}>Neuer →</button>
-        <h1 style={{ margin: 0, marginLeft: 12, fontSize: 18 }}>{current.title}</h1>
-      </div>
-      <ErrorBoundary key={current.id}>
-        <Cmp />
-      </ErrorBoundary>
-    </div>
-  );
-}
+    <aside className="sidebar">
+      {/* Cooler Button: Außerhalb des Flows positioniert via CSS. 
+         Hier nur das Element. 
+      */}
+      <button 
+        className="sidebar-toggle-btn" 
+        onClick={() => setCollapsed(!collapsed)} 
+        title={collapsed ? "Ausklappen" : "Einklappen"}
+        aria-label="Sidebar Toggle"
+      >
+        <span className="toggle-icon"></span>
+      </button>
 
-function isoWeekYear(dateStr: string): number {
-  // ISO-Week-Year: Jahr der Donnerstags-Woche
-  const d = new Date(dateStr + 'T00:00:00Z');
-  const dow = (d.getUTCDay() + 6) % 7; // Mo=0 ... So=6
-  d.setUTCDate(d.getUTCDate() - dow + 3); // auf Donnerstag der Woche springen
-  return d.getUTCFullYear();
-}
+      <div className="brand">GhibliKitchen</div>
 
-function groupByYear(plans: PlanIndexItem[]) {
-  const groups = new Map<string, PlanIndexItem[]>();
-  for (const p of plans) {
-    const y = String(isoWeekYear(p.startDate ?? ''));
-    const arr = groups.get(y) ?? [];
-    arr.push(p);
-    groups.set(y, arr);
-  }
-  for (const arr of groups.values()) {
-    arr.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
-  }
-  return groups;
-}
-
-export default function App() {
-  const { lang } = useLanguageStore(); // "de" | "zh"
-
-  // Eine Liste mit GENAU EINEM Eintrag pro Woche (repräsentiert die aktuelle Sprache)
-  const weeklyPlans = useWeeklyPlans(lang);
-
-    // Nach Jahr gruppieren
-  const groupedByYear = React.useMemo(() => groupByYear(weeklyPlans), [weeklyPlans]);
-  const years = React.useMemo(
-    () => Array.from(groupedByYear.keys()).sort((a, b) => (a < b ? 1 : -1)), // neueste zuerst
-    [groupedByYear]
-  );
-
-  // Offen/zu Zustand je Jahr – initial: neuestes Jahr offen
-  const [openYears, setOpenYears] = React.useState<Record<string, boolean>>(() => {
-    const init: Record<string, boolean> = {};
-    years.forEach((y, idx) => (init[y] = idx === 0));
-    return init;
-  });
-
-  // Wenn sich die Jahre-Liste ändert (z. B. Sprache / Daten neu), Zustand auffrischen
-  React.useEffect(() => {
-    setOpenYears(prev => {
-      const next: Record<string, boolean> = {};
-      years.forEach((y, idx) => (next[y] = prev[y] ?? (idx === 0)));
-      return next;
-    });
-  }, [years]);
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', minHeight: '100vh' }}>
-      <aside style={{ borderRight: '1px solid #ddd', padding: 12, overflow: 'auto' }}>
-  <h3 style={{ marginTop: 0 }}>GhibliKitchen Pläne</h3>
-  <div style={{ marginBottom: 12 }}>
-    <LanguageSwitcher />
-  </div>
-
-  {/* Buttons: alle Jahre auf/zu */}
-  <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-    <button
-      onClick={() => setOpenYears(Object.fromEntries(years.map(y => [y, true])))}
-      title="Alle aufklappen"
-    >
-      Alle auf
-    </button>
-    <button
-      onClick={() => setOpenYears(Object.fromEntries(years.map(y => [y, false])))}
-      title="Alle zuklappen"
-    >
-      Alle zu
-    </button>
-  </div>
-
-  {/* Jahr → Wochen (repräsentativer Plan pro Woche, in aktueller Sprache) */}
-  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-    {years.map((year) => {
-      const items = groupedByYear.get(year) ?? [];
-      return (
-        <li key={year} style={{ marginBottom: 8 }}>
-          <button
-            onClick={() => setOpenYears(m => ({ ...m, [year]: !m[year] }))}
-            style={{
-              width: '100%', textAlign: 'left', padding: '6px 8px',
-              background: 'transparent', border: '1px solid #ddd', borderRadius: 8,
-              cursor: 'pointer', fontWeight: 600
-            }}
+      <div className="sidebar-top">
+        <div className="lang-switch-container">
+          <div 
+            className="lang-toggle" 
+            data-lang={lang} 
+            data-active={lang === "zh"}
+            onClick={toggleLang}
+            title="Sprache umschalten / Switch Language"
           >
-            {openYears[year] ? '▾' : '▸'} {year}{' '}
-            <span style={{ color: '#666', fontWeight: 400 }}>({items.length})</span>
-          </button>
+            <div className="lang-toggle-handle" data-text={lang.toUpperCase()} />
+          </div>
+          <span className="lang-label" style={{fontSize: 13, fontWeight: 500}}>
+            {lang === "de" ? "Deutsch" : "中文"}
+          </span>
+        </div>
+      </div>
 
-          {openYears[year] && (
-            <ol style={{ paddingLeft: 18, marginTop: 6 }}>
-              {items.map((p) => (
-                <li key={p.id} style={{ marginBottom: 6 }}>
-                  <Link to={`/plan/${p.id}`}>
-                    {p.startDate} — {cleanSidebarTitle(p)}
+      <div className="year-controls">
+        <button className="small-btn" onClick={() => setOpenYears(prev => Object.fromEntries(Object.keys(prev).map(k => [Number(k), true])))}>Alle +</button>
+        <button className="small-btn" onClick={() => setOpenYears(prev => Object.fromEntries(Object.keys(prev).map(k => [Number(k), false])))}>Alle -</button>
+      </div>
+
+      {years.map(y => (
+        <details
+          key={y}
+          className="year"
+          open={openYears[y] ?? true}
+          onToggle={(e) => {
+             const isOpen = (e.currentTarget as HTMLDetailsElement).open;
+             setOpenYears(prev => ({ ...prev, [y]: isOpen }));
+          }}
+        >
+          <summary>{y}</summary>
+          <ul className="year-list">
+            {filtered
+              .filter(p => getPlanYear(p.startDate) === y)
+              .map(p => (
+                <li key={p.slug}>
+                  <Link to={`/plan/${p.slug}?lang=${lang}`}>
+                    {p.meta.sidebar || `${p.meta.title ?? p.meta.id} (${p.startDate})`}
                   </Link>
                 </li>
               ))}
-            </ol>
-          )}
-        </li>
-      );
-    })}
-  </ul>
-</aside>
-      <main>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              weeklyPlans.length
-                ? <Navigate to={`/plan/${weeklyPlans[0].id}`} replace />
-                : <div style={{ padding: 16 }}>Keine Pläne vorhanden.</div>
-            }
-          />
-          <Route path="/plan/:id" element={<PlanPage weeklyPlans={weeklyPlans} />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
+          </ul>
+        </details>
+      ))}
+    </aside>
+  );
+}
+
+function PlanPage({ plans }: { plans: PlanRecord[] }) {
+  const { slug = "" } = useParams();
+  const { lang } = useLang();
+  const nav = useNavigate();
+
+  const current = plans.find(p => p.slug === slug);
+  if (!current) return <div className="main-inner">Plan nicht gefunden: {slug}</div>;
+
+  if (current.lang !== lang) {
+    const sibling = plans.find(p => p.baseId === current.baseId && p.lang === lang);
+    if (sibling) {
+      nav(`/plan/${sibling.slug}?lang=${lang}`, { replace: true });
+      return null;
+    }
+  }
+
+  const Cmp = current.Component;
+  return (
+    <div className="main-inner">
+      <Cmp />
     </div>
+  );
+}
+
+function HomeRedirect({ plans }: { plans: PlanRecord[] }) {
+  const currentDE = pickCurrent(plans, "de");
+  if (!currentDE) return <div className="main-inner">Keine DE-Pläne gefunden.</div>;
+  return <Navigate to={`/plan/${currentDE.slug}?lang=de`} replace />;
+}
+
+export default function App() {
+  const plans = usePlans();
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <LangProvider>
+      <div className={`app-shell ${collapsed ? "collapsed" : ""}`}>
+        <Sidebar plans={plans} collapsed={collapsed} setCollapsed={setCollapsed} />
+        <main className="main">
+          <Routes>
+            <Route path="/" element={<HomeRedirect plans={plans} />} />
+            <Route path="/plan/:slug" element={<PlanPage plans={plans} />} />
+            <Route path="*" element={<HomeRedirect plans={plans} />} />
+          </Routes>
+        </main>
+      </div>
+    </LangProvider>
   );
 }

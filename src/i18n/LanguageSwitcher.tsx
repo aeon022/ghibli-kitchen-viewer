@@ -1,36 +1,32 @@
 // src/i18n/LanguageSwitcher.tsx
-import * as React from 'react';
-import { useLanguageStore } from './useLanguageStore';
+import React, { useEffect, useState } from "react";
 
-export type LanguageSwitcherProps = {
-  title?: string; // optional Tooltip
-  className?: string;
-};
+const KEY = "ghk.lang";
+const OPTIONS = [
+  { code: "de", label: "DE" },
+  { code: "zh", label: "中文" },
+  { code: "en", label: "EN" },
+];
 
-export function LanguageSwitcher({ title, className }: LanguageSwitcherProps) {
-  const { lang, toggle } = useLanguageStore();
-  const label = lang === 'de' ? '中文' : 'Deutsch';
+export default function LanguageSwitcher() {
+  const [val, setVal] = useState<string>(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const q = (sp.get("lang") || "").slice(0,2).toLowerCase();
+    if (q) return q;
+    const s = (localStorage.getItem(KEY) || "").slice(0,2).toLowerCase();
+    if (s) return s;
+    const html = (document.documentElement.getAttribute("lang") || "").slice(0,2).toLowerCase();
+    return html || "de"; // <-- niemals zh als Default
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem(KEY, val); } catch {}
+    window.dispatchEvent?.(new Event("ghk:lang-change"));
+  }, [val]);
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label="Sprache umschalten / Switch language"
-      title={title ?? 'Sprache umschalten'}
-      className={className}
-      style={{
-        padding: '6px 10px',
-        borderRadius: 8,
-        border: '1px solid #ddd',
-        background: '#fff',
-        cursor: 'pointer',
-        fontWeight: 600,
-      }}
-    >
-      {label}
-    </button>
+    <select value={val} onChange={(e) => setVal(e.target.value)}>
+      {OPTIONS.map(o => <option key={o.code} value={o.code}>{o.label}</option>)}
+    </select>
   );
 }
-
-// Named + Default Export
-export default LanguageSwitcher;
