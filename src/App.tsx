@@ -95,21 +95,6 @@ function groupByYear(plans: PlanIndexItem[]) {
   return groups;
 }
 
-function groupByYear(plans: PlanIndexItem[]) {
-  const groups = new Map<string, PlanIndexItem[]>();
-  for (const p of plans) {
-    const y = (p.startDate ?? '').slice(0, 4) || 'Unsortiert';
-    const arr = groups.get(y) ?? [];
-    arr.push(p);
-    groups.set(y, arr);
-  }
-  // innerhalb jedes Jahres neueste zuerst
-  for (const arr of groups.values()) {
-    arr.sort((a, b) => (a.startDate < b.startDate ? 1 : -1));
-  }
-  return groups;
-}
-
 export default function App() {
   const { lang } = useLanguageStore(); // "de" | "zh"
 
