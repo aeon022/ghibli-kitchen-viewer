@@ -1,10 +1,10 @@
 // Datei: Woche-4-2025-10-20.de.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { exportPDFById, exportHTMLById } from "../utils/exporters";
-import { buildEmbedCss } from "../utils/embedCss";
-import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data"; // ← Direkt, ohne Overrides
+import { exportPDFById, exportHTMLById } from "@/utils/exporters";
+import { buildEmbedCss } from "@/utils/embedCss";
+import { UI } from "@/i18n-ui";
+import { pickText, pickList } from "@/i18n-data"; // ← Direkt, ohne Overrides
 
 export const meta = {
   title: "Woche 4",

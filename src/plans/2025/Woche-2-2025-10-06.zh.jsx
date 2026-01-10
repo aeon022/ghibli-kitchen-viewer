@@ -1,9 +1,9 @@
 // src/plans/Woche-2-2025-10-06.zh.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { exportPDFById, exportHTMLById } from "../utils/exporters";
-import { buildEmbedCss } from "../utils/embedCss";
-import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data";
+import { exportPDFById, exportHTMLById } from "@/utils/exporters";
+import { buildEmbedCss } from "@/utils/embedCss";
+import { UI } from "@/i18n-ui";
+import { pickText, pickList } from "@/i18n-data";
 
 export const meta = {
   title: "第2周",

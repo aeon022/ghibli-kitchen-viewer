@@ -3,10 +3,10 @@
 // 额外：每天 1 个电饭煲菜（RICE_COOKER），在周览显示第4块卡片，并在下方生成各自页面
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { exportPDFById, exportHTMLById } from "../utils/exporters";
-import { buildEmbedCss } from "../utils/embedCss";
-import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data";
+import { exportPDFById, exportHTMLById } from "@/utils/exporters";
+import { buildEmbedCss } from "@/utils/embedCss";
+import { UI } from "@/i18n-ui";
+import { pickText, pickList } from "@/i18n-data";
 
 /* ---------- Meta ---------- */
 export const meta = {

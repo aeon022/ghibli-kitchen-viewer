@@ -2,10 +2,10 @@
 // Strikt nach Woche-5/6 Struktur (1:1), Rezepte = Woche 8 (21 Stück) + pro Tag 1 Reiskocher-Gericht (7 Stück)
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { exportPDFById, exportHTMLById } from "../utils/exporters";
-import { buildEmbedCss } from "../utils/embedCss";
-import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data";
+import { exportPDFById, exportHTMLById } from "@/utils/exporters";
+import { buildEmbedCss } from "@/utils/embedCss";
+import { UI } from "@/i18n-ui";
+import { pickText, pickList } from "@/i18n-data";
 
 /* ---------- Meta ---------- */
 export const meta = {

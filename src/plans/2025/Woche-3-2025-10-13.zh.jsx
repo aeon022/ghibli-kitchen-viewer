@@ -1,10 +1,10 @@
 // 文件: Woche-3-2025-10-13.zh.jsx
 /* eslint-disable */
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { exportPDFById, exportHTMLById } from "../utils/exporters";
-import { buildEmbedCss } from "../utils/embedCss";
-import { UI } from "../i18n-ui";
-import { pickText, pickList } from "../i18n-data";
+import { exportPDFById, exportHTMLById } from "@/utils/exporters";
+import { buildEmbedCss } from "@/utils/embedCss";
+import { UI } from "@/i18n-ui";
+import { pickText, pickList } from "@/i18n-data";
 
 export const meta = {
   title: "第3周",
