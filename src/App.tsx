@@ -14,6 +14,36 @@ type PlanMeta = {
 };
 type PlanModule = { default: React.ComponentType<any>; meta: PlanMeta };
 
+// --- Neue Komponente: Back to Top ---
+function BackToTop() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      // Zeigen ab 300px Scroll-Tiefe
+      setVisible(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <button
+      className={`back-to-top ${visible ? "visible" : ""}`}
+      onClick={scrollToTop}
+      title="Nach oben"
+      aria-label="Nach oben scrollen"
+    >
+      {/* Entweder CSS-Pfeil oder Unicode */}
+      <span className="arrow-up" />
+    </button>
+  );
+}
+
 function normalizeLang(v: unknown): Lang {
   const s = String(v ?? "").toLowerCase();
   if (s.includes("zh") || s.includes("cn") || s.includes("中文")) return "zh";
@@ -259,6 +289,10 @@ export default function App() {
             <Route path="*" element={<HomeRedirect plans={plans} />} />
           </Routes>
         </main>
+        
+        {/* HIER EINFÜGEN: */}
+        <BackToTop />
+        
       </div>
     </LangProvider>
   );
