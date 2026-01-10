@@ -1,8 +1,11 @@
 /* ------------------------------------------------------------------------
-  src/plans/registry.ts — NEU
+  src/plans/registry.ts
   - Automatischer Import ALLER Pläne (.de.jsx/.zh.jsx/.en.jsx) via Vite-Glob
   - Bau von Indexen: byId, byBase, yearsAvailable
 */
+
+// FIX: Lang Typ definieren, da er hier verwendet wird
+export type Lang = "de" | "zh" | "en";
 
 // @ts-ignore (Datei teilt Export zwischen TS/JSX)
 export type PlanModuleNS = { default: any; meta: { id: string; title: string; startDate: string; lang: Lang; sidebar?: string } };
