@@ -35,6 +35,11 @@ function BackToTop() {
   );
 }
 
+// --- Mobile Helper ---
+function isMobile() {
+  return typeof window !== "undefined" && window.innerWidth <= 768;
+}
+
 function normalizeLang(v: unknown): Lang {
   const s = String(v ?? "").toLowerCase();
   if (s.includes("zh") || s.includes("cn") || s.includes("中文")) return "zh";
@@ -144,6 +149,13 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
     setOpenYears(initial);
   }, [years.join(",")]);
 
+  // Auf Mobile: Sidebar standardmäßig schließen (einklappen)
+  useEffect(() => {
+    if (isMobile()) {
+      setCollapsed(true);
+    }
+  }, []);
+
   const filtered = plans.filter(p => p.lang === lang);
 
   const toggleLang = () => {
@@ -158,6 +170,13 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
     setLang(target);
   };
 
+  // Schließt die Sidebar auf Mobile, wenn ein Link geklickt wird
+  const handleLinkClick = () => {
+    if (isMobile()) {
+      setCollapsed(true);
+    }
+  };
+
   return (
     <aside className="sidebar">
       <button 
@@ -169,7 +188,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
         <span className="toggle-icon"></span>
       </button>
 
-      {/* Titel mit Span für Ausblenden */}
+      {/* Titel mit Span für Ausblenden/Vertikalen Text */}
       <div className="brand">
         GhibliKitchen<span className="brand-suffix"> Pläne</span>
       </div>
@@ -212,7 +231,10 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
               .filter(p => getPlanYear(p.startDate) === y)
               .map(p => (
                 <li key={p.slug}>
-                  <Link to={`/plan/${p.slug}?lang=${lang}`}>
+                  <Link 
+                    to={`/plan/${p.slug}?lang=${lang}`}
+                    onClick={handleLinkClick}
+                  >
                     {p.meta.sidebar || `${p.meta.title ?? p.meta.id} (${p.startDate})`}
                   </Link>
                 </li>

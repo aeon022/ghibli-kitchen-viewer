@@ -68,7 +68,7 @@ a { color: inherit; }
   pointer-events: none;
   
   position: absolute;
-  top: 50%;
+  top: 140px;
   left: 50%;
   /* Drehung um -90 Grad (Text läuft von unten nach oben) */
   transform: translate(-50%, -50%) rotate(-90deg);
@@ -98,7 +98,7 @@ a { color: inherit; }
 /* --- Toggle Button --- */
 .sidebar-toggle-btn {
   position: absolute;
-  top: 120px;
+  top: 20px;
   right: -20px;
   z-index: 100;
   background: var(--panel);
@@ -304,3 +304,112 @@ a { color: inherit; }
   border-right: 6px solid transparent;
   border-bottom: 8px solid currentColor;
 }
+
+
+
+
+/* --- MOBILE OPTIMIERUNGEN (ab hier neu) --- */
+
+@media (max-width: 768px) {
+  /* 1. Grid auflösen: Alles untereinander */
+  .app-shell, 
+  .app-shell.collapsed {
+    display: block; /* Kein Grid mehr */
+    position: relative;
+    overflow-x: hidden; /* Verhindert seitliches Scrollen */
+  }
+
+  /* 2. Sidebar wird zum "Drawer" (Overlay) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px; /* Feste Breite */
+    max-width: 85vw; /* Nicht breiter als 85% des Screens */
+    background: var(--panel);
+    z-index: 1000;
+    box-shadow: 2px 0 20px rgba(0,0,0,0.2);
+    
+    /* Standardmäßig versteckt (nach links geschoben) */
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  /* Wenn NICHT collapsed (also offen), schieb sie rein */
+  /* Wir nutzen hier die Logik umgekehrt: Mobile "collapsed" = zu = versteckt */
+  .app-shell:not(.collapsed) .sidebar {
+    transform: translateX(0);
+  }
+
+  /* Der Standard-Toggle-Button stört auf Mobile oft, wir positionieren ihn neu */
+  .sidebar-toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    right: auto;
+    transform: none !important;
+    z-index: 1100; /* Immer ganz oben */
+    background: var(--accent);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  
+  /* Icon im Button anpassen für Mobile (Hamburger vs X) */
+  .sidebar-toggle-btn .toggle-icon {
+    border: none;
+    width: 16px;
+    height: 2px;
+    background: currentColor;
+    position: relative;
+    box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; /* 3 Striche */
+    margin: 0;
+  }
+  
+  /* Wenn offen: X anzeigen */
+  .app-shell:not(.collapsed) .sidebar-toggle-btn .toggle-icon {
+    height: 0;
+    box-shadow: none;
+  }
+  .app-shell:not(.collapsed) .sidebar-toggle-btn::after {
+    content: "✕";
+    font-size: 20px;
+    line-height: 1;
+    font-weight: bold;
+  }
+
+  /* 3. Backdrop (Dunkler Hintergrund wenn Menü offen) */
+  .app-shell:not(.collapsed)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 900;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.3s;
+  }
+
+  /* 4. Inhalte auf Mobile anpassen */
+  .main {
+    padding: 80px 16px 80px 16px; /* Mehr Platz oben für den Button */
+  }
+  
+  /* Verstecke den vertikalen Titel auf Mobile, da Sidebar eh ganz weg ist */
+  .app-shell.collapsed .brand {
+    display: none !important; 
+  }
+  
+  /* Sicherstellen, dass Inhalte in der Sidebar sichtbar sind wenn offen */
+  .app-shell:not(.collapsed) .year-controls,
+  .app-shell:not(.collapsed) .year-list,
+  .app-shell:not(.collapsed) .lang-label,
+  .app-shell:not(.collapsed) .sidebar-top, 
+  .app-shell:not(.collapsed) .year {
+    display: block !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
