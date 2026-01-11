@@ -41,7 +41,7 @@ a { color: inherit; }
   border-right: 1px solid var(--border);
   backdrop-filter: blur(12px);
   padding: 16px 14px;
-  overflow: visible; /* Wichtig für Toggle Button */
+  overflow: visible; 
   white-space: nowrap;
   transition: padding 0.3s;
   position: relative;
@@ -56,11 +56,9 @@ a { color: inherit; }
   align-items: center;
 }
 
-/* EINGEKLAPPTER MODUS (Collapsed)
-   ===============================
-*/
+/* EINGEKLAPPTER MODUS (Collapsed) */
 
-/* 1. Titel: Absolut zentrieren und drehen */
+/* 1. Titel: Absolut positionieren (ca. 6rem von oben) */
 .app-shell.collapsed .brand {
   display: block !important;
   opacity: 1 !important;
@@ -68,17 +66,19 @@ a { color: inherit; }
   pointer-events: none;
   
   position: absolute;
-  top: 140px;
+  top: 140px; /* Fixer Abstand von oben */
   left: 50%;
-  /* Drehung um -90 Grad (Text läuft von unten nach oben) */
+  
+  /* Drehung um -90 Grad */
   transform: translate(-50%, -50%) rotate(-90deg);
   
   white-space: nowrap;
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 0.15em;
-  color: var(--text); /* Kontrastreich */
+  color: var(--muted);
   margin: 0;
+  width: max-content;
 }
 
 /* "Pläne" Textzusatz ausblenden */
@@ -86,7 +86,7 @@ a { color: inherit; }
   display: none !important;
 }
 
-/* 2. Alles andere AUSBLENDEN (außer .brand und .sidebar-toggle-btn) */
+/* 2. Alles andere AUSBLENDEN */
 .app-shell.collapsed .year-controls,
 .app-shell.collapsed .year-list,
 .app-shell.collapsed .lang-label,
@@ -98,7 +98,7 @@ a { color: inherit; }
 /* --- Toggle Button --- */
 .sidebar-toggle-btn {
   position: absolute;
-  top: 20px;
+  top: 30px;
   right: -20px;
   z-index: 100;
   background: var(--panel);
@@ -125,13 +125,13 @@ a { color: inherit; }
   height: 0; 
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent; 
-  border-right: 8px solid var(--text); /* Pfeil nach links */
+  border-right: 8px solid var(--text); 
   margin-right: 3px;
 }
 
 .app-shell.collapsed .toggle-icon {
   border-right: none;
-  border-left: 8px solid var(--text); /* Pfeil nach rechts */
+  border-left: 8px solid var(--text); 
   margin-right: 0;
   margin-left: 3px;
 }
@@ -274,28 +274,23 @@ a { color: inherit; }
   justify-content: center;
   cursor: pointer;
   z-index: 90;
-  
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px) scale(0.9);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  
   color: var(--text);
 }
-
 .back-to-top.visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
 }
-
 .back-to-top:hover {
   background: var(--chip);
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   border-color: var(--accent);
 }
-
 .arrow-up {
   display: inline-block;
   width: 0; 
@@ -305,58 +300,52 @@ a { color: inherit; }
   border-bottom: 8px solid currentColor;
 }
 
-
-
-
-/* --- MOBILE OPTIMIERUNGEN (ab hier neu) --- */
-
+/* --- MOBILE OPTIMIERUNGEN (Drawer Sidebar) --- */
 @media (max-width: 768px) {
-  /* 1. Grid auflösen: Alles untereinander */
+  /* Grid auflösen */
   .app-shell, 
   .app-shell.collapsed {
-    display: block; /* Kein Grid mehr */
+    display: block; 
     position: relative;
-    overflow-x: hidden; /* Verhindert seitliches Scrollen */
+    overflow-x: hidden;
   }
 
-  /* 2. Sidebar wird zum "Drawer" (Overlay) */
+  /* Sidebar als Overlay (Drawer) */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 280px; /* Feste Breite */
-    max-width: 85vw; /* Nicht breiter als 85% des Screens */
+    width: 280px;
+    max-width: 85vw;
     background: var(--panel);
     z-index: 1000;
     box-shadow: 2px 0 20px rgba(0,0,0,0.2);
-    
-    /* Standardmäßig versteckt (nach links geschoben) */
+    /* Standardmäßig versteckt */
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  /* Wenn NICHT collapsed (also offen), schieb sie rein */
-  /* Wir nutzen hier die Logik umgekehrt: Mobile "collapsed" = zu = versteckt */
+  /* Wenn NICHT collapsed (offen), reinschieben */
   .app-shell:not(.collapsed) .sidebar {
     transform: translateX(0);
   }
 
-  /* Der Standard-Toggle-Button stört auf Mobile oft, wir positionieren ihn neu */
+  /* Toggle Button auf Mobile fixieren */
   .sidebar-toggle-btn {
     position: fixed;
     top: 15px;
     left: 15px;
     right: auto;
     transform: none !important;
-    z-index: 1100; /* Immer ganz oben */
+    z-index: 1100;
     background: var(--accent);
     color: white;
     border: none;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
   
-  /* Icon im Button anpassen für Mobile (Hamburger vs X) */
+  /* Icon anpassen (Hamburger vs X) */
   .sidebar-toggle-btn .toggle-icon {
     border: none;
     width: 16px;
@@ -379,7 +368,7 @@ a { color: inherit; }
     font-weight: bold;
   }
 
-  /* 3. Backdrop (Dunkler Hintergrund wenn Menü offen) */
+  /* Backdrop (Dunkler Hintergrund) */
   .app-shell:not(.collapsed)::before {
     content: "";
     position: fixed;
@@ -390,17 +379,17 @@ a { color: inherit; }
     animation: fadeIn 0.3s;
   }
 
-  /* 4. Inhalte auf Mobile anpassen */
+  /* Content Padding */
   .main {
-    padding: 80px 16px 80px 16px; /* Mehr Platz oben für den Button */
+    padding: 80px 16px 80px 16px;
   }
   
-  /* Verstecke den vertikalen Titel auf Mobile, da Sidebar eh ganz weg ist */
+  /* Vertikalen Titel auf Mobile ausblenden (da Drawer eh weg ist) */
   .app-shell.collapsed .brand {
     display: none !important; 
   }
   
-  /* Sicherstellen, dass Inhalte in der Sidebar sichtbar sind wenn offen */
+  /* Sicherstellen, dass Inhalte sichtbar sind wenn Drawer offen */
   .app-shell:not(.collapsed) .year-controls,
   .app-shell:not(.collapsed) .year-list,
   .app-shell:not(.collapsed) .lang-label,

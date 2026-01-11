@@ -129,7 +129,7 @@ function usePlans(): PlanRecord[] {
   }, []);
 }
 
-// --- Sidebar (Einzige Definition) ---
+// --- Sidebar (Mobile Optimized) ---
 function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], collapsed: boolean, setCollapsed: (v:boolean)=>void }) {
   const { lang, setLang } = useLang();
   const navigate = useNavigate();
@@ -149,7 +149,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
     setOpenYears(initial);
   }, [years.join(",")]);
 
-  // Auf Mobile: Sidebar standardmäßig schließen (einklappen)
+  // Auf Mobile: Sidebar beim Start automatisch einklappen (verstecken)
   useEffect(() => {
     if (isMobile()) {
       setCollapsed(true);
@@ -170,7 +170,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
     setLang(target);
   };
 
-  // Schließt die Sidebar auf Mobile, wenn ein Link geklickt wird
+  // Hilfsfunktion: Auf Mobile Sidebar schließen nach Klick
   const handleLinkClick = () => {
     if (isMobile()) {
       setCollapsed(true);
@@ -188,7 +188,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
         <span className="toggle-icon"></span>
       </button>
 
-      {/* Titel mit Span für Ausblenden/Vertikalen Text */}
+      {/* Titel mit Span für Ausblenden */}
       <div className="brand">
         GhibliKitchen<span className="brand-suffix"> Pläne</span>
       </div>
@@ -233,7 +233,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
                 <li key={p.slug}>
                   <Link 
                     to={`/plan/${p.slug}?lang=${lang}`}
-                    onClick={handleLinkClick}
+                    onClick={handleLinkClick} 
                   >
                     {p.meta.sidebar || `${p.meta.title ?? p.meta.id} (${p.startDate})`}
                   </Link>
