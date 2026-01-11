@@ -14,23 +14,15 @@ type PlanMeta = {
 };
 type PlanModule = { default: React.ComponentType<any>; meta: PlanMeta };
 
-// --- Neue Komponente: Back to Top ---
+// --- Back to Top Komponente ---
 function BackToTop() {
   const [visible, setVisible] = useState(false);
-
   useEffect(() => {
-    const onScroll = () => {
-      // Zeigen ab 300px Scroll-Tiefe
-      setVisible(window.scrollY > 300);
-    };
+    const onScroll = () => setVisible(window.scrollY > 300);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   return (
     <button
       className={`back-to-top ${visible ? "visible" : ""}`}
@@ -38,7 +30,6 @@ function BackToTop() {
       title="Nach oben"
       aria-label="Nach oben scrollen"
     >
-      {/* Entweder CSS-Pfeil oder Unicode */}
       <span className="arrow-up" />
     </button>
   );
@@ -58,19 +49,11 @@ function baseIdFromSlug(slug: string) {
   return slug.replace(/-zh$/i, "");
 }
 
-// --- Hilfsfunktion: ISO-Jahr ermitteln (damit KW1 2026, die 2025 startet, als 2026 angezeigt wird) ---
 function getPlanYear(startDateStr: string) {
-  const date = new Date(startDateStr);
-  const year = date.getFullYear();
-  const month = date.getMonth(); // 0-11
-  const day = date.getDate();
-  
-  // Wenn Dezember (Monat 11) und "Woche 1" (typischerweise ab 29.12.), zähle es zum nächsten Jahr
-  // Einfache Heuristik: Wenn 29.12. oder später, ist es meist der Start der KW1 des Folgejahres.
-  if (month === 11 && day >= 29) {
-    return year + 1;
-  }
-  return year;
+  if (!startDateStr) return new Date().getFullYear();
+  const [y, m, d] = startDateStr.split("-").map(Number);
+  if (m === 12 && d >= 29) return y + 1;
+  return y;
 }
 
 function pickCurrent(plans: PlanRecord[], lang: Lang) {
@@ -99,7 +82,6 @@ function LangProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const nav = useNavigate();
   const isRoot = location.pathname === "/" || location.pathname === "/ghibli-kitchen-viewer" || location.pathname === "/ghibli-kitchen-viewer/";
-
   const [lang, setLangState] = useState<Lang>(() => "de");
 
   useEffect(() => {
@@ -119,7 +101,6 @@ function LangProvider({ children }: { children: React.ReactNode }) {
   return <LangCtx.Provider value={{ lang, setLang }}>{children}</LangCtx.Provider>;
 }
 
-// ---- Plans laden ----
 const planModules = import.meta.glob("./plans/**/*.{jsx,tsx}", { eager: true }) as Record<string, PlanModule>;
 
 function usePlans(): PlanRecord[] {
@@ -143,13 +124,12 @@ function usePlans(): PlanRecord[] {
   }, []);
 }
 
-// --- Sidebar mit Collapse & Toggle ---
+// --- Sidebar (Einzige Definition) ---
 function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], collapsed: boolean, setCollapsed: (v:boolean)=>void }) {
   const { lang, setLang } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Verwende getPlanYear für die Gruppierung
   const years = useMemo(() => {
     const ys = new Set<number>();
     for (const p of plans) ys.add(getPlanYear(p.startDate));
@@ -180,9 +160,6 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
 
   return (
     <aside className="sidebar">
-      {/* Cooler Button: Außerhalb des Flows positioniert via CSS. 
-         Hier nur das Element. 
-      */}
       <button 
         className="sidebar-toggle-btn" 
         onClick={() => setCollapsed(!collapsed)} 
@@ -192,7 +169,10 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
         <span className="toggle-icon"></span>
       </button>
 
-      <div className="brand">GhibliKitchen</div>
+      {/* Titel mit Span für Ausblenden */}
+      <div className="brand">
+        GhibliKitchen<span className="brand-suffix"> Pläne</span>
+      </div>
 
       <div className="sidebar-top">
         <div className="lang-switch-container">
@@ -248,10 +228,8 @@ function PlanPage({ plans }: { plans: PlanRecord[] }) {
   const { slug = "" } = useParams();
   const { lang } = useLang();
   const nav = useNavigate();
-
   const current = plans.find(p => p.slug === slug);
   if (!current) return <div className="main-inner">Plan nicht gefunden: {slug}</div>;
-
   if (current.lang !== lang) {
     const sibling = plans.find(p => p.baseId === current.baseId && p.lang === lang);
     if (sibling) {
@@ -259,13 +237,8 @@ function PlanPage({ plans }: { plans: PlanRecord[] }) {
       return null;
     }
   }
-
   const Cmp = current.Component;
-  return (
-    <div className="main-inner">
-      <Cmp />
-    </div>
-  );
+  return (<div className="main-inner"><Cmp /></div>);
 }
 
 function HomeRedirect({ plans }: { plans: PlanRecord[] }) {
@@ -277,7 +250,6 @@ function HomeRedirect({ plans }: { plans: PlanRecord[] }) {
 export default function App() {
   const plans = usePlans();
   const [collapsed, setCollapsed] = useState(false);
-
   return (
     <LangProvider>
       <div className={`app-shell ${collapsed ? "collapsed" : ""}`}>
@@ -289,10 +261,7 @@ export default function App() {
             <Route path="*" element={<HomeRedirect plans={plans} />} />
           </Routes>
         </main>
-        
-        {/* HIER EINFÜGEN: */}
         <BackToTop />
-        
       </div>
     </LangProvider>
   );

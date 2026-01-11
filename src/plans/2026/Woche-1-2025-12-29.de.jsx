@@ -13,7 +13,7 @@ export const meta = {
   startDate: "2025-12-29",
   id: "woche-1-2025-12-29",
   lang: "de",
-  sidebar: "[DE] Woche 1 (2025-12-29)",
+  sidebar: "Woche 1 (2025-12-29)",
 };
 
 const FILE_BASE = "Woche 1 2025-12-29";

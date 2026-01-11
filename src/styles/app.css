@@ -1,4 +1,4 @@
-/* src/app.css */
+/* src/styles/app.css */
 :root {
   --bg: #FAF7F1;
   --panel: #ffffff;
@@ -9,7 +9,7 @@
   --accent: #2aa769;
   --chip: #EEF8F3;
   --sidebar-w: 280px;
-  --sidebar-w-collapsed: 60px; /* Etwas breiter für den Switch im eingeklappten Zustand */
+  --sidebar-w-collapsed: 60px;
 }
 
 * { box-sizing: border-box; }
@@ -41,59 +41,70 @@ a { color: inherit; }
   border-right: 1px solid var(--border);
   backdrop-filter: blur(12px);
   padding: 16px 14px;
-  /* WICHTIG: overflow NICHT verstecken, sonst ist der Toggle-Button weg! */
-  overflow: visible; 
+  overflow: visible; /* Wichtig für Toggle Button */
   white-space: nowrap;
   transition: padding 0.3s;
   position: relative;
   display: flex;
   flex-direction: column;
   z-index: 50;
+  min-height: 100vh;
 }
 
 .app-shell.collapsed .sidebar {
-  padding: 16px 8px;
+  padding: 16px 0;
   align-items: center;
 }
 
-/* Inhalte verstecken */
-.app-shell.collapsed .brand,
+/* EINGEKLAPPTER MODUS (Collapsed)
+   ===============================
+*/
+
+/* 1. Titel: Absolut zentrieren und drehen */
+.app-shell.collapsed .brand {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none;
+  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Drehung um -90 Grad (Text läuft von unten nach oben) */
+  transform: translate(-50%, -50%) rotate(-90deg);
+  
+  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--text); /* Kontrastreich */
+  margin: 0;
+}
+
+/* "Pläne" Textzusatz ausblenden */
+.app-shell.collapsed .brand-suffix {
+  display: none !important;
+}
+
+/* 2. Alles andere AUSBLENDEN (außer .brand und .sidebar-toggle-btn) */
 .app-shell.collapsed .year-controls,
 .app-shell.collapsed .year-list,
-.app-shell.collapsed .lang-label {
-  opacity: 0;
-  pointer-events: none;
-  display: none;
-}
-
-/* Eingeklappte Jahre */
+.app-shell.collapsed .lang-label,
+.app-shell.collapsed .sidebar-top, 
 .app-shell.collapsed .year {
-  width: 42px; 
-  display: flex; 
-  justify-content: center;
-}
-.app-shell.collapsed .year > summary {
-  padding: 12px 0;
-  text-align: center;
-  list-style: none; /* Dreieck weg */
-}
-.app-shell.collapsed .year > summary::-webkit-details-marker {
-  display: none;
+  display: none !important;
 }
 
-/* --- Neuer "Cooler" Toggle Button --- */
-/* --- Toggle Button (Größer & sichtbar) --- */
+/* --- Toggle Button --- */
 .sidebar-toggle-btn {
   position: absolute;
-  top: 2rem; 
-  right: -20px; /* Ragt deutlich heraus */
-  transform: translateY(-50%);
-  
+  top: 120px;
+  right: -20px;
   z-index: 100;
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 50%;
-  width: 40px; /* Größer */
+  width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
@@ -106,7 +117,7 @@ a { color: inherit; }
 
 .sidebar-toggle-btn:hover {
   background: #f3f4f6;
-  transform: translateY(-50%) scale(1.1);
+  transform: scale(1.1);
 }
 
 .toggle-icon {
@@ -125,18 +136,12 @@ a { color: inherit; }
   margin-left: 3px;
 }
 
-
 /* --- Language Toggle Switch --- */
 .lang-switch-container {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
-  transition: justify-content 0.3s;
-}
-.app-shell.collapsed .lang-switch-container {
-  justify-content: center;
-  margin-bottom: 20px;
 }
 
 .lang-toggle {
@@ -174,7 +179,6 @@ a { color: inherit; }
 .lang-toggle[data-lang="zh"] .lang-toggle-handle {
   transform: translateX(22px);
 }
-/* Inhalt des Handles per data-text Attribut */
 .lang-toggle-handle::after {
   content: attr(data-text);
 }
@@ -254,7 +258,7 @@ a { color: inherit; }
   margin: 0 auto; 
 }
 
-/* --- Back to Top Button --- */
+/* --- Back to Top --- */
 .back-to-top {
   position: fixed;
   bottom: 30px;
@@ -269,19 +273,16 @@ a { color: inherit; }
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 90; /* Unter Sidebar-Toggle (100), aber über Content */
+  z-index: 90;
   
-  /* Animation für Ein/Ausblenden */
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px) scale(0.9);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   
   color: var(--text);
-  font-size: 20px;
 }
 
-/* Zustand: Sichtbar */
 .back-to-top.visible {
   opacity: 1;
   visibility: visible;
@@ -289,13 +290,12 @@ a { color: inherit; }
 }
 
 .back-to-top:hover {
-  background: var(--chip); /* Nutzt deine Chip-Farbe für Hover */
+  background: var(--chip);
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   border-color: var(--accent);
 }
 
-/* Kleiner Pfeil im Button */
 .arrow-up {
   display: inline-block;
   width: 0; 
