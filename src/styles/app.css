@@ -56,9 +56,9 @@ a { color: inherit; }
   align-items: center;
 }
 
-/* EINGEKLAPPTER MODUS (Collapsed) */
+/* EINGEKLAPPTER MODUS (Desktop) */
 
-/* 1. Titel: Absolut positionieren (ca. 6rem von oben) */
+/* 1. Titel: Absolut positionieren (ca. 140px von oben) */
 .app-shell.collapsed .brand {
   display: block !important;
   opacity: 1 !important;
@@ -66,7 +66,7 @@ a { color: inherit; }
   pointer-events: none;
   
   position: absolute;
-  top: 140px; /* Fixer Abstand von oben */
+  top: 140px; 
   left: 50%;
   
   /* Drehung um -90 Grad */
@@ -321,14 +321,17 @@ a { color: inherit; }
     background: var(--panel);
     z-index: 1000;
     box-shadow: 2px 0 20px rgba(0,0,0,0.2);
-    /* Standardmäßig versteckt */
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* WICHTIG: Kein Transform benutzen, sonst verschwindet der fixed Button! 
+       Stattdessen mit left arbeiten. */
+    transform: none !important; 
+    left: -100%; /* Standardmäßig versteckt */
+    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
 
-  /* Wenn NICHT collapsed (offen), reinschieben */
+  /* Wenn NICHT collapsed (also offen), reinschieben */
   .app-shell:not(.collapsed) .sidebar {
-    transform: translateX(0);
+    left: 0; /* Rein ins Bild */
   }
 
   /* Toggle Button auf Mobile fixieren */
@@ -338,7 +341,7 @@ a { color: inherit; }
     left: 15px;
     right: auto;
     transform: none !important;
-    z-index: 1100;
+    z-index: 1100; /* Höher als Sidebar */
     background: var(--accent);
     color: white;
     border: none;
