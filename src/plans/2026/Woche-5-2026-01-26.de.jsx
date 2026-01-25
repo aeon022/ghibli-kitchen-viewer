@@ -5,7 +5,7 @@ import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
   GhibliKitchen – Woche 5 (Start: 2026-01-26)
-  Korrektur: Fehlende Schriftzeichen (CN/JP/KR) in den Titeln ergänzt.
+  Status: FIX (White Screen behoben).
   Inhalt: Balanced (nicht Gastritis-streng), Schwangerschaftssicher.
 */
 
@@ -453,7 +453,7 @@ const DATA = [
       "Reis (gekocht oder Reste) 200 g",
       "Tarako (Kabeljaurogen) oder Lachs 80 g",
       "Grüner Tee (heiß) 400 ml",
-      "Nori, Sesam, Wasabi (wenig)"
+      "Nori/Sesam (wenig)"
     ],
     steps: [
       "Tarako/Fisch in der Pfanne gut durchbraten.",
@@ -792,13 +792,14 @@ function aggregateList(data, canon) {
 
 function animePlaceholder(title) {
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Fix: Encode SVG properly to avoid breaking with special characters
   const svg = `
   <svg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'>
     <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
       <stop offset='0%' stop-color='#FCE7F3'/><stop offset='100%' stop-color='#DCFCE7'/>
     </linearGradient></defs>
     <rect width='1200' height='675' fill='url(#g)'/>
-    <g font-family='Noto Sans SC, sans-serif'>
+    <g font-family='sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
       <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
     </g>
@@ -835,33 +836,33 @@ function MealCard({ meal }) {
         <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
         <div>
           {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 电饭煲") : null}
-          {meal.remind ? tagChip("💊 用药") : null}
+          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
+          {meal.remind ? tagChip("💊 Metformin") : null}
         </div>
       </div>
       {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
       {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
       
-      <h4>食材 (2人份)</h4>
+      <h4>Zutaten (2 Personen)</h4>
       <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
       
-      <h4>做法</h4>
+      <h4>Zubereitung</h4>
       <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
       
       <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>注意:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>替换:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>配菜:</strong> {meal.side}</p>
+        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
+        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
+        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
       </div>
 
       {meal.riceCooker?.enabled ? (
         <div style={{ marginTop: 12 }}>
           <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>电饭煲设置</summary>
+            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
             <ul style={{marginTop:8}}>
-              <li><strong>模式:</strong> {meal.riceCooker.program}</li>
-              <li><strong>水量:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>备注:</strong> {meal.riceCooker.notes}</li> : null}
+              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
+              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
+              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
             </ul>
           </details>
         </div>
@@ -883,7 +884,7 @@ function DaySection({ dayKey, meals, dayName }) {
   );
 }
 
-function WeekOverview({ data, DAY_NAME_ZH, meta }) {
+function WeekOverview({ data, DAY_NAME_DE, meta }) {
   const byDay = useMemo(() => {
     const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
     for (const r of data) map[r.id.split("-")[0]].push(r);
@@ -906,25 +907,25 @@ function WeekOverview({ data, DAY_NAME_ZH, meta }) {
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
         <div className="ghk-hero-inner" style={{ padding: 18, borderRadius: 12, marginBottom: 16, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
-            第5周 – 总览 <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
+            Woche 5 – Übersicht <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
           </h2>
-          <p style={{ marginTop: 6, color: "var(--muted)" }}>JP/CN/KR · 营养均衡 (温和) · 孕期安全 · 每日 1x 电饭煲料理</p>
+          <p style={{ marginTop: 6, color: "var(--muted)" }}>JP/CN/KR · Balanced · Schwangerschaftssicher · 1× Reiskocher/Tag</p>
         </div>
         <div style={{ display: "grid", gap: 12 }}>
           {DAYS_ORDER.map((d) => (
             <div key={d} style={{ padding: 12, borderRadius: 12, border: "1px solid var(--border)", background: "var(--panel)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 8, flexWrap: "wrap" }}>
-                <strong>{DAY_NAME_ZH[d]}</strong>
+                <strong>{DAY_NAME_DE[d]}</strong>
                 <a 
                   href={`#day-${d}`} 
                   onClick={scrollToId(`day-${d}`)}
                   style={{ fontSize: 12, color: "var(--text)", textDecoration: "none", border: "1px solid var(--border)", padding: "4px 8px", borderRadius: 8, background: "var(--chip-bg)", cursor: "pointer" }}
                 >
-                  跳转当天 ▿
+                  zum Tag ▿
                 </a>
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {byDay[d].map((m) => pill(m.id, m.title.replace(/ – .*$/, "").replace(/\s*\(.*\)$/, ""), `meal-${m.id}`, !!m.riceCooker?.enabled))}
+                {byDay[d].map((m) => pill(m.id, m.title.replace(/ – .*$/, ""), `meal-${m.id}`, !!m.riceCooker?.enabled))}
               </div>
             </div>
           ))}
@@ -934,10 +935,11 @@ function WeekOverview({ data, DAY_NAME_ZH, meta }) {
   );
 }
 
-// ---- RiceCooker Section ----
+// ---- RiceCooker Section (Fix: Safety Check) ----
 function RiceCookerSection({ data }) {
   const perDay = useMemo(() => {
     const map = { mo: null, di: null, mi: null, do: null, fr: null, sa: null, so: null };
+    if (!data) return map; // Safety check
     for (const r of data) {
       const day = r.id.split("-")[0];
       if (r.riceCooker?.enabled && !map[day]) map[day] = r;
@@ -947,27 +949,27 @@ function RiceCookerSection({ data }) {
 
   return (
     <section style={{ marginTop: 32 }}>
-      <h2 style={{ borderBottom: "2px solid var(--border)", paddingBottom: 10, marginBottom: 20 }}>🍚 电饭煲料理汇总</h2>
+      <h2 style={{ borderBottom: "2px solid var(--border)", paddingBottom: 10, marginBottom: 20 }}>🍚 Reiskocher-Gerichte (Übersicht)</h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
         {DAYS_ORDER.map((d) => {
           const r = perDay[d];
           return (
             <div key={d} style={{ ...cardPanelStyle }}>
               <h3 style={{ marginTop: 0, fontSize: 16 }}>
-                {DAY_NAME_ZH[d].split(" ")[0]} – {r ? r.title : "无"}
+                {DAY_NAME_DE[d].split(" ")[0]} – {r ? r.title : "Kein Reiskocher-Gericht"}
               </h3>
               {r ? (
                 <ul style={{ margin: 0, paddingLeft: 20 }}>
-                  <li><strong>模式:</strong> {r.riceCooker.program}</li>
-                  <li><strong>水量:</strong> {r.riceCooker.water}</li>
-                  {r.riceCooker.notes ? <li><strong>备注:</strong> {r.riceCooker.notes}</li> : null}
+                  <li><strong>Programm:</strong> {r.riceCooker.program}</li>
+                  <li><strong>Wasser:</strong> {r.riceCooker.water}</li>
+                  {r.riceCooker.notes ? <li><strong>Notiz:</strong> {r.riceCooker.notes}</li> : null}
                 </ul>
               ) : null}
             </div>
           );
         })}
       </div>
-      <p style={{ marginTop: 12, color: "var(--muted)" }}>本周热门: 杂菌饭, 味噌黄油三文鱼, 海南鸡饭, 叉烧鸡饭, 拌饭, 海鲜饭, 蒸蛋。</p>
+      <p style={{ marginTop: 12, color: "var(--muted)" }}>Trends dabei: Kinoko Gohan, Miso-Butter-Lachs, Hainan Chicken, Char Siu Chicken, Bibimbap, Seafood Pilaf, Gedämpftes Ei.</p>
     </section>
   );
 }
@@ -980,7 +982,7 @@ function ThemeSwitch({ mode, setMode, effectiveDark }) {
   return (
     <div className="ghk-theme-switch" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: 6, border: "1px solid var(--btn-border)", borderRadius: 999, background: "var(--panel)" }}>
       <button type="button" className="ghk-tab" aria-pressed={mode === "auto"} onClick={() => setMode(mode === "auto" ? (effectiveDark ? "dark" : "light") : "auto")} style={{ padding: "6px 10px" }}>Auto</button>
-      <label className="ghk-switch" title={effectiveDark ? "暗色" : "亮色"}>
+      <label className="ghk-switch" title={effectiveDark ? "Dunkel" : "Hell"}>
         <input type="checkbox" checked={effectiveDark} onChange={(e) => setMode(e.target.checked ? "dark" : "light")} disabled={mode === "auto"} />
         <span className="ghk-slider" />
       </label>
@@ -991,7 +993,7 @@ function ThemeSwitch({ mode, setMode, effectiveDark }) {
 // -----------------------------------------------------------------------
 // MAIN EXPORT
 // -----------------------------------------------------------------------
-export default function Woche5ZH() {
+export default function Woche5DE() {
   const langFromUrl = useLangHint();
   const hiddenByLang = langFromUrl && langFromUrl !== meta.lang;
   if (hiddenByLang) return null;
@@ -1010,47 +1012,57 @@ export default function Woche5ZH() {
     return () => Object.keys(vars).forEach((k) => root.style.removeProperty(k));
   }, [vars]);
 
+  // Styles (Identical to Week 4)
+  const Styles = () => (
+    <style>{`
+      .meal-card p { line-height: 1.75; margin-bottom: 1rem; }
+      .meal-card li { line-height: 1.7; margin-bottom: 0.5rem; }
+      .meal-card h4 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent-2); font-weight: 700; }
+      
+      .ghk-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+      .ghk-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
+      .ghk-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
+      .ghk-switch input{ opacity:0; width:0; height:0; position:absolute; }
+      .ghk-switch .ghk-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
+      .ghk-switch .ghk-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
+      .ghk-switch input:checked + .ghk-slider{ background:var(--accent-2); border-color:var(--accent-2); }
+      .ghk-switch input:checked + .ghk-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
+
+      .ghk-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
+      .ghk-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
+      .ghk-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+      .ghk-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
+      .ghk-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
+
+      #ghk-content{ display:block !important; }
+      #ghk-content > [hidden]{ display:none !important; }
+
+      .ghk-exporting{ width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important; box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important; --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12); --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6; }
+      .ghk-exporting *{ box-shadow:none !important; }
+      .ghk-exporting .ghk-art, .ghk-exporting img{ display:none !important; visibility:hidden !important; }
+      .ghk-exporting .ghk-chip, .ghk-exporting .ghk-date-paren{ display:none !important; }
+
+      @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
+    `}</style>
+  );
+
   return (
     <div style={{ background: "var(--bg)", color: "var(--text)", padding: 24 }}>
-      <style>{`
-        .meal-card p { line-height: 1.75; margin-bottom: 1rem; }
-        .meal-card li { line-height: 1.7; margin-bottom: 0.5rem; }
-        .meal-card h4 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent-2); font-weight: 700; }
-        
-        .ghk-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
-        .ghk-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
-        .ghk-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
-        .ghk-switch input{ opacity:0; width:0; height:0; position:absolute; }
-        .ghk-switch .ghk-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
-        .ghk-switch .ghk-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
-        .ghk-switch input:checked + .ghk-slider{ background:var(--accent-2); border-color:var(--accent-2); }
-        .ghk-switch input:checked + .ghk-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
-
-        .ghk-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
-        .ghk-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
-        .ghk-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
-        .ghk-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
-        .ghk-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
-
-        #ghk-content{ display:block !important; }
-        #ghk-content > [hidden]{ display:none !important; }
-
-        @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
-      `}</style>
+      <Styles />
 
       <div className="ghk-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
         <div className="ghk-hero-inner" style={{ background: "var(--grad-hero)", borderRadius: 12, padding: 14, marginBottom: 12, display: "grid", gap: 8 }}>
           <h1 style={{ margin: 0 }}>{UI_TITLES.main}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {tagChip(`开始：${meta.startDate}`)}
-            {tagChip("第5周")}
-            {tagChip("亚洲风味 (中/日/韩)")}
-            {tagChip("每日 1× 🍚 电饭煲料理")}
+            {tagChip(`Start: ${meta.startDate}`)}
+            {tagChip("Woche 5")}
+            {tagChip("CN/JP/KR · Balanced · Schwangerschaft")}
+            {tagChip("Täglich 1× 🍚 Reiskocher")}
           </div>
         </div>
 
         <div className="ghk-no-print" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-          <fieldset className="ghk-segment" role="radiogroup" aria-label="选择视图">
+          <fieldset className="ghk-segment" role="radiogroup" aria-label="Ansicht wählen">
             <label>
               <input type="radio" name="ghk-view" value="kochbuch" checked={tab === "kochbuch"} onChange={() => setTab("kochbuch")} />
               <span>{UI_TITLES.main}</span>
@@ -1062,19 +1074,21 @@ export default function Woche5ZH() {
           </fieldset>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginLeft: "auto" }}>
-            <button type="button" onClick={doPrint} className="ghk-tab"><span className="icon">🖨️</span> 打印</button>
+            {/* Nur Drucken & Theme Switch übrig */}
+            <button type="button" onClick={doPrint} className="ghk-tab"><span className="icon">🖨️</span> Drucken</button>
             <ThemeSwitch mode={mode} setMode={setMode} effectiveDark={effectiveDark} />
           </div>
         </div>
       </div>
 
       <div id="kochbuch-root" style={{ ...cardPanelStyle }}>
-        <WeekOverview data={DATA} DAY_NAME_ZH={DAY_NAME_ZH} meta={meta} />
+        <WeekOverview data={DATA} DAY_NAME_DE={DAY_NAME_DE} meta={meta} />
         <div id="ghk-content" data-view={tab}>
           <section id="ghk-pane-kochbuch" aria-hidden={tab !== "kochbuch"} hidden={tab !== "kochbuch"}>
             {DAYS_ORDER.map((d) => (
-              <DaySection key={d} dayKey={d} meals={DATA.filter(r => r.id.startsWith(d))} dayName={DAY_NAME_ZH[d]} />
+              <DaySection key={d} dayKey={d} meals={DATA.filter(r => r.id.startsWith(d))} dayName={DAY_NAME_DE[d]} />
             ))}
+            {/* Hier die korrekte Reiskocher-Sektion */}
             <RiceCookerSection data={DATA} />
           </section>
           <section id="ghk-pane-liste" aria-hidden={tab !== "liste"} hidden={tab !== "liste"}>
