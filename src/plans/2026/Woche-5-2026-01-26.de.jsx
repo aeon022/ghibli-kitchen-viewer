@@ -5,9 +5,8 @@ import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
   GhibliKitchen – Woche 5 (Start: 2026-01-26)
-  Design: Identisch zu Woche 4.
-  Inhalt: CN/JP/KR, Balanced (nicht Gastritis-streng), Schwangerschaftssicher.
-  Features: Keine PDF/HTML Buttons, Reiskocher-Liste am Ende.
+  Korrektur: Fehlende Schriftzeichen (CN/JP/KR) in den Titeln ergänzt.
+  Inhalt: Balanced (nicht Gastritis-streng), Schwangerschaftssicher.
 */
 
 // ---- Meta ----
@@ -26,7 +25,7 @@ const UI_TITLES = {
   list: "Einkaufsliste Woche 5",
 };
 
-// ---- THEME (Identisch zu Woche 4) ----
+// ---- THEME ----
 const THEME_VARS_LIGHT = {
   "--bg": "#FAF7F1",
   "--text": "#111827",
@@ -187,7 +186,7 @@ const DATA = [
   },
   {
     id: "mo-a",
-    title: "Kinoko Gohan (Pilz-Reis aus dem Reiskocher)",
+    title: "Kinoko Gohan 茸ご飯 (Pilz-Reis)",
     desc: "Aromatischer Reis, der mit verschiedenen Pilzen und Soja gedämpft wird.",
     story: "Der Wald ruft! 'Kinoko' heißt Pilz. Wenn der Reiskocherdeckel aufgeht, riecht die ganze Küche nach Herbstspaziergang und Umami.",
     target: "≈82 g KH (2 P.) · Protein ≈18 g p. P. (mit Beilage)",
@@ -214,7 +213,7 @@ const DATA = [
   // DIENSTAG
   {
     id: "di-f",
-    title: "Tamago Kake Gohan (Safe Edition)",
+    title: "Tamago Kake Gohan 卵かけご飯 (Safe Edition)",
     desc: "Der japanische Klassiker 'Ei auf Reis', aber mit Rührei statt rohem Ei.",
     story: "Normalerweise wird ein rohes Ei über heißen Reis geschlagen. Wir machen ein cremiges, aber durchgegartes Rührei daraus. Fast genauso gut und sicher!",
     target: "≈70 g KH (2 P.) · Protein ≈20 g p. P.",
@@ -238,7 +237,7 @@ const DATA = [
   },
   {
     id: "di-m",
-    title: "Chow Mein mit Hühnchen",
+    title: "Chow Mein 炒面 (mit Hühnchen)",
     desc: "Knusprig gebratene Nudeln mit viel Gemüse und Hühnchenstreifen.",
     story: "Der Lieferdienst-Klassiker, aber gesund. 'Chow' heißt gebraten, 'Mein' heißt Nudel. Das Geheimnis ist, die Nudeln erst kurz knusprig zu braten.",
     target: "≈86 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -263,7 +262,7 @@ const DATA = [
   },
   {
     id: "di-a",
-    title: "Miso-Butter Lachs (Reiskocher)",
+    title: "Miso-Butter Lachs 味噌バター鮭 (Reiskocher)",
     desc: "Lachsfilet dämpft auf dem Reis, gewürzt mit Miso und einem Stück Butter.",
     story: "Hokkaido-Style! Im Norden Japans liebt man die Kombi Miso & Butter (wie bei Ramen). Der Reis saugt die Butter auf... ein Traum.",
     target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -291,7 +290,7 @@ const DATA = [
   // MITTWOCH
   {
     id: "mi-f",
-    title: "Hotteok (Herzhafte Pfannkuchen)",
+    title: "Hotteok 호떡 (Herzhafte Pfannkuchen)",
     desc: "Koreanische gefüllte Pfannkuchen, hier mal herzhaft mit Käse & Gemüse statt süß.",
     story: "Eigentlich ein süßer Streetfood-Snack mit Zimt. Aber mit Käse und Gemüse gefüllt ist es ein geniales Frühstück.",
     target: "≈75 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -316,7 +315,7 @@ const DATA = [
   },
   {
     id: "mi-m",
-    title: "Tenshindon (Omelett auf Reis)",
+    title: "Tenshindon 天津丼 (Omelett auf Reis)",
     desc: "Chinesisch-Japanisches Krabbenomelett auf Reis mit einer süß-sauren Sauce.",
     story: "Benannt nach der Stadt Tianjin, aber eigentlich in Japan erfunden. Fluffiges Ei trifft auf dicke, glänzende Sauce. Comfort Food pur.",
     target: "≈85 g KH (2 P.) · Protein ≈24 g p. P.",
@@ -340,7 +339,7 @@ const DATA = [
   },
   {
     id: "mi-a",
-    title: "Hainan Chicken Rice (Easy Mode)",
+    title: "Hainan Chicken Rice 海南鸡饭 (Easy Mode)",
     desc: "Das berühmte Hühnchen-Gericht, komplett im Reiskocher zubereitet.",
     story: "Singapurs Nationalgericht. Das Fett des Huhns macht den Reis unglaublich aromatisch. Dazu Ingwer-Dip.",
     target: "≈82 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -368,7 +367,7 @@ const DATA = [
   // DONNERSTAG
   {
     id: "do-f",
-    title: "Dou Jiang & 'Falsches' Youtiao",
+    title: "Dou Jiang & Youtiao 豆浆油条 (mit Toast)",
     desc: "Herzhafte warme Sojamilch-Suppe mit Toast-Streifen (statt Fettgebäck).",
     story: "Das klassische chinesische Frühstück: Sojamilch, die durch Essig leicht ausflockt (wie feiner Quark), dazu Brot. Wir nehmen Toast statt frittiertem Youtiao.",
     target: "≈65 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -393,7 +392,7 @@ const DATA = [
   },
   {
     id: "do-m",
-    title: "Curry Udon (Mild & Cremig)",
+    title: "Curry Udon カレーうどん (Mild & Cremig)",
     desc: "Dicke Udon-Nudeln in einer milden Curry-Brühe. Kleckergefahr, aber es lohnt sich!",
     story: "Japanisches Soulfood. Wenn vom Curry-Reis was übrig bleibt, macht man am nächsten Tag Udon draus. Hier machen wir es frisch.",
     target: "≈88 g KH (2 P.) · Protein ≈20 g p. P.",
@@ -418,7 +417,7 @@ const DATA = [
   },
   {
     id: "do-a",
-    title: "Char Siu Chicken Rice (Reiskocher)",
+    title: "Char Siu Chicken Rice 叉烧鸡饭 (Reiskocher)",
     desc: "Hähnchen in süß-herzhafter BBQ-Marinade, geschmort im Reiskocher.",
     story: "Char Siu ist eigentlich rotes Schweinefleisch vom Grill. Wir machen die Hühnchen-Version im Reiskocher – klebrig, süß, genial.",
     target: "≈84 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -446,7 +445,7 @@ const DATA = [
   // FREITAG
   {
     id: "fr-f",
-    title: "Ochazuke mit gegartem Tarako (Kabeljau-Rogen)",
+    title: "Tarako Ochazuke たらこ茶漬け (mit Rogen)",
     desc: "Reis mit grünem Tee übergossen, dazu salziger, durchgebratener Rogen.",
     story: "Ochazuke ist der 'Notfall-Snack' Japans oder Katerfrühstück. Tee über Reis. Klingt komisch, schmeckt himmlisch.",
     target: "≈70 g KH (2 P.) · Protein ≈22 g p. P.",
@@ -469,7 +468,7 @@ const DATA = [
   },
   {
     id: "fr-m",
-    title: "Bibimbap aus dem Reiskocher",
+    title: "Bibimbap 비빔밥 (Reiskocher)",
     desc: "Alle Bibimbap-Zutaten garen gleichzeitig mit dem Reis. Easy Cheating.",
     story: "Echtes Bibimbap ist viel Schnippel- und Bratarbeit. Hier werfen wir (fast) alles in den Topf. Nicht authentisch, aber lecker.",
     target: "≈86 g KH (2 P.) · Protein ≈24 g p. P.",
@@ -495,7 +494,7 @@ const DATA = [
   },
   {
     id: "fr-a",
-    title: "Sukiyaki (Mild Style)",
+    title: "Sukiyaki すき焼き (Mild Style)",
     desc: "Rindfleisch, Tofu und Gemüse in einer süß-salzigen Soja-Brühe geschmort.",
     story: "Das Festmahl für den Freitagabend. Normalerweise taucht man das Fleisch in rohes Ei – das lassen wir wegen der Schwangerschaft weg!",
     target: "≈65 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -522,7 +521,7 @@ const DATA = [
   // SAMSTAG
   {
     id: "sa-f",
-    title: "Gilgeori Toast (Korean Street Toast)",
+    title: "Gilgeori Toast 길거리 토스트 (Korean Street Toast)",
     desc: "Sandwich mit Omelett, Kohl und Karotten, leicht gezuckert.",
     story: "Der Duft koreanischer U-Bahn-Stationen. Ein deftiges Omelett zwischen zwei Toastscheiben, oft mit Ketchup und einer Prise Zucker.",
     target: "≈75 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -546,7 +545,7 @@ const DATA = [
   },
   {
     id: "sa-m",
-    title: "Ebi Chili (Garnelen in Tomatensauce)",
+    title: "Ebi Chili エビチリ (Garnelen)",
     desc: "Japanisch-Chinesische Fusion: Garnelen in einer milden, süßlichen Tomatensauce.",
     story: "Ein Gericht, das Chen Kenmin (Iron Chef Vater) in Japan populär machte. Weniger scharf als das Original, sehr fruchtig.",
     target: "≈84 g KH (2 P.) · Protein ≈26 g p. P.",
@@ -571,7 +570,7 @@ const DATA = [
   },
   {
     id: "sa-a",
-    title: "Seafood Pilaf (Reiskocher)",
+    title: "Seafood Pilaf シーフードピラフ (Reiskocher)",
     desc: "Bunter Reis mit Meeresfrüchtemix und Erbsen, butterweich.",
     story: "Eher westlich angehaucht ('Yoshoku'), aber in Japan sehr beliebt aus dem Reiskocher. Schmeckt wie Paella ohne Aufwand.",
     target: "≈82 g KH (2 P.) · Protein ≈24 g p. P.",
@@ -598,7 +597,7 @@ const DATA = [
   // SONNTAG
   {
     id: "so-f",
-    title: "Hong Kong French Toast (Light)",
+    title: "HK French Toast 西多士 (Light)",
     desc: "French Toast gefüllt mit Erdnussbutter, in Ei gewendet. Wir braten statt frittieren.",
     story: "In HK-Cafés ('Cha Chaan Teng') wird das frittiert. Wir machen die Pfannen-Version. Dekadent, aber Sonntag darf das sein.",
     target: "≈78 g KH (2 P.) · Protein ≈16 g p. P.",
@@ -622,7 +621,7 @@ const DATA = [
   },
   {
     id: "so-m",
-    title: "Tonkatsu aus dem Ofen (Schnitzel)",
+    title: "Tonkatsu 豚カツ (Ofen)",
     desc: "Paniertes Schweineschnitzel, aber im Ofen gebacken statt frittiert.",
     story: "Jeder liebt Tonkatsu! Um das Fett zu sparen, rösten wir das Panko vorher in der Pfanne an und backen das Fleisch dann im Ofen. Super knusprig!",
     target: "≈80 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -648,7 +647,7 @@ const DATA = [
   },
   {
     id: "so-a",
-    title: "Gedämpftes Ei mit Garnelen (Reiskocher)",
+    title: "Steamed Egg with Shrimp 虾仁蒸蛋",
     desc: "Seidenweicher Eierstich (Chawanmushi Art) mit Garnelen, im Reiskocher gedämpft.",
     story: "Kann man super über dem reisenden Reis im Dämpfeinsatz machen! 'Tiered Cooking' spart Energie und Zeit.",
     target: "≈82 g KH (2 P.) · Protein ≈24 g p. P.",
@@ -685,7 +684,7 @@ const CANON = {
   "Schweineschnitzel": { group: "Protein/Fisch/Tofu", label: "Schweineschnitzel (mager)", unitDefault: "g" },
   "Weißer Fisch": { group: "Protein/Fisch/Tofu", label: "Weißer Fisch", unitDefault: "g" },
   "Lachsfilet": { group: "Protein/Fisch/Tofu", label: "Lachsfilet", unitDefault: "g" },
-  "Garnelen": { group: "Protein/Fisch/Tofu", label: "Garnelen", unitDefault: "g" },
+  "Garnelen": { group: "Protein/Fisch/Tofu", label: "Garnelen (geschält)", unitDefault: "g" },
   "Meeresfrüchte-Mix": { group: "Protein/Fisch/Tofu", label: "Meeresfrüchte-Mix (TK)", unitDefault: "g" },
   "Thunfisch": { group: "Protein/Fisch/Tofu", label: "Thunfisch (Dose)", unitDefault: "g" },
   "Surimi": { group: "Protein/Fisch/Tofu", label: "Surimi/Flusskrebse", unitDefault: "g" },
@@ -799,7 +798,7 @@ function animePlaceholder(title) {
       <stop offset='0%' stop-color='#FCE7F3'/><stop offset='100%' stop-color='#DCFCE7'/>
     </linearGradient></defs>
     <rect width='1200' height='675' fill='url(#g)'/>
-    <g font-family='Noto Sans, Arial, sans-serif'>
+    <g font-family='Noto Sans SC, sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
       <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
     </g>
@@ -836,33 +835,33 @@ function MealCard({ meal }) {
         <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
         <div>
           {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
+          {meal.riceCooker?.enabled ? tagChip("🍚 电饭煲") : null}
+          {meal.remind ? tagChip("💊 用药") : null}
         </div>
       </div>
       {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
       {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
       
-      <h4>Zutaten (2 Personen)</h4>
+      <h4>食材 (2人份)</h4>
       <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
       
-      <h4>Zubereitung</h4>
+      <h4>做法</h4>
       <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
       
       <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
+        <p style={{margin:"0 0 4px"}}><strong>注意:</strong> {meal.checks}</p>
+        <p style={{margin:"0 0 4px"}}><strong>替换:</strong> {meal.swaps}</p>
+        <p style={{margin:0}}><strong>配菜:</strong> {meal.side}</p>
       </div>
 
       {meal.riceCooker?.enabled ? (
         <div style={{ marginTop: 12 }}>
           <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
+            <summary style={{cursor:"pointer", fontWeight:600}}>电饭煲设置</summary>
             <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
+              <li><strong>模式:</strong> {meal.riceCooker.program}</li>
+              <li><strong>水量:</strong> {meal.riceCooker.water}</li>
+              {meal.riceCooker.notes ? <li><strong>备注:</strong> {meal.riceCooker.notes}</li> : null}
             </ul>
           </details>
         </div>
@@ -884,7 +883,7 @@ function DaySection({ dayKey, meals, dayName }) {
   );
 }
 
-function WeekOverview({ data, DAY_NAME_DE, meta }) {
+function WeekOverview({ data, DAY_NAME_ZH, meta }) {
   const byDay = useMemo(() => {
     const map = { mo: [], di: [], mi: [], do: [], fr: [], sa: [], so: [] };
     for (const r of data) map[r.id.split("-")[0]].push(r);
@@ -907,25 +906,25 @@ function WeekOverview({ data, DAY_NAME_DE, meta }) {
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
         <div className="ghk-hero-inner" style={{ padding: 18, borderRadius: 12, marginBottom: 16, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
-            Woche 5 – Übersicht <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
+            第5周 – 总览 <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
           </h2>
-          <p style={{ marginTop: 6, color: "var(--muted)" }}>JP/CN/KR · Balanced (nicht Gastritis-streng) · Schwangerschaftssicher · 1× Reiskocher/Tag</p>
+          <p style={{ marginTop: 6, color: "var(--muted)" }}>JP/CN/KR · 营养均衡 (温和) · 孕期安全 · 每日 1x 电饭煲料理</p>
         </div>
         <div style={{ display: "grid", gap: 12 }}>
           {DAYS_ORDER.map((d) => (
             <div key={d} style={{ padding: 12, borderRadius: 12, border: "1px solid var(--border)", background: "var(--panel)" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 8, flexWrap: "wrap" }}>
-                <strong>{DAY_NAME_DE[d]}</strong>
+                <strong>{DAY_NAME_ZH[d]}</strong>
                 <a 
                   href={`#day-${d}`} 
                   onClick={scrollToId(`day-${d}`)}
                   style={{ fontSize: 12, color: "var(--text)", textDecoration: "none", border: "1px solid var(--border)", padding: "4px 8px", borderRadius: 8, background: "var(--chip-bg)", cursor: "pointer" }}
                 >
-                  zum Tag ▿
+                  跳转当天 ▿
                 </a>
               </div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {byDay[d].map((m) => pill(m.id, m.title.replace(/ – .*$/, ""), `meal-${m.id}`, !!m.riceCooker?.enabled))}
+                {byDay[d].map((m) => pill(m.id, m.title.replace(/ – .*$/, "").replace(/\s*\(.*\)$/, ""), `meal-${m.id}`, !!m.riceCooker?.enabled))}
               </div>
             </div>
           ))}
@@ -948,27 +947,27 @@ function RiceCookerSection({ data }) {
 
   return (
     <section style={{ marginTop: 32 }}>
-      <h2 style={{ borderBottom: "2px solid var(--border)", paddingBottom: 10, marginBottom: 20 }}>🍚 Reiskocher-Gerichte (Übersicht)</h2>
+      <h2 style={{ borderBottom: "2px solid var(--border)", paddingBottom: 10, marginBottom: 20 }}>🍚 电饭煲料理汇总</h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 16 }}>
         {DAYS_ORDER.map((d) => {
           const r = perDay[d];
           return (
             <div key={d} style={{ ...cardPanelStyle }}>
               <h3 style={{ marginTop: 0, fontSize: 16 }}>
-                {DAY_NAME_DE[d].split(" ")[0]} – {r ? r.title : "Kein Reiskocher-Gericht"}
+                {DAY_NAME_ZH[d].split(" ")[0]} – {r ? r.title : "无"}
               </h3>
               {r ? (
                 <ul style={{ margin: 0, paddingLeft: 20 }}>
-                  <li><strong>Programm:</strong> {r.riceCooker.program}</li>
-                  <li><strong>Wasser:</strong> {r.riceCooker.water}</li>
-                  {r.riceCooker.notes ? <li><strong>Notiz:</strong> {r.riceCooker.notes}</li> : null}
+                  <li><strong>模式:</strong> {r.riceCooker.program}</li>
+                  <li><strong>水量:</strong> {r.riceCooker.water}</li>
+                  {r.riceCooker.notes ? <li><strong>备注:</strong> {r.riceCooker.notes}</li> : null}
                 </ul>
               ) : null}
             </div>
           );
         })}
       </div>
-      <p style={{ marginTop: 12, color: "var(--muted)" }}>Trends dabei: Kinoko Gohan, Miso-Butter-Lachs, Hainan Chicken, Char Siu Chicken, Bibimbap, Seafood Pilaf, Gedämpftes Ei.</p>
+      <p style={{ marginTop: 12, color: "var(--muted)" }}>本周热门: 杂菌饭, 味噌黄油三文鱼, 海南鸡饭, 叉烧鸡饭, 拌饭, 海鲜饭, 蒸蛋。</p>
     </section>
   );
 }
@@ -981,7 +980,7 @@ function ThemeSwitch({ mode, setMode, effectiveDark }) {
   return (
     <div className="ghk-theme-switch" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: 6, border: "1px solid var(--btn-border)", borderRadius: 999, background: "var(--panel)" }}>
       <button type="button" className="ghk-tab" aria-pressed={mode === "auto"} onClick={() => setMode(mode === "auto" ? (effectiveDark ? "dark" : "light") : "auto")} style={{ padding: "6px 10px" }}>Auto</button>
-      <label className="ghk-switch" title={effectiveDark ? "Dunkel" : "Hell"}>
+      <label className="ghk-switch" title={effectiveDark ? "暗色" : "亮色"}>
         <input type="checkbox" checked={effectiveDark} onChange={(e) => setMode(e.target.checked ? "dark" : "light")} disabled={mode === "auto"} />
         <span className="ghk-slider" />
       </label>
@@ -992,7 +991,7 @@ function ThemeSwitch({ mode, setMode, effectiveDark }) {
 // -----------------------------------------------------------------------
 // MAIN EXPORT
 // -----------------------------------------------------------------------
-export default function Woche5DE() {
+export default function Woche5ZH() {
   const langFromUrl = useLangHint();
   const hiddenByLang = langFromUrl && langFromUrl !== meta.lang;
   if (hiddenByLang) return null;
@@ -1011,57 +1010,47 @@ export default function Woche5DE() {
     return () => Object.keys(vars).forEach((k) => root.style.removeProperty(k));
   }, [vars]);
 
-  // Styles (Identical to Week 4)
-  const Styles = () => (
-    <style>{`
-      .meal-card p { line-height: 1.75; margin-bottom: 1rem; }
-      .meal-card li { line-height: 1.7; margin-bottom: 0.5rem; }
-      .meal-card h4 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent-2); font-weight: 700; }
-      
-      .ghk-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
-      .ghk-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
-      .ghk-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
-      .ghk-switch input{ opacity:0; width:0; height:0; position:absolute; }
-      .ghk-switch .ghk-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
-      .ghk-switch .ghk-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
-      .ghk-switch input:checked + .ghk-slider{ background:var(--accent-2); border-color:var(--accent-2); }
-      .ghk-switch input:checked + .ghk-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
-
-      .ghk-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
-      .ghk-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
-      .ghk-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
-      .ghk-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
-      .ghk-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
-
-      #ghk-content{ display:block !important; }
-      #ghk-content > [hidden]{ display:none !important; }
-
-      .ghk-exporting{ width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important; box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important; --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12); --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6; }
-      .ghk-exporting *{ box-shadow:none !important; }
-      .ghk-exporting .ghk-art, .ghk-exporting img{ display:none !important; visibility:hidden !important; }
-      .ghk-exporting .ghk-chip, .ghk-exporting .ghk-date-paren{ display:none !important; }
-
-      @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
-    `}</style>
-  );
-
   return (
     <div style={{ background: "var(--bg)", color: "var(--text)", padding: 24 }}>
-      <Styles />
+      <style>{`
+        .meal-card p { line-height: 1.75; margin-bottom: 1rem; }
+        .meal-card li { line-height: 1.7; margin-bottom: 0.5rem; }
+        .meal-card h4 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent-2); font-weight: 700; }
+        
+        .ghk-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+        .ghk-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
+        .ghk-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
+        .ghk-switch input{ opacity:0; width:0; height:0; position:absolute; }
+        .ghk-switch .ghk-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
+        .ghk-switch .ghk-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
+        .ghk-switch input:checked + .ghk-slider{ background:var(--accent-2); border-color:var(--accent-2); }
+        .ghk-switch input:checked + .ghk-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
+
+        .ghk-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
+        .ghk-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
+        .ghk-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+        .ghk-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
+        .ghk-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
+
+        #ghk-content{ display:block !important; }
+        #ghk-content > [hidden]{ display:none !important; }
+
+        @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
+      `}</style>
 
       <div className="ghk-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
         <div className="ghk-hero-inner" style={{ background: "var(--grad-hero)", borderRadius: 12, padding: 14, marginBottom: 12, display: "grid", gap: 8 }}>
           <h1 style={{ margin: 0 }}>{UI_TITLES.main}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {tagChip(`Start: ${meta.startDate}`)}
-            {tagChip("Woche 5")}
-            {tagChip("CN/JP/KR · Balanced · Schwangerschaft")}
-            {tagChip("Täglich 1× 🍚 Reiskocher")}
+            {tagChip(`开始：${meta.startDate}`)}
+            {tagChip("第5周")}
+            {tagChip("亚洲风味 (中/日/韩)")}
+            {tagChip("每日 1× 🍚 电饭煲料理")}
           </div>
         </div>
 
         <div className="ghk-no-print" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-          <fieldset className="ghk-segment" role="radiogroup" aria-label="Ansicht wählen">
+          <fieldset className="ghk-segment" role="radiogroup" aria-label="选择视图">
             <label>
               <input type="radio" name="ghk-view" value="kochbuch" checked={tab === "kochbuch"} onChange={() => setTab("kochbuch")} />
               <span>{UI_TITLES.main}</span>
@@ -1073,21 +1062,19 @@ export default function Woche5DE() {
           </fieldset>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginLeft: "auto" }}>
-            {/* Nur Drucken & Theme Switch übrig */}
-            <button type="button" onClick={doPrint} className="ghk-tab"><span className="icon">🖨️</span> Drucken</button>
+            <button type="button" onClick={doPrint} className="ghk-tab"><span className="icon">🖨️</span> 打印</button>
             <ThemeSwitch mode={mode} setMode={setMode} effectiveDark={effectiveDark} />
           </div>
         </div>
       </div>
 
       <div id="kochbuch-root" style={{ ...cardPanelStyle }}>
-        <WeekOverview data={DATA} DAY_NAME_DE={DAY_NAME_DE} meta={meta} />
+        <WeekOverview data={DATA} DAY_NAME_ZH={DAY_NAME_ZH} meta={meta} />
         <div id="ghk-content" data-view={tab}>
           <section id="ghk-pane-kochbuch" aria-hidden={tab !== "kochbuch"} hidden={tab !== "kochbuch"}>
             {DAYS_ORDER.map((d) => (
-              <DaySection key={d} dayKey={d} meals={DATA.filter(r => r.id.startsWith(d))} dayName={DAY_NAME_DE[d]} />
+              <DaySection key={d} dayKey={d} meals={DATA.filter(r => r.id.startsWith(d))} dayName={DAY_NAME_ZH[d]} />
             ))}
-            {/* Hier die korrekte Reiskocher-Sektion */}
             <RiceCookerSection data={DATA} />
           </section>
           <section id="ghk-pane-liste" aria-hidden={tab !== "liste"} hidden={tab !== "liste"}>
