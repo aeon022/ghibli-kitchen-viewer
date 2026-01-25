@@ -5,9 +5,9 @@ import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
   GhibliKitchen – Woche 4 (Start: 2026-01-19)
-  Design: Identisch zu Woche 3 (angepasst).
+  Design: Identisch zu Woche 3.
+  Fix: Header-Bild (Gradient) repariert.
   Inhalt: CN/JP/KR, schwangerschaftsgeeignet, Reiskocher-Fokus.
-  Features: Keine PDF/HTML Buttons, Reiskocher-Liste am Ende.
 */
 
 // ---- Meta ----
@@ -777,6 +777,8 @@ function aggregateList(data, canon) {
       if (!key) {
         if (name.includes("Reis (roh)")) key = "Reis";
         else if (name.includes("Soba")) key = "Soba";
+        else if (name.includes("Udon")) key = "Udon";
+        else if (name.includes("Glasnudeln")) key = "Glasnudeln";
       }
       
       if (!key) continue;
@@ -800,13 +802,32 @@ function aggregateList(data, canon) {
 // Components (Internal)
 // -----------------------------------------------------------------------
 
+function animePlaceholder(title) {
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Correctly formatted SVG with Gradient Defs
+  const svg = `
+  <svg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'>
+    <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+      <stop offset='0%' stop-color='#FCE7F3'/><stop offset='100%' stop-color='#DCFCE7'/>
+    </linearGradient></defs>
+    <rect width='1200' height='675' fill='url(#g)'/>
+    <g font-family='Noto Sans, Arial, sans-serif'>
+      <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
+      <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
+    </g>
+  </svg>`;
+  // Encode as proper Data URI
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 function ImageBanner({ meal, year = 2026, weekFolder = "kw4" }) {
   const [src, setSrc] = useState("");
-  const placeholder = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%' stop-color='#FCE7F3'/><stop offset='100%' stop-color='#DCFCE7'/></linearGradient></defs><rect width='1200' height='675' fill='url(%23g)'/><g font-family='sans-serif' text-anchor='middle' fill='%23374151'><text x='50%' y='50%' font-size='48'>🍱 ${meal.title.replace(/ .*/, "...")}</text><text x='50%' y='60%' font-size='24'>GhibliKitchen</text></g></svg>`;
-
+  
   useEffect(() => {
     const preferred = `/plan-art/${year}/${weekFolder}/${meal.id}.jpg`;
-    const fallback = placeholder;
+    const fallback = animePlaceholder(meal.title);
+    
+    // Set default fallback first to ensure visual stability
     setSrc(fallback);
 
     const img = new Image();
