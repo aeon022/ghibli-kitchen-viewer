@@ -5,8 +5,8 @@ import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
   GhibliKitchen – Woche 6 (Start: 2026-02-02)
+  Status: VOLLSTÄNDIG (1:1 Template-Kopie von Woche 5).
   Fokus: Virale Trends (CN/JP/KR) + SWE/IT, Balanced, Schwangerschaftssicher.
-  Features: Reiskocher-Liste am Ende, lustige Intros, keine Export-Buttons.
 */
 
 // ---- Meta ----
@@ -71,7 +71,30 @@ function themeVars(mode) {
   return mode === "dark" ? THEME_VARS_DARK : THEME_VARS_LIGHT;
 }
 
-// ---- Helper ----
+// ---- Gate / Lang Hint ----
+function getLangFromQuery() {
+  if (typeof window === "undefined") return null;
+  try {
+    const qs = new URLSearchParams(window.location.search);
+    const fromQuery = qs.get("lang");
+    return fromQuery ? String(fromQuery).slice(0, 2).toLowerCase() : null;
+  } catch { return null; }
+}
+function useLangHint() {
+  const [q, setQ] = useState(getLangFromQuery());
+  useEffect(() => {
+    const onChange = () => setQ(getLangFromQuery());
+    window.addEventListener?.("popstate", onChange);
+    window.addEventListener?.("hashchange", onChange);
+    return () => {
+      window.removeEventListener?.("popstate", onChange);
+      window.removeEventListener?.("hashchange", onChange);
+    };
+  }, []);
+  return q;
+}
+
+// ---- Helper: Safe Scroll ----
 const scrollToId = (id) => (e) => {
   e.preventDefault();
   const el = document.getElementById(id);
@@ -90,7 +113,7 @@ const cardPanelStyle = {
 };
 
 const tagChip = (text) => (
-  <span className="ghk-chip" style={{ display: "inline-block", padding: "2px 10px", borderRadius: 999, background: "var(--chip-bg)", border: "1px solid var(--border)", fontSize: 12, marginRight: 6, marginBottom: 6 }}>
+  <span className="ghk-chip" key={text} style={{ display: "inline-block", padding: "2px 10px", borderRadius: 999, background: "var(--chip-bg)", border: "1px solid var(--border)", fontSize: 12, marginRight: 6, marginBottom: 6 }}>
     {text}
   </span>
 );
@@ -682,6 +705,7 @@ const CANON = {
   "Aburaage": { group: "Protein/Fisch/Tofu", label: "Aburaage (Fritt. Tofu)", unitDefault: "Stk" },
   "Eier": { group: "Protein/Fisch/Tofu", label: "Eier", unitDefault: "Stück" },
   "Camembert": { group: "Protein/Fisch/Tofu", label: "Camembert (pasteurisiert)", unitDefault: "Stk" },
+  "Feta-Käse": { group: "Protein/Fisch/Tofu", label: "Feta (pasteurisiert)", unitDefault: "g" },
   "Feta": { group: "Protein/Fisch/Tofu", label: "Feta (pasteurisiert)", unitDefault: "g" },
   "Parmesan": { group: "Protein/Fisch/Tofu", label: "Parmesan", unitDefault: "g" },
   "Quark": { group: "Protein/Fisch/Tofu", label: "Quark/Joghurt", unitDefault: "g" },
@@ -689,6 +713,7 @@ const CANON = {
   // Gemüse
   "Spinat": { group: "Gemüse/Pilze", label: "Spinat (frisch)", unitDefault: "g" },
   "Weißkohl": { group: "Gemüse/Pilze", label: "Weißkohl/Chinakohl", unitDefault: "g" },
+  "Kohl": { group: "Gemüse/Pilze", label: "Kohl", unitDefault: "g" },
   "Karotte": { group: "Gemüse/Pilze", label: "Karotten", unitDefault: "g" },
   "Sojasprossen": { group: "Gemüse/Pilze", label: "Sojasprossen", unitDefault: "g" },
   "Erbsen": { group: "Gemüse/Pilze", label: "Erbsen (TK)", unitDefault: "g" },
@@ -699,12 +724,15 @@ const CANON = {
   "Zwiebel": { group: "Gemüse/Pilze", label: "Zwiebeln", unitDefault: "g" },
   "Knoblauch": { group: "Gemüse/Pilze", label: "Knoblauch", unitDefault: "Zehe" },
   "Tomate": { group: "Gemüse/Pilze", label: "Tomaten (frisch/Kirsch)", unitDefault: "g" },
+  "Kirschtomaten": { group: "Gemüse/Pilze", label: "Kirschtomaten", unitDefault: "g" },
   "Tomaten passiert": { group: "Gemüse/Pilze", label: "Passierte Tomaten", unitDefault: "ml" },
   "Apfel": { group: "Gemüse/Pilze", label: "Apfel", unitDefault: "Stk" },
   "Süßkartoffel": { group: "Gemüse/Pilze", label: "Süßkartoffel", unitDefault: "g" },
 
   // Carb
   "Reis": { group: "Reis/Nudeln/Sättigung", label: "Reis", unitDefault: "g" },
+  "Vollkorn-Risottoreis": { group: "Reis/Nudeln/Sättigung", label: "Risottoreis", unitDefault: "g" },
+  "Spaghetti": { group: "Reis/Nudeln/Sättigung", label: "Spaghetti", unitDefault: "g" },
   "Udon": { group: "Reis/Nudeln/Sättigung", label: "Udon-Nudeln", unitDefault: "g" },
   "Weizennudeln": { group: "Reis/Nudeln/Sättigung", label: "Weizennudeln", unitDefault: "g" },
   "Chow Mein Nudeln": { group: "Reis/Nudeln/Sättigung", label: "Mie-Nudeln", unitDefault: "g" },
@@ -723,9 +751,12 @@ const CANON = {
   "Sojasauce": { group: "Algen/Brühen/Würze", label: "Sojasauce", unitDefault: "ml" },
   "Austernsauce": { group: "Algen/Brühen/Würze", label: "Austernsauce", unitDefault: "ml" },
   "Sesamöl": { group: "Algen/Brühen/Würze", label: "Sesamöl", unitDefault: "ml" },
+  "Reisessig": { group: "Algen/Brühen/Würze", label: "Reisessig", unitDefault: "ml" },
+  "Mirin": { group: "Algen/Brühen/Würze", label: "Mirin", unitDefault: "ml" },
   "Dashi": { group: "Algen/Brühen/Würze", label: "Dashi", unitDefault: "ml" },
-  "Gemüsebrühe": { group: "Algen/Brühen/Würze", label: "Gemüsebrühe", unitDefault: "ml" },
   "Hühnerbrühe": { group: "Algen/Brühen/Würze", label: "Hühnerbrühe", unitDefault: "ml" },
+  "Gemüsebrühe": { group: "Algen/Brühen/Würze", label: "Gemüsebrühe", unitDefault: "ml" },
+  "Sesam": { group: "Algen/Brühen/Würze", label: "Sesam", unitDefault: "g" },
   "Milch": { group: "Algen/Brühen/Würze", label: "Milch", unitDefault: "ml" },
   "Butter": { group: "Algen/Brühen/Würze", label: "Butter", unitDefault: "g" },
   "Olivenöl": { group: "Algen/Brühen/Würze", label: "Olivenöl", unitDefault: "EL" },
@@ -779,7 +810,7 @@ function aggregateList(data, canon) {
 }
 
 // -----------------------------------------------------------------------
-// Components
+// Components (Internal)
 // -----------------------------------------------------------------------
 
 function animePlaceholder(title) {
@@ -930,7 +961,7 @@ function WeekOverview({ data, DAY_NAME_DE, meta }) {
 function RiceCookerSection({ data }) {
   const perDay = useMemo(() => {
     const map = { mo: null, di: null, mi: null, do: null, fr: null, sa: null, so: null };
-    if (!data) return map;
+    if (!data) return map; 
     for (const r of data) {
       const day = r.id.split("-")[0];
       if (r.riceCooker?.enabled && !map[day]) map[day] = r;
@@ -960,12 +991,12 @@ function RiceCookerSection({ data }) {
           );
         })}
       </div>
-      <p style={{ marginTop: 12, color: "var(--muted)" }}>Highlights dieser Woche: Camembert Rice, KFC-Style Chicken, Kongnamul Bap und Tomaten-Feta Risotto!</p>
+      <p style={{ marginTop: 12, color: "var(--muted)" }}>Trends dabei: Kinoko Gohan, Miso-Butter-Lachs, Hainan Chicken, Kohl-Hähnchen, Ebi-Mayo, Lachs-Dill Nordic Rice, Camembert Rice.</p>
     </section>
   );
 }
 
-// PDF Export
+// PDF Export (nur noch Drucken Funktion, keine Buttons mehr in der UI)
 const doPrint = () => window.print();
 
 // Theme Switch Component
@@ -1026,6 +1057,11 @@ export default function Woche6DE() {
 
       #ghk-content{ display:block !important; }
       #ghk-content > [hidden]{ display:none !important; }
+
+      .ghk-exporting{ width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important; box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important; --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12); --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6; }
+      .ghk-exporting *{ box-shadow:none !important; }
+      .ghk-exporting .ghk-art, .ghk-exporting img{ display:none !important; visibility:hidden !important; }
+      .ghk-exporting .ghk-chip, .ghk-exporting .ghk-date-paren{ display:none !important; }
 
       @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
     `}</style>
