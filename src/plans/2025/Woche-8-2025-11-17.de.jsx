@@ -1,6 +1,7 @@
 // src/plans/Woche-8-2025-11-17.de.jsx
 // Strikt nach Woche-5/6 Struktur (1:1), Rezepte = Woche 8 (21 Stück) + pro Tag 1 Reiskocher-Gericht (7 Stück)
 
+import { useBookmarks } from "@/hooks/useBookmarks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -88,7 +89,7 @@ const toList = (v) => {
 };
 
 /* ---------- DATA (21 Rezepte – Woche 8) ---------- */
-const DATA = [
+export const DATA = [
   // Montag
   {
     id: "mo-f",
@@ -1080,6 +1081,8 @@ const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
 /* ---------- Recipe Cards ---------- */
 function RecipeCard({ r, t, lang }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, r.id);
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   const title = toText(r.title);
@@ -1136,7 +1139,31 @@ function RecipeCard({ r, t, lang }) {
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
             {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
           </div>
-          <h2 style={{ marginTop: 0 }}>{title}</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <button
+            onClick={() => toggleBookmark({
+              planSlug: meta.id,
+              recipeId: r.id,
+              recipeTitle: null ? null.title : title,
+              planTitle: meta.title
+            })}
+            style={{
+              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
+              border: "1px solid var(--border, rgba(0,0,0,.1))",
+              borderRadius: 8,
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: bookmarked ? "#fff" : "var(--text, #111827)",
+              marginRight: "8px"
+            }}
+            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button><h2 style={{ margin: 0 }}>{title}</h2></div>
           <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>
@@ -1178,6 +1205,8 @@ function RecipeCard({ r, t, lang }) {
 }
 
 function RiceCookerCard({ r, t, lang }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, r.id);
   const recipeImgKey = getImageKey(`rc::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   const title = toText(r.title);
@@ -1220,7 +1249,31 @@ function RiceCookerCard({ r, t, lang }) {
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
             {dayNameI18n(r.id, t)} – Reiskocher
           </div>
-          <h2 style={{ marginTop: 0 }}>{title}</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <button
+            onClick={() => toggleBookmark({
+              planSlug: meta.id,
+              recipeId: r.id,
+              recipeTitle: null ? null.title : title,
+              planTitle: meta.title
+            })}
+            style={{
+              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
+              border: "1px solid var(--border, rgba(0,0,0,.1))",
+              borderRadius: 8,
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: bookmarked ? "#fff" : "var(--text, #111827)",
+              marginRight: "8px"
+            }}
+            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button><h2 style={{ margin: 0 }}>{title}</h2></div>
           <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>

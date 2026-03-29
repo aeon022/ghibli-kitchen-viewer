@@ -1,4 +1,5 @@
 // src/plans/2026/Woche-3-2026-01-12.de.jsx
+import { useBookmarks } from "@/hooks/useBookmarks";
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -133,7 +134,7 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA – 21 Rezepte (JP/CN, mild, schwangerschaftssicher). Täglich 1× Reiskocher.
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
@@ -826,6 +827,8 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw3" }) {
 }
 
 function MealCard({ meal }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, meal.id);
   return (
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
       <ImageBanner meal={meal} />

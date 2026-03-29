@@ -1,4 +1,5 @@
 // src/plans/2026/Woche-1-2025-12-29.de.jsx
+import { useBookmarks } from "@/hooks/useBookmarks";
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -136,7 +137,7 @@ const DAY_NAME_DE = {
 };
 
 /* ------------------------------ DATA ------------------------------- */
-const DATA = [
+export const DATA = [
   // Montag
   {
     id: "mo-f",
@@ -1002,6 +1003,8 @@ function ImageBanner({ meal }) {
 
 /* ------------------------------- UI ------------------------------ */
 function MealCard({ meal }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, meal.id);
   return (
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
       <ImageBanner meal={meal} />
@@ -1014,7 +1017,31 @@ function MealCard({ meal }) {
           flexWrap: "wrap",
         }}
       >
-        <h3 style={{ margin: 0 }}>{meal.title}</h3>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <button
+            onClick={() => toggleBookmark({
+              planSlug: meta.id,
+              recipeId: meal.id,
+              recipeTitle: meal.title,
+              planTitle: meta.title
+            })}
+            style={{
+              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
+              border: "1px solid var(--border, rgba(0,0,0,.1))",
+              borderRadius: 8,
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: bookmarked ? "#fff" : "var(--text, #111827)",
+              marginRight: "8px"
+            }}
+            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button><h3 style={{ margin: 0 }}>{meal.title}</h3></div>
         <div>
           {tagChip(meal.target)}
           {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}

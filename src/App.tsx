@@ -1,9 +1,19 @@
 // src/App.tsx
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Routes, Route, Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useBookmarks, Bookmark } from "./hooks/useBookmarks";
 
 type Lang = "de" | "zh";
 const LANG_KEY = "ghk.lang";
+
+type Recipe = {
+  id: string;
+  title: string;
+  desc?: string;
+  ingredients?: string[];
+  steps?: string[];
+  [key: string]: any;
+};
 
 type PlanMeta = {
   id: string;
@@ -12,7 +22,8 @@ type PlanMeta = {
   lang?: string;
   sidebar?: string;
 };
-type PlanModule = { default: React.ComponentType<any>; meta: PlanMeta };
+type PlanModule = { default: React.ComponentType<any>; meta: PlanMeta; DATA?: Recipe[] };
+
 
 // --- Back to Top Komponente ---
 function BackToTop() {
@@ -77,6 +88,7 @@ type PlanRecord = {
   startDate: string;
   meta: PlanMeta;
   Component: React.ComponentType<any>;
+  recipes: Recipe[];
 };
 
 // ---- Lang Context ----
@@ -122,6 +134,7 @@ function usePlans(): PlanRecord[] {
         startDate: mod.meta.startDate,
         meta: mod.meta,
         Component: mod.default,
+        recipes: mod.DATA || [],
       });
     }
     out.sort((a, b) => a.startDate.localeCompare(b.startDate));
@@ -134,6 +147,9 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
   const { lang, setLang } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
+  const { bookmarks } = useBookmarks();
+
+  const [search, setSearch] = useState("");
 
   const years = useMemo(() => {
     const ys = new Set<number>();
@@ -157,6 +173,25 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
   }, []);
 
   const filtered = plans.filter(p => p.lang === lang);
+
+  const searchResults = useMemo(() => {
+    if (!search.trim()) return [];
+    const q = search.toLowerCase();
+    const res: { plan: PlanRecord, recipe: Recipe }[] = [];
+    for (const p of plans) {
+      if (p.lang !== lang) continue;
+      for (const r of p.recipes) {
+        if (
+          r.title.toLowerCase().includes(q) ||
+          (r.desc && r.desc.toLowerCase().includes(q)) ||
+          (r.ingredients && r.ingredients.some(i => i.toLowerCase().includes(q)))
+        ) {
+          res.push({ plan: p, recipe: r });
+        }
+      }
+    }
+    return res.slice(0, 20); // Limit to 20 results
+  }, [search, plans, lang]);
 
   const toggleLang = () => {
     const target = lang === "de" ? "zh" : "de";
@@ -210,6 +245,67 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
         </div>
       </div>
 
+      {/* Suche */}
+      <div style={{ padding: "0 12px 12px" }}>
+        <input
+          type="search"
+          placeholder={lang === "de" ? "Rezepte suchen..." : "搜索食谱..."}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{
+            width: "100%",
+            padding: "8px 12px",
+            borderRadius: "8px",
+            border: "1px solid var(--border)",
+            background: "var(--panel)",
+            color: "var(--text)",
+          }}
+        />
+        {search.trim() && (
+          <div style={{ marginTop: 8, maxHeight: "300px", overflowY: "auto", border: "1px solid var(--border)", borderRadius: 8, background: "var(--panel)" }}>
+            {searchResults.length === 0 ? (
+              <div style={{ padding: 8, fontSize: 13, color: "var(--muted)" }}>Keine Treffer</div>
+            ) : (
+              searchResults.map((res, idx) => (
+                <Link
+                  key={`${res.plan.slug}-${res.recipe.id}-${idx}`}
+                  to={`/plan/${res.plan.slug}#meal-${res.recipe.id}`}
+                  onClick={() => {
+                    setSearch("");
+                    handleLinkClick();
+                  }}
+                  style={{ display: "block", padding: "8px", textDecoration: "none", color: "var(--text)", borderBottom: "1px solid var(--border)", fontSize: 13 }}
+                >
+                  <div style={{ fontWeight: 600 }}>{res.recipe.title}</div>
+                  <div style={{ fontSize: 11, color: "var(--muted)" }}>{res.plan.meta.title}</div>
+                </Link>
+              ))
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Bookmarks */}
+      {bookmarks.length > 0 && (
+        <details className="year" open>
+          <summary>{lang === "de" ? "Bookmarks" : "收藏"}</summary>
+          <ul className="year-list">
+            {bookmarks.map((b) => (
+              <li key={`${b.planSlug}-${b.recipeId}`}>
+                <Link 
+                  to={`/plan/${b.planSlug}#meal-${b.recipeId}`}
+                  onClick={handleLinkClick}
+                  style={{ display: "flex", flexDirection: "column", gap: 2 }}
+                >
+                  <span style={{ fontWeight: 600 }}>{b.recipeTitle}</span>
+                  <span style={{ fontSize: 11, opacity: 0.7 }}>{b.planTitle}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
       <div className="year-controls">
         <button className="small-btn" onClick={() => setOpenYears(prev => Object.fromEntries(Object.keys(prev).map(k => [Number(k), true])))}>Alle +</button>
         <button className="small-btn" onClick={() => setOpenYears(prev => Object.fromEntries(Object.keys(prev).map(k => [Number(k), false])))}>Alle -</button>
@@ -249,8 +345,26 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
 function PlanPage({ plans }: { plans: PlanRecord[] }) {
   const { slug = "" } = useParams();
   const { lang } = useLang();
+  const { hash } = useLocation();
   const nav = useNavigate();
   const current = plans.find(p => p.slug === slug);
+
+  useEffect(() => {
+    if (hash) {
+      const id = hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        // Retry after a short delay to allow component to render
+        setTimeout(() => {
+          const elRetry = document.getElementById(id);
+          if (elRetry) elRetry.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+      }
+    }
+  }, [hash, slug]);
+
   if (!current) return <div className="main-inner">Plan nicht gefunden: {slug}</div>;
   if (current.lang !== lang) {
     const sibling = plans.find(p => p.baseId === current.baseId && p.lang === lang);

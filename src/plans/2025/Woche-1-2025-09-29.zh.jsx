@@ -10,6 +10,7 @@
  * - 食材/步骤均有 Array-Guard，避免对非数组执行 .map
  */
 
+import { useBookmarks } from "@/hooks/useBookmarks";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -84,7 +85,7 @@ const safeMap = (v, fn) => (Array.isArray(v) ? v : []).map(fn);
  * 文字字段为中文；ingredients/steps 为字符串数组
  * prompt 不渲染（仅代码内）
  */
-const DATA = [
+export const DATA = [
   // 周一
   {
     id: "mo-f",
@@ -695,6 +696,8 @@ const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
 // ---------- 菜谱卡片 ----------
 function RecipeCard({ r, t, lang }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, r.id);
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   const ingredients = asList(r?.ingredients, lang);
@@ -743,7 +746,31 @@ function RecipeCard({ r, t, lang }) {
           <div style={{ fontSize: 12, color: COLORS.sky, fontWeight: 700, marginTop: -4, marginBottom: 6 }}>
             {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
           </div>
-          <h2 style={{ marginTop: 0 }}>{pickText(r.title, lang)}</h2>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <button
+            onClick={() => toggleBookmark({
+              planSlug: meta.id,
+              recipeId: r.id,
+              recipeTitle: pickText(r.title, lang),
+              planTitle: meta.title
+            })}
+            style={{
+              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
+              border: "1px solid var(--border, rgba(0,0,0,.1))",
+              borderRadius: 8,
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: bookmarked ? "#fff" : "var(--text, #111827)",
+              marginRight: "8px"
+            }}
+            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button><h2 style={{ margin: 0 }}>{pickText(r.title, lang)}</h2></div>
           <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{pickText(r.story, lang)}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>

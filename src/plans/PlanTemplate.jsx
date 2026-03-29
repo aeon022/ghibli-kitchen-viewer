@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ensureScript, exportHTMLById } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { useBookmarks } from "@/hooks/useBookmarks";
 
 const THEME_VARS_LIGHT = {
   "--bg": "#FAF7F1",
@@ -149,13 +150,39 @@ function ImageBanner({ meal, year, weekFolder = "kw1" }) {
   );
 }
 
-function MealCard({ meal, year }) {
+function MealCard({ meal, year, meta }) {
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(meta.id, meal.id);
+
   return (
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
       <ImageBanner meal={meal} year={year} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
         <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            onClick={() => toggleBookmark({
+              planSlug: meta.id,
+              recipeId: meal.id,
+              recipeTitle: meal.title,
+              planTitle: meta.title
+            })}
+            style={{
+              background: bookmarked ? "var(--accent)" : "transparent",
+              border: "1px solid var(--border)",
+              borderRadius: 8,
+              padding: "4px 8px",
+              cursor: "pointer",
+              fontSize: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: bookmarked ? "#fff" : "var(--text)"
+            }}
+            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button>
           {tagChip(meal.target)}
           {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
           {meal.remind ? tagChip("💊 Metformin") : null}
@@ -191,14 +218,14 @@ function MealCard({ meal, year }) {
   );
 }
 
-function DaySection({ dayKey, meals, dayName }) {
+function DaySection({ dayKey, meals, dayName, meta }) {
   return (
     <section className="day-section" style={{ marginBottom: 40 }} id={`day-${dayKey}`}>
       <h2 style={{ marginBottom: 16, borderBottom:"2px solid var(--border)", paddingBottom:8 }}>
         {dayName.replace(/\s*\(.+\)$/, "")} <span className="ghk-date-paren" style={{fontSize:"0.7em", color:"var(--muted)", fontWeight:400}}>{dayName.match(/\(.+\)$/)?.[0] ?? ""}</span>
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>
-        {meals.map((m) => <MealCard key={m.id} meal={m} year={new Date().getFullYear()} />)}
+        {meals.map((m) => <MealCard key={m.id} meal={m} year={new Date().getFullYear()} meta={meta} />)}
       </div>
     </section>
   );
@@ -387,7 +414,7 @@ export default function PlanTemplate({
     return (
       <>
         {DAYS_ORDER.map((d) => (
-          <DaySection key={d} dayKey={d} meals={byDay[d]} dayName={dayNames[d]} />
+          <DaySection key={d} dayKey={d} meals={byDay[d]} dayName={dayNames[d]} meta={meta} />
         ))}
       </>
     );
