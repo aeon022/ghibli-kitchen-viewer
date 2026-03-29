@@ -4,404 +4,246 @@
   --panel: #ffffff;
   --text: #111827;
   --muted: #6B7280;
-  --border: rgba(0,0,0,.10);
-  --shadow: 0 8px 24px rgba(0,0,0,.10);
+  --border: rgba(0,0,0,.08);
+  --shadow: 0 8px 24px rgba(0,0,0,.08);
   --accent: #2aa769;
-  --chip: #EEF8F3;
+  --accent-light: #EEF8F3;
   --sidebar-w: 280px;
-  --sidebar-w-collapsed: 60px;
+  --sidebar-w-collapsed: 68px;
 }
 
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html, body { height: 100%; scroll-behavior: smooth; }
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Noto Sans SC", sans-serif;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 a { color: inherit; }
 
-/* --- Layout Grid --- */
+/* --- Layout Grid (Desktop) --- */
 .app-shell {
   min-height: 100vh;
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr;
-  transition: grid-template-columns 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-shell.collapsed {
   grid-template-columns: var(--sidebar-w-collapsed) 1fr;
 }
 
+.mobile-top-bar { display: none; }
+
 /* --- Sidebar --- */
 .sidebar {
-  background: rgba(255,255,255,.85);
+  background: #fff;
   border-right: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  padding: 16px 14px;
-  overflow: visible; 
-  white-space: nowrap;
-  transition: padding 0.3s;
-  position: relative;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  z-index: 50;
-  min-height: 100vh;
+  overflow: visible; /* Important: allow toggle button to peek out */
+}
+
+.sidebar-content-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 16px 24px;
 }
 
 .app-shell.collapsed .sidebar {
-  padding: 16px 0;
+  padding: 0;
   align-items: center;
 }
 
-/* EINGEKLAPPTER MODUS (Desktop) */
-
-/* 1. Titel: Absolut positionieren (ca. 140px von oben) */
-.app-shell.collapsed .brand {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: none;
-  
-  position: absolute;
-  top: 140px; 
-  left: 50%;
-  
-  /* Drehung um -90 Grad */
-  transform: translate(-50%, -50%) rotate(-90deg);
-  
-  white-space: nowrap;
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  margin: 0;
-  width: max-content;
+.app-shell.collapsed .sidebar-content-scroll {
+  display: none !important; /* Hide everything except title */
 }
 
-/* "Pläne" Textzusatz ausblenden */
-.app-shell.collapsed .brand-suffix {
-  display: none !important;
-}
-
-/* 2. Alles andere AUSBLENDEN */
-.app-shell.collapsed .year-controls,
-.app-shell.collapsed .year-list,
-.app-shell.collapsed .lang-label,
-.app-shell.collapsed .sidebar-top, 
-.app-shell.collapsed .year {
-  display: none !important;
-}
-
-/* --- Toggle Button --- */
-.sidebar-toggle-btn {
-  position: absolute;
-  top: 30px;
-  right: -20px;
-  z-index: 100;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  color: var(--text);
-  transition: transform 0.2s, background 0.2s;
-}
-
-.sidebar-toggle-btn:hover {
-  background: #f3f4f6;
-  transform: scale(1.1);
-}
-
-.toggle-icon {
-  width: 0; 
-  height: 0; 
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent; 
-  border-right: 8px solid var(--text); 
-  margin-right: 3px;
-}
-
-.app-shell.collapsed .toggle-icon {
-  border-right: none;
-  border-left: 8px solid var(--text); 
-  margin-right: 0;
-  margin-left: 3px;
-}
-
-/* --- Language Toggle Switch --- */
-.lang-switch-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.lang-toggle {
-  position: relative;
-  width: 48px;
-  height: 26px;
-  background: #e5e7eb;
-  border-radius: 99px;
-  cursor: pointer;
-  transition: background 0.3s;
-  border: 1px solid rgba(0,0,0,0.05);
-  flex-shrink: 0;
-}
-.lang-toggle[data-active="true"] {
-  background: var(--accent);
-}
-
-.lang-toggle-handle {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 800;
-  color: #333;
-}
-.lang-toggle[data-lang="zh"] .lang-toggle-handle {
-  transform: translateX(22px);
-}
-.lang-toggle-handle::after {
-  content: attr(data-text);
-}
-
-/* --- Rest --- */
+/* Titles/Brand */
 .brand {
   font-weight: 800;
-  font-size: 20px;
-  margin: 4px 0 16px;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--accent), #1f2937);
+  font-size: 22px;
+  margin: 24px 16px 20px;
+  background: linear-gradient(135deg, var(--accent), #111827);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  white-space: nowrap;
 }
-.year-controls {
-  display: flex;
-  gap: 6px;
-  margin: 0 0 12px;
+
+.app-shell.collapsed .brand {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 18px;
+  margin: 40px auto 0;
+  letter-spacing: 0.1em;
 }
-.small-btn {
-  padding: 6px 10px;
-  border-radius: 8px;
+.app-shell.collapsed .brand-suffix { display: none; }
+
+/* --- Desktop Toggle Button --- */
+.sidebar-toggle-btn.desktop-toggle {
+  position: absolute;
+  top: 30px;
+  right: -14px;
+  width: 28px;
+  height: 28px;
+  background: #fff;
   border: 1px solid var(--border);
-  background: var(--panel);
-  cursor: pointer;
-  font-size: 12px;
-  flex: 1;
-  transition: background 0.2s;
-}
-.small-btn:hover { background: #f9fafb; }
-
-.year {
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--panel);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  margin-bottom: 8px;
-  overflow: hidden;
-  transition: width 0.3s;
-}
-.year > summary {
-  cursor: pointer;
-  padding: 10px 14px;
-  font-weight: 700;
-  font-size: 14px;
-  user-select: none;
-  background: rgba(0,0,0,0.01);
-}
-.year[open] > summary {
-  border-bottom: 1px solid rgba(0,0,0,0.04);
-}
-.year-list {
-  list-style: none;
-  margin: 0;
-  padding: 6px;
-}
-.year-list li a {
-  display: block;
-  padding: 8px 10px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: var(--text);
-  font-size: 13px;
-  transition: background 0.2s;
-}
-.year-list li a:hover {
-  background: var(--chip);
-  color: var(--accent);
-}
-
-.main { 
-  padding: 24px; 
-  transition: padding 0.3s;
-}
-.main-inner { 
-  max-width: 1000px; 
-  margin: 0 auto; 
-}
-
-/* --- Back to Top --- */
-.back-to-top {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 48px;
-  height: 48px;
   border-radius: 50%;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 90;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px) scale(0.9);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000; /* Higher than sidebar content */
+  transition: transform 0.2s, background 0.2s;
 }
-.back-to-top.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
+.sidebar-toggle-btn.desktop-toggle:hover { transform: scale(1.1); background: var(--accent-light); }
+
+.toggle-icon {
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 6px solid var(--text);
 }
-.back-to-top:hover {
-  background: var(--chip);
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  border-color: var(--accent);
-}
-.arrow-up {
-  display: inline-block;
-  width: 0; 
-  height: 0; 
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 8px solid currentColor;
+.app-shell.collapsed .toggle-icon {
+  border-right: none;
+  border-left: 6px solid var(--text);
 }
 
-/* --- MOBILE OPTIMIERUNGEN (Drawer Sidebar) --- */
+/* --- Language Toggle (Desktop) --- */
+.sidebar-top { margin-bottom: 20px; }
+.lang-switch-container { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.lang-toggle {
+  position: relative; width: 44px; height: 24px;
+  background: #e5e7eb; border-radius: 99px; cursor: pointer;
+  transition: background 0.3s; border: 1px solid rgba(0,0,0,0.05);
+}
+.lang-toggle[data-active="true"] { background: var(--accent); }
+.lang-toggle-handle {
+  position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px; background: white;
+  border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 800; color: #333;
+}
+.lang-toggle[data-lang="zh"] .lang-toggle-handle { transform: translateX(20px); }
+.lang-toggle-handle::after { content: attr(data-text); }
+
+/* --- Controls & Buttons --- */
+.year-controls { display: flex; gap: 6px; margin-bottom: 16px; }
+.small-btn {
+  flex: 1; padding: 8px; border-radius: 10px;
+  border: 1px solid var(--border); background: #fff;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; color: var(--muted);
+}
+.small-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+.sidebar-nav-item { margin-bottom: 12px; }
+.app-shell.collapsed .sidebar-nav-item .sidebar-nav-text { display: none; }
+
+.year { margin-bottom: 8px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; }
+.year summary { padding: 12px; font-weight: 700; font-size: 14px; cursor: pointer; list-style: none; user-select: none; }
+.year summary:hover { background: rgba(0,0,0,0.02); }
+.year-list { list-style: none; padding: 0 6px 8px; margin: 0; }
+.year-list li a {
+  display: block; padding: 8px 10px; border-radius: 8px;
+  text-decoration: none; font-size: 13px; transition: all 0.2s;
+}
+.year-list li a:hover { background: var(--accent-light); color: var(--accent); }
+
+/* --- Main Content --- */
+.main { padding: 40px; }
+.main-inner { max-width: 1000px; margin: 0 auto; }
+
+.back-to-top {
+  position: fixed; bottom: 30px; right: 30px;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--border);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 90; opacity: 0; visibility: hidden;
+  color: var(--text); transition: all 0.3s;
+}
+.back-to-top.visible { opacity: 1; visibility: visible; }
+.arrow-up { display: inline-block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid currentColor; }
+
+/* --- MOBILE OPTIMIERUNGEN --- */
 @media (max-width: 768px) {
-  /* Grid auflösen */
-  .app-shell, 
-  .app-shell.collapsed {
-    display: block; 
-    position: relative;
-    overflow-x: hidden;
+  .app-shell { display: block; }
+  .desktop-toggle { display: none !important; }
+
+  .mobile-top-bar {
+    display: flex; align-items: center; position: fixed;
+    top: 0; left: 0; right: 0; height: 60px;
+    background: #fff; border-bottom: 1px solid var(--border);
+    padding: 0 16px; z-index: 1000;
   }
 
-  /* Sidebar als Overlay (Drawer) */
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 280px;
-    max-width: 85vw;
-    background: var(--panel);
-    z-index: 1000;
-    box-shadow: 2px 0 20px rgba(0,0,0,0.2);
-    
-    /* WICHTIG: Kein Transform benutzen, sonst verschwindet der fixed Button! 
-       Stattdessen mit left arbeiten. */
-    transform: none !important; 
-    left: -100%; /* Standardmäßig versteckt */
-    transition: left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  }
+  .mobile-brand { flex: 1; text-align: center; font-weight: 800; color: var(--accent); margin-right: 40px; }
 
-  /* Wenn NICHT collapsed (also offen), reinschieben */
-  .app-shell:not(.collapsed) .sidebar {
-    left: 0; /* Rein ins Bild */
-  }
-
-  /* Toggle Button auf Mobile fixieren */
   .sidebar-toggle-btn {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    right: auto;
-    transform: none !important;
-    z-index: 1100; /* Höher als Sidebar */
-    background: var(--accent);
-    color: white;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    position: static !important; width: 40px !important; height: 40px !important;
+    background: var(--accent-light) !important; border: none !important; border-radius: 10px !important;
+    box-shadow: none !important;
   }
   
-  /* Icon anpassen (Hamburger vs X) */
   .sidebar-toggle-btn .toggle-icon {
-    border: none;
-    width: 16px;
-    height: 2px;
-    background: currentColor;
-    position: relative;
-    box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor; /* 3 Striche */
-    margin: 0;
-  }
-  
-  /* Wenn offen: X anzeigen */
-  .app-shell:not(.collapsed) .sidebar-toggle-btn .toggle-icon {
-    height: 0;
-    box-shadow: none;
-  }
-  .app-shell:not(.collapsed) .sidebar-toggle-btn::after {
-    content: "✕";
-    font-size: 20px;
-    line-height: 1;
-    font-weight: bold;
+    width: 20px !important; height: 2px !important;
+    background: var(--accent) !important;
+    box-shadow: 0 -6px 0 var(--accent), 0 6px 0 var(--accent) !important;
+    border: none !important;
   }
 
-  /* Backdrop (Dunkler Hintergrund) */
-  .app-shell:not(.collapsed)::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 900;
-    backdrop-filter: blur(2px);
-    animation: fadeIn 0.3s;
+  .sidebar {
+    position: fixed; top: 60px; left: -100%;
+    width: 280px; height: calc(100vh - 60px);
+    transition: left 0.3s ease;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+    background: #fff;
   }
 
-  /* Content Padding */
-  .main {
-    padding: 80px 16px 80px 16px;
-  }
-  
-  /* Vertikalen Titel auf Mobile ausblenden (da Drawer eh weg ist) */
-  .app-shell.collapsed .brand {
-    display: none !important; 
-  }
-  
-  /* Sicherstellen, dass Inhalte sichtbar sind wenn Drawer offen */
-  .app-shell:not(.collapsed) .year-controls,
-  .app-shell:not(.collapsed) .year-list,
-  .app-shell:not(.collapsed) .lang-label,
-  .app-shell:not(.collapsed) .sidebar-top, 
-  .app-shell:not(.collapsed) .year {
+  .sidebar-content-scroll {
     display: block !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
+    padding: 16px;
+  }
+
+  .app-shell:not(.collapsed) .sidebar { left: 0; }
+
+  .main { padding: 75px 0 40px !important; }
+  .main-inner { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+
+  /* Container-Reset */
+  #kochbuch-root, #ghk-content, .day-section, .page {
+    width: 100% !important; padding: 0 !important; margin: 0 !important;
+    background: transparent !important; border: none !important; box-shadow: none !important;
+  }
+
+  /* Karten */
+  .meal-card, .RecipeCard {
+    width: calc(100% - 16px) !important; margin: 0 auto 24px !important;
+    padding: 16px !important; background: #fff !important;
+    border: 1px solid var(--border) !important; border-radius: 20px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+  }
+
+  .day-section h2 { padding: 0 16px 8px !important; font-size: 20px !important; }
+  .ghk-art { margin: -16px -16px 12px -16px !important; border-radius: 20px 20px 0 0 !important; }
+
+  .back-to-top { z-index: 2000 !important; bottom: 20px; right: 20px; opacity: 1 !important; visibility: visible !important; }
+
+  /* Backdrop */
+  .app-shell:not(.collapsed)::after {
+    content: ""; position: fixed; inset: 60px 0 0 0;
+    background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 90;
   }
 }
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
