@@ -872,7 +872,7 @@ function MealCard({ meal }) {
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
       <ImageBanner meal={meal} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}><button onClick={() => toggleBookmark({ planSlug: meta.id, recipeId: meal.id, recipeTitle: meal.title, planTitle: meta.title })} style={{ background: bookmarked ? "var(--accent, #e07a9a)" : "transparent", border: "1px solid var(--border, rgba(0,0,0,.1))", borderRadius: 8, padding: "4px 8px", cursor: "pointer", fontSize: 16, display: "inline-flex", alignItems: "center", justifyContent: "center", color: bookmarked ? "#fff" : "var(--text, #111827)" }} title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}>{bookmarked ? "★" : "☆"}</button><h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3></div>
         <div>
           {tagChip(meal.target)}
           {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}

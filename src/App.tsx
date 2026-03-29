@@ -245,6 +245,29 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
         </div>
       </div>
 
+      <div style={{ padding: "0 12px 12px" }}>
+        <Link 
+          to="/bookmarks" 
+          onClick={handleLinkClick}
+          style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            gap: 8, 
+            padding: "10px", 
+            background: "var(--accent-2)", 
+            color: "#fff", 
+            borderRadius: "12px", 
+            textDecoration: "none", 
+            fontWeight: 600,
+            fontSize: 14,
+            boxShadow: "0 4px 12px rgba(42,167,105,0.2)"
+          }}
+        >
+          <span>⭐</span> {lang === "de" ? "Meine Merkliste" : "我的收藏"}
+        </Link>
+      </div>
+
       {/* Suche */}
       <div style={{ padding: "0 12px 12px" }}>
         <input
@@ -342,6 +365,72 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
   );
 }
 
+function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
+  const { lang } = useLang();
+  const { bookmarks, removeBookmark } = useBookmarks();
+
+  const bookmarkedRecipes = useMemo(() => {
+    const res: { plan: PlanRecord, recipe: Recipe }[] = [];
+    for (const b of bookmarks) {
+      const plan = plans.find(p => p.slug === b.planSlug);
+      if (plan) {
+        const recipe = plan.recipes.find(r => r.id === b.recipeId);
+        if (recipe) {
+          res.push({ plan, recipe });
+        }
+      }
+    }
+    return res;
+  }, [bookmarks, plans]);
+
+  if (bookmarkedRecipes.length === 0) {
+    return (
+      <div className="main-inner" style={{ textAlign: "center", padding: "40px 20px" }}>
+        <h2>Deine Merkliste ist noch leer</h2>
+        <p style={{ color: "var(--muted)" }}>Pinne Rezepte mit dem Stern-Symbol, um sie hier zu sammeln.</p>
+        <Link to="/" style={{ color: "var(--accent-2)", fontWeight: 600 }}>Zurück zu den Plänen</Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="main-inner">
+      <div style={{ marginBottom: 32, padding: "0 20px" }}>
+        <h1>{lang === "de" ? "Meine Merkliste" : "我的收藏"}</h1>
+        <p style={{ color: "var(--muted)" }}>{bookmarkedRecipes.length} Rezepte gespeichert</p>
+      </div>
+      <div style={{ display: "grid", gap: 32 }}>
+        {bookmarkedRecipes.map(({ plan, recipe }) => {
+          return (
+            <div key={`${plan.slug}-${recipe.id}`} style={{ border: "1px solid var(--border)", borderRadius: 18, background: "var(--panel)", overflow: "hidden" }}>
+              <div style={{ padding: "12px 20px", background: "var(--grad-hero)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 600 }}>{plan.meta.title} ({plan.startDate})</span>
+                <button 
+                  onClick={() => removeBookmark(plan.slug, recipe.id)}
+                  style={{ background: "transparent", border: "none", color: "var(--text)", cursor: "pointer", fontSize: 18 }}
+                  title="Entfernen"
+                >
+                  ✕
+                </button>
+              </div>
+              <div style={{ padding: 20 }}>
+                <h2 style={{ marginTop: 0 }}>{recipe.title}</h2>
+                {recipe.desc && <p style={{ fontStyle: "italic", color: "var(--muted)" }}>{recipe.desc}</p>}
+                <Link 
+                  to={`/plan/${plan.slug}#meal-${recipe.id}`} 
+                  style={{ display: "inline-block", marginTop: 12, padding: "8px 16px", background: "var(--accent-2)", color: "#fff", borderRadius: 8, textDecoration: "none", fontWeight: 600 }}
+                >
+                  Ganzes Rezept ansehen →
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function PlanPage({ plans }: { plans: PlanRecord[] }) {
   const { slug = "" } = useParams();
   const { lang } = useLang();
@@ -356,7 +445,6 @@ function PlanPage({ plans }: { plans: PlanRecord[] }) {
       if (el) {
         el.scrollIntoView({ behavior: "smooth" });
       } else {
-        // Retry after a short delay to allow component to render
         setTimeout(() => {
           const elRetry = document.getElementById(id);
           if (elRetry) elRetry.scrollIntoView({ behavior: "smooth" });
@@ -393,6 +481,7 @@ export default function App() {
         <main className="main">
           <Routes>
             <Route path="/" element={<HomeRedirect plans={plans} />} />
+            <Route path="/bookmarks" element={<BookmarkPage plans={plans} />} />
             <Route path="/plan/:slug" element={<PlanPage plans={plans} />} />
             <Route path="*" element={<HomeRedirect plans={plans} />} />
           </Routes>
