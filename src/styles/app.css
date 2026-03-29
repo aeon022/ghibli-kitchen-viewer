@@ -7,7 +7,9 @@
   --border: rgba(0,0,0,.08);
   --shadow: 0 8px 24px rgba(0,0,0,.08);
   --accent: #2aa769;
+  --accent-2: #2aa769;
   --accent-light: #EEF8F3;
+  --accent-warm: #e07a9a;
   --sidebar-w: 280px;
   --sidebar-w-collapsed: 68px;
 }
@@ -48,7 +50,7 @@ a { color: inherit; }
   z-index: 100;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* Important: allow toggle button to peek out */
+  overflow: visible;
 }
 
 .sidebar-content-scroll {
@@ -58,16 +60,9 @@ a { color: inherit; }
   padding: 0 16px 24px;
 }
 
-.app-shell.collapsed .sidebar {
-  padding: 0;
-  align-items: center;
-}
+.app-shell.collapsed .sidebar { padding: 0; align-items: center; }
+.app-shell.collapsed .sidebar-content-scroll { display: none !important; }
 
-.app-shell.collapsed .sidebar-content-scroll {
-  display: none !important; /* Hide everything except title */
-}
-
-/* Titles/Brand */
 .brand {
   font-weight: 800;
   font-size: 22px;
@@ -87,38 +82,19 @@ a { color: inherit; }
 }
 .app-shell.collapsed .brand-suffix { display: none; }
 
-/* --- Desktop Toggle Button --- */
 .sidebar-toggle-btn.desktop-toggle {
-  position: absolute;
-  top: 30px;
-  right: -14px;
-  width: 28px;
-  height: 28px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  z-index: 1000; /* Higher than sidebar content */
-  transition: transform 0.2s, background 0.2s;
+  position: absolute; top: 30px; right: -14px;
+  width: 28px; height: 28px; background: #fff;
+  border: 1px solid var(--border); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000; transition: transform 0.2s, background 0.2s;
 }
 .sidebar-toggle-btn.desktop-toggle:hover { transform: scale(1.1); background: var(--accent-light); }
 
-.toggle-icon {
-  width: 0; height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-right: 6px solid var(--text);
-}
-.app-shell.collapsed .toggle-icon {
-  border-right: none;
-  border-left: 6px solid var(--text);
-}
+.toggle-icon { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-right: 6px solid var(--text); }
+.app-shell.collapsed .toggle-icon { border-right: none; border-left: 6px solid var(--text); }
 
-/* --- Language Toggle (Desktop) --- */
 .sidebar-top { margin-bottom: 20px; }
 .lang-switch-container { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .lang-toggle {
@@ -138,7 +114,6 @@ a { color: inherit; }
 .lang-toggle[data-lang="zh"] .lang-toggle-handle { transform: translateX(20px); }
 .lang-toggle-handle::after { content: attr(data-text); }
 
-/* --- Controls & Buttons --- */
 .year-controls { display: flex; gap: 6px; margin-bottom: 16px; }
 .small-btn {
   flex: 1; padding: 8px; border-radius: 10px;
@@ -149,16 +124,53 @@ a { color: inherit; }
 .small-btn:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
 
 .sidebar-nav-item { margin-bottom: 12px; }
+
+.sidebar-home-btn {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  padding: 10px; 
+  background: #f3f4f6; 
+  color: #111827 !important; 
+  border-radius: 12px; 
+  border: 1px solid var(--border);
+  text-decoration: none; 
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.sidebar-home-btn:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.sidebar-bookmark-btn {
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px; 
+  padding: 10px; 
+  background: #2aa769; /* Explicit Green */
+  color: #fff !important; 
+  border-radius: 12px; 
+  text-decoration: none; 
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(42,167,105,0.2);
+  transition: all 0.2s;
+}
+.sidebar-bookmark-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
 .app-shell.collapsed .sidebar-nav-item .sidebar-nav-text { display: none; }
 
 .year { margin-bottom: 8px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: #fff; }
 .year summary { padding: 12px; font-weight: 700; font-size: 14px; cursor: pointer; list-style: none; user-select: none; }
 .year summary:hover { background: rgba(0,0,0,0.02); }
 .year-list { list-style: none; padding: 0 6px 8px; margin: 0; }
-.year-list li a {
-  display: block; padding: 8px 10px; border-radius: 8px;
-  text-decoration: none; font-size: 13px; transition: all 0.2s;
-}
+.year-list li a { display: block; padding: 8px 10px; border-radius: 8px; text-decoration: none; font-size: 13px; transition: all 0.2s; }
 .year-list li a:hover { background: var(--accent-light); color: var(--accent); }
 
 /* --- Main Content --- */
@@ -166,16 +178,80 @@ a { color: inherit; }
 .main-inner { max-width: 1000px; margin: 0 auto; }
 
 .back-to-top {
-  position: fixed; bottom: 30px; right: 30px;
-  width: 48px; height: 48px; border-radius: 50%;
-  background: #fff; border: 1px solid var(--border);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 90; opacity: 0; visibility: hidden;
-  color: var(--text); transition: all 0.3s;
+  position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--border); box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 90;
+  opacity: 0; visibility: hidden; color: var(--text); transition: all 0.3s;
 }
 .back-to-top.visible { opacity: 1; visibility: visible; }
 .arrow-up { display: inline-block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 8px solid currentColor; }
+
+/* --- HOME PAGE STYLES --- */
+.home-page { padding-bottom: 80px; }
+
+.hero {
+  padding: 100px 20px;
+  text-align: center;
+  background-color: var(--panel);
+  background-image: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.7)), url('/hero-bg.webp');
+  background-size: cover;
+  background-position: center;
+  border-radius: 32px;
+  margin-bottom: 60px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.hero-title { 
+  font-size: 48px; 
+  font-weight: 900; 
+  margin-bottom: 8px; 
+  color: #ffffff; 
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5); 
+}
+.hero-subtitle { 
+  font-size: 24px; 
+  color: #f9a8d4; /* Helles Pink/Sakura-Farbe */
+  font-weight: 600; 
+  margin-bottom: 24px; 
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+}
+.hero-text { 
+  max-width: 700px; 
+  margin: 0 auto 40px; 
+  font-size: 18px; 
+  line-height: 1.6; 
+  color: #f3f4f6; 
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5); 
+}
+
+.hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary, .btn-secondary {
+  padding: 14px 28px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; transition: all 0.2s; border: none;
+}
+.btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(42,167,105,0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(42,167,105,0.4); }
+.btn-secondary { background: white; color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--accent-light); }
+
+.categories {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 80px;
+}
+.cat-card {
+  padding: 32px; background: white; border-radius: 24px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: transform 0.2s;
+}
+.cat-card:hover { transform: translateY(-5px); }
+.cat-icon { font-size: 40px; margin-bottom: 16px; }
+.cat-card h3 { font-size: 20px; margin-bottom: 12px; color: var(--text); }
+.cat-card p { font-size: 15px; line-height: 1.5; color: var(--muted); }
+
+.about-section {
+  max-width: 800px; margin: 0 auto 80px; text-align: center; padding: 40px; background: white; border-radius: 32px; border: 1px solid var(--border);
+}
+.quote { font-size: 22px; font-style: italic; color: var(--accent); margin-bottom: 24px; font-weight: 500; }
+.about-section p { font-size: 17px; line-height: 1.7; color: var(--text); margin-bottom: 24px; }
+.teaser { font-weight: 700; color: var(--accent-warm); font-size: 18px; }
+
+.home-footer { text-align: center; color: var(--muted); border-top: 1px solid var(--border); padding-top: 40px; }
 
 /* --- MOBILE OPTIMIERUNGEN --- */
 @media (max-width: 768px) {
@@ -212,36 +288,38 @@ a { color: inherit; }
     background: #fff;
   }
 
-  .sidebar-content-scroll {
-    display: block !important;
-    padding: 16px;
-  }
-
+  .sidebar-content-scroll { display: block !important; padding: 16px; }
   .app-shell:not(.collapsed) .sidebar { left: 0; }
 
-  .main { padding: 75px 0 40px !important; }
+  .main { padding: 75px 8px 40px !important; }
   .main-inner { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
 
-  /* Container-Reset */
   #kochbuch-root, #ghk-content, .day-section, .page {
     width: 100% !important; padding: 0 !important; margin: 0 !important;
     background: transparent !important; border: none !important; box-shadow: none !important;
   }
 
-  /* Karten */
   .meal-card, .RecipeCard {
-    width: calc(100% - 16px) !important; margin: 0 auto 24px !important;
+    width: 100% !important; margin: 0 auto 24px !important;
     padding: 16px !important; background: #fff !important;
     border: 1px solid var(--border) !important; border-radius: 20px !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
   }
+
+  .hero { padding: 40px 16px; margin-bottom: 40px; }
+  .hero-title { font-size: 32px; color: #fff; }
+  .hero-subtitle { font-size: 18px; color: #f9a8d4; }
+  .hero-text { font-size: 15px; color: #f3f4f6; }
+  .categories { gap: 16px; }
+  .cat-card { padding: 24px; }
+  .about-section { padding: 24px; margin-bottom: 40px; }
+  .quote { font-size: 18px; }
 
   .day-section h2 { padding: 0 16px 8px !important; font-size: 20px !important; }
   .ghk-art { margin: -16px -16px 12px -16px !important; border-radius: 20px 20px 0 0 !important; }
 
   .back-to-top { z-index: 2000 !important; bottom: 20px; right: 20px; opacity: 1 !important; visibility: visible !important; }
 
-  /* Backdrop */
   .app-shell:not(.collapsed)::after {
     content: ""; position: fixed; inset: 60px 0 0 0;
     background: rgba(0,0,0,0.3); backdrop-filter: blur(2px); z-index: 90;

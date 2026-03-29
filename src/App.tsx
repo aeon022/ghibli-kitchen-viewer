@@ -226,10 +226,27 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
 
       {/* Titel mit Span für Ausblenden */}
       <div className="brand">
-        Moving Kitchen<span className="brand-suffix"> Tales</span>
+        MovingKitchenTales
       </div>
 
       <div className="sidebar-content-scroll">
+        <div className="sidebar-nav-item" style={{ padding: "0 12px 12px" }}>
+          <Link 
+            to="/" 
+            onClick={handleLinkClick}
+            className="sidebar-home-btn"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent)" }}>
+              <path d="M3 10l9-7 9 7v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <path d="M9 21v-3a3 3 0 0 1 6 0v3" />
+              <path d="M6 21l-1 2h2" />
+              <path d="M18 21l1 2h-2" />
+              <path d="M15 3l1-1" />
+            </svg>
+            <span className="sidebar-nav-text">{lang === "de" ? "Startseite" : "首页"}</span>
+          </Link>
+        </div>
+
         <div className="sidebar-top">
           <div className="lang-switch-container">
             <div 
@@ -251,20 +268,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
           <Link 
             to="/bookmarks" 
             onClick={handleLinkClick}
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center", 
-              gap: 8, 
-              padding: "10px", 
-              background: "var(--accent-2)", 
-              color: "#fff", 
-              borderRadius: "12px", 
-              textDecoration: "none", 
-              fontWeight: 600,
-              fontSize: 14,
-              boxShadow: "0 4px 12px rgba(42,167,105,0.2)"
-            }}
+            className="sidebar-bookmark-btn"
           >
             <span>⭐</span> <span className="sidebar-nav-text">{lang === "de" ? "Meine Merkliste" : "我的收藏"}</span>
           </Link>
@@ -465,6 +469,86 @@ function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
   );
 }
 
+function HomePage({ plans }: { plans: PlanRecord[] }) {
+  const { lang } = useLang();
+  const navigate = useNavigate();
+  const currentPlan = useMemo(() => pickCurrent(plans, lang), [plans, lang]);
+
+  return (
+    <div className="home-page">
+      {/* Hero Section */}
+      <section className="hero">
+        <div className="hero-content">
+          <h1 className="hero-title">Moving Kitchen Tales</h1>
+          <p className="hero-subtitle">Wo Rezepte zu Geschichten werden.</p>
+          <p className="hero-text">
+            Hol dir den Zauber animierter Klassiker und den echten Geschmack Asiens direkt an deinen Herd. 
+            Von herzerwärmenden Film-Gerichten bis zu rasanten Viral-Hits – einfach zubereitet, authentisch im Aroma.
+          </p>
+          <div className="hero-btns">
+            {currentPlan && (
+              <button 
+                className="btn-primary" 
+                onClick={() => navigate(`/plan/${currentPlan.slug}?lang=${lang}`)}
+              >
+                Zum aktuellen Plan
+              </button>
+            )}
+            <button 
+              className="btn-secondary" 
+              onClick={() => {
+                const classics = plans.find(p => p.meta.title?.includes("Woche 1") && p.lang === lang);
+                if (classics) navigate(`/plan/${classics.slug}?lang=${lang}`);
+              }}
+            >
+              Entdecke die Klassiker
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="categories">
+        <div className="cat-card">
+          <div className="cat-icon">🎬</div>
+          <h3>Studio Classics</h3>
+          <p>Direkt von der Leinwand auf deinen Teller. Erlebe die ikonischen Mahlzeiten, die Kindheitserinnerungen wecken.</p>
+        </div>
+        <div className="cat-card">
+          <div className="cat-icon">🔥</div>
+          <h3>Viral Asia-Hits</h3>
+          <p>Die Trends, die das Netz erobern. Modern, unkompliziert und in wenigen Minuten fertig.</p>
+        </div>
+        <div className="cat-card">
+          <div className="cat-icon">⏲️</div>
+          <h3>The 10-Minute Pantry</h3>
+          <p>Wenn die Zeit knapp ist, aber der Anspruch hoch bleibt. Schnelle asiatische Hausmannskost für jeden Tag.</p>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className="about-section">
+        <div className="about-content">
+          <p className="quote">
+            "Essen ist in unseren liebsten Filmen oft mehr als nur Nahrung – es ist Trost, Abenteuer und Gemeinschaft."
+          </p>
+          <p>
+            <strong>Moving Kitchen Tales</strong> ist eine Sammlung für alle, die diese besondere Atmosphäre in den eigenen vier Wänden nachempfinden wollen. 
+            Wir konzentrieren uns auf das Wesentliche: frische Zutaten, einfache Handgriffe und Gerichte, die Seele und Geist guttun.
+          </p>
+          <div className="teaser">
+            Bereit für deine eigene kulinarische Reise? Such dir ein Kapitel aus und fang an zu kochen.
+          </div>
+        </div>
+      </section>
+
+      <footer className="home-footer">
+        <p><em>"Jede Schüssel ein Kapitel. Jeder Bissen eine Reise."</em></p>
+      </footer>
+    </div>
+  );
+}
+
 function PlanPage({ plans }: { plans: PlanRecord[] }) {
   const { slug = "" } = useParams();
   const { lang } = useLang();
@@ -529,10 +613,10 @@ export default function App() {
         
         <main className="main">
           <Routes>
-            <Route path="/" element={<HomeRedirect plans={plans} />} />
+            <Route path="/" element={<HomePage plans={plans} />} />
             <Route path="/bookmarks" element={<BookmarkPage plans={plans} />} />
             <Route path="/plan/:slug" element={<PlanPage plans={plans} />} />
-            <Route path="*" element={<HomeRedirect plans={plans} />} />
+            <Route path="*" element={<HomePage plans={plans} />} />
           </Routes>
         </main>
         <BackToTop />
