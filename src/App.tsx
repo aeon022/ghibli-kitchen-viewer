@@ -522,7 +522,7 @@ export default function App() {
           >
             <span className="toggle-icon"></span>
           </button>
-          <div className="mobile-brand">GhibliKitchen</div>
+          <div className="mobile-brand">Moving Kitchen Tales</div>
         </div>
 
         <Sidebar plans={plans} collapsed={collapsed} setCollapsed={setCollapsed} />
@@ -538,7 +538,5 @@ export default function App() {
         <BackToTop />
       </div>
     </LangProvider>
-  );
-}
   );
 }
