@@ -1,28 +1,28 @@
-// src/plans/2026/Woche-11-2026-03-09.de.jsx
+// src/plans/2026/Woche-12-2026-03-16.de.jsx
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – Woche 11 (Start: 2026-03-09)
-  Fokus: Virale Hits (hervorgehoben!), Original-Titel (CN/JP/KR), Reiskocher, Airfryer.
-  Inhalt: Balanced, Schwangerschaftssicher, Diabetesfreundlich.
+  GhibliKitchen – Woche 12 (Start: 2026-03-16)
+  Fokus: Virale Airfryer-Hacks, Originaltitel (CN/JP/KR), Reiskocher-Magie, CN/JP/KR + EU Crossover.
+  Inhalt: Balanced, Schwangerschaftssicher (alles komplett durchgegart), Diabetesfreundlich.
 */
 
 // ---- Meta ----
 export const meta = {
-  title: "Woche 11",
-  startDate: "2026-03-09",
-  id: "woche-11-2026-03-09",
+  title: "Woche 12",
+  startDate: "2026-03-16",
+  id: "woche-12-2026-03-16",
   lang: "de",
-  sidebar: "Woche 11 (2026-03-09)",
+  sidebar: "Woche 12 (2026-03-16)",
 };
 
-const FILE_BASE = "Woche 11 2026-03-09";
+const FILE_BASE = "Woche 12 2026-03-16";
 
 const UI_TITLES = {
-  main: "Rezepte Woche 11",
-  list: "Einkaufsliste Woche 11",
+  main: "Rezepte Woche 12",
+  list: "Einkaufsliste Woche 12",
 };
 
 // ---- THEME ----
@@ -125,13 +125,13 @@ const viralChip = () => (
 
 const DAYS_ORDER = ["mo", "di", "mi", "do", "fr", "sa", "so"];
 const DAY_NAME_DE = {
-  mo: "Montag (2026-03-09)",
-  di: "Dienstag (2026-03-10)",
-  mi: "Mittwoch (2026-03-11)",
-  do: "Donnerstag (2026-03-12)",
-  fr: "Freitag (2026-03-13)",
-  sa: "Samstag (2026-03-14)",
-  so: "Sonntag (2026-03-15)",
+  mo: "Montag (2026-03-16)",
+  di: "Dienstag (2026-03-17)",
+  mi: "Mittwoch (2026-03-18)",
+  do: "Donnerstag (2026-03-19)",
+  fr: "Freitag (2026-03-20)",
+  sa: "Samstag (2026-03-21)",
+  so: "Sonntag (2026-03-22)",
 };
 
 // -----------------------------------------------------------------------
@@ -141,555 +141,546 @@ const DATA = [
   // MONTAG
   {
     id: "mo-f",
-    title: "Grated Egg Avocado Toast アボカドエッグトースト",
+    title: "Airfryer Avocado-Egg-Boats アボカドエッグ",
     isViral: true,
-    desc: "Hartgekochtes Ei, über Avocado-Toast gerieben wie Parmesan. Super cremig!",
-    story: "Dieser TikTok-Trend ist ein Gamechanger. Statt das Ei in Scheiben zu schneiden, reibt man es über den Toast. Die Textur wird dadurch unglaublich fein und schmilzt fast.",
+    desc: "Eine halbe Avocado, gefüllt mit einem Ei und im Airfryer gebacken.",
+    story: "Ein riesiger Social-Media-Hit für ein proteinreiches, schnelles Frühstück. Das Ei backt perfekt in der Mulde der Avocado, während das Fruchtfleisch leicht anröstet.",
     target: "≈60 g KH (2 P.) · Protein ≈18 g p. P.",
     ingredients: [
-      "Vollkorn-Toast 4 Scheiben",
-      "Eier (hartgekocht) 2 Stück",
       "Avocado (reif) 1 Stück",
-      "Sriracha-Sauce oder Mayo (pasteurisiert) 1 TL",
+      "Eier 2 Stück",
+      "Vollkorn-Toast 4 Scheiben",
+      "Sriracha-Sauce (mild) 1 TL",
       "Salz & Pfeffer"
     ],
     steps: [
-      "Toastbrot knusprig toasten.",
-      "Avocado zerdrücken und auf dem Toast verstreichen.",
-      "Die hartgekochten Eier mit einer Käserreibe fein über die Brote reiben.",
-      "Mit etwas Mayo oder Sriracha toppen."
+      "Avocado halbieren, Kern entfernen. Etwas Fruchtfleisch auslöffeln, um die Mulde zu vergrößern.",
+      "Jeweils ein Ei in die Mulde schlagen.",
+      "Im Airfryer bei 180°C für ca. 12-15 Minuten backen, bis das Ei komplett durchgestockt ist (kein flüssiges Eigelb!).",
+      "Mit Salz, Pfeffer und Sriracha würzen. Dazu Vollkorntoast."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Eier hartgekocht!) · Diabetes ✓",
-    swaps: "Avocado ↔ Frischkäse",
-    side: "Ein Glas Tee.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Eier komplett durchgebacken!) · Diabetes ✓",
+    swaps: "Avocado ↔ Tomatenhälften",
+    side: "Ein warmer Tee.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "mo-m",
-    title: "Peanut-Butter Udon ピーナッツバターうどん",
-    desc: "Dicke Udon-Nudeln in einer warmen, ultra-cremigen Erdnusssauce.",
-    story: "Ein asiatischer Comfort-Food-Klassiker, der blitzschnell im Wok oder in der Pfanne geht. Die Erdnussbutter emulgiert mit dem Nudelwasser zu einer Traum-Sauce.",
-    target: "≈85 g KH (2 P.) · Protein ≈22 g p. P.",
+    title: "Soba-Nudelsalat そばサラダ",
+    desc: "Erfrischende japanische Buchweizennudeln in cremiger Erdnusssauce.",
+    story: "Wenn es schnell gehen muss: Soba-Nudeln garen in 4 Minuten und schmecken kalt fantastisch. Die Erdnusssauce liefert die nötigen Fette und Proteine.",
+    target: "≈85 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Udon-Nudeln (vorgegart) 400 g",
-      "Erdnussbutter (ungesüßt) 3 EL",
+      "Soba-Nudeln 150 g",
+      "Erdnussbutter 2 EL",
       "Sojasauce 2 EL",
-      "Sesamöl 1 TL",
-      "Hähnchenbrust (in Streifen) 150 g",
-      "Spinat 100 g"
+      "Reisessig 1 EL",
+      "Gurke (in Streifen) 100 g",
+      "Edamame (geschält) 100 g"
     ],
     steps: [
-      "Hähnchen im Wok gut durchbraten.",
-      "Erdnussbutter, Sojasauce und Sesamöl mit etwas heißem Wasser glatt rühren.",
-      "Udon und Spinat zum Huhn geben, kurz anbraten.",
-      "Sauce darüber gießen, schwenken bis alles cremig ist."
+      "Soba-Nudeln und Edamame kochen, danach eiskalt abschrecken.",
+      "Erdnussbutter, Sojasauce, Essig und etwas warmes Wasser zu einem glatten Dressing rühren.",
+      "Nudeln, Edamame und Gurkenstreifen im Dressing schwenken."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Huhn durch) · Diabetes ✓",
+    checks: "Balanced ✓ · Schwangerschaft ✓ · Diabetes ✓ (Buchweizen ist super blutzuckerfreundlich)",
     swaps: "Erdnussbutter ↔ Tahini",
-    side: "-",
+    side: "Ein hartgekochtes Ei (optional).",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "mo-a",
-    title: "Lazy Sushi Bake 寿司ベイク (Reiskocher)",
-    isViral: true,
-    desc: "Die Aromen einer Sushi-Rolle, einfach zusammen im Reiskocher zubereitet.",
-    story: "Der Sushi-Bake ist normalerweise ein Auflauf. Wir machen ihn noch einfacher: Der Lachs gart im Reiskocher mit, am Ende wird Mayo und Nori untergehoben.",
+    title: "Hainan-Style Schweinefilet-Reis 海南猪肉饭 (Reiskocher)",
+    desc: "Zartes Schweinefilet dämpft in einem würzigen Ingwer-Knoblauch-Reis.",
+    story: "Das klassische Hainan-Gericht wird eigentlich mit fettem Huhn gemacht. Wir nehmen mageres Schweinefilet – das gart im Reiskocher butterweich und aromatisiert den Reis wunderbar.",
     target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
-      "Reis (roh, ideal Sushi-Reis) 120 g",
-      "Lachsfilet 200 g",
-      "Mayonnaise (pasteurisiert) 2 EL",
-      "Sojasauce 1 EL",
-      "Reisessig 1 EL",
-      "Nori (zerbröselt) 1 Blatt"
+      "Reis (roh) 120 g",
+      "Schweinefilet (am Stück oder dicke Medaillons) 200 g",
+      "Hühnerbrühe 240 ml",
+      "Ingwer (fein gehackt) 15 g",
+      "Knoblauch 2 Zehen",
+      "Sojasauce 1 EL"
     ],
     steps: [
-      "Reis mit Wasser in den Reiskocher geben. Lachs mit Sojasauce beträufeln und obendrauf setzen.",
-      "Start drücken. Wenn fertig, Lachs zerteilen.",
-      "Mayo, Reisessig und Nori-Brösel unter den heißen Reis rühren.",
-      "Warm löffeln."
+      "Reis, Brühe, Ingwer, zerdrückten Knoblauch und Sojasauce in den Reiskocher geben.",
+      "Schweinefilet oben drauflegen. Start drücken.",
+      "Nach dem Kochen das Fleisch herausnehmen, in Scheiben schneiden und auf dem gut umgerührten Reis anrichten."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Lachs dämpft komplett durch, Mayo aus Tube) · Diabetes ✓",
-    swaps: "Lachs ↔ Thunfisch (Dose)",
-    side: "Gurkensalat.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Schweinefilet gart im Reiskocher >80°C komplett durch)",
+    swaps: "Schweinefilet ↔ Hähnchenbrust",
+    side: "Gedämpfter Pak Choi.",
     remind: true,
-    riceCooker: { enabled: true, program: "White Rice / Sushi", water: "Standard", notes: "Lachs gart wunderbar zart im Dampf." },
+    riceCooker: { enabled: true, program: "White Rice / Mixed", water: "Brühe (Standard)", notes: "Fleisch nicht zu klein schneiden, damit es saftig bleibt." },
   },
 
   // DIENSTAG
   {
     id: "di-f",
-    title: "Herzhaftes Miso-Oatmeal 味噌オートミール",
-    desc: "Haferbrei nach japanischer Art, mit Miso-Paste, Sojasauce und Spiegelei.",
-    story: "In Japan frühstückt man oft Reis mit Miso-Suppe. Das Oatmeal kombiniert beides: Die Flocken kochen in Dashi-Brühe. Macht satt und glücklich.",
-    target: "≈65 g KH (2 P.) · Protein ≈18 g p. P.",
+    title: "Cloud Egg Toast 클라우드 에그 (Airfryer)",
+    isViral: true,
+    desc: "Ein fluffiges Wolken-Ei aus aufgeschlagenem Eiweiß mit dem Eigelb in der Mitte.",
+    story: "Dieser virale Frühstückstrend sieht aus wie eine kleine Wolke! Da wir das Eigelb in der Schwangerschaft durchgaren müssen, lassen wir es im Airfryer einfach etwas länger backen.",
+    target: "≈60 g KH (2 P.) · Protein ≈18 g p. P.",
     ingredients: [
-      "Haferflocken 100 g",
-      "Dashi oder Gemüsebrühe 400 ml",
-      "Miso-Paste 1 EL",
+      "Vollkorn-Toast 4 Scheiben",
       "Eier 2 Stück",
-      "Frühlingszwiebel 10 g"
+      "Parmesan (gerieben) 20 g",
+      "Salz & Pfeffer"
     ],
     steps: [
-      "Haferflocken in Brühe einköcheln. Am Ende vom Herd nehmen und Miso einrühren.",
-      "Eier in der Pfanne komplett durchbraten (kein flüssiges Eigelb).",
-      "Haferbrei mit dem Ei und Frühlingszwiebeln toppen."
+      "Eier trennen. Eiweiß mit einer Prise Salz steif schlagen. Parmesan vorsichtig unterheben.",
+      "Zwei Eiweiß-Wolken auf Backpapier (oder in eine Airfryer-Form) formen, in der Mitte eine Kuhle machen.",
+      "Im Airfryer bei 160°C ca. 5 Min backen. Dann das Eigelb in die Kuhle geben und weitere 5-8 Min backen, bis alles KOMPLETT durchgestockt ist.",
+      "Wolken auf den getoasteten Toast legen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Ei durchgebraten)",
-    swaps: "Eier ↔ Fester Tofu",
-    side: "-",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Eigelb muss fest sein, kein flüssiger Kern!)",
+    swaps: "Parmesan ↔ Gouda",
+    side: "Tomaten.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "di-m",
-    title: "Airfryer Zucchini Pizza Bites ズッキーニピザ",
-    desc: "Low-Carb Snack-Mittagessen. Zucchinischeiben überbacken mit Tomatensauce und Käse.",
-    story: "Eine schnelle, vitaminreiche Alternative zu normaler Pizza. Im Airfryer wird die Zucchini nicht matschig, sondern behält einen tollen Biss.",
-    target: "≈45 g KH (2 P.) · Protein ≈20 g p. P.",
+    title: "Knoblauch-Butter Yaki Udon ガリバタ焼きうどん",
+    desc: "Bratnudeln auf japanische Art mit einer herrlichen Knoblauch-Butter-Soja-Glasur.",
+    story: "Yaki Udon ist in japanischen Izakayas ein Muss. Die Kombination aus Butter und Sojasauce ist ein unschlagbares Umami-Duo.",
+    target: "≈85 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Zucchini (groß) 1 Stück",
-      "Passierte Tomaten 4 EL",
-      "Gouda oder Mozzarella (pasteurisiert) 80 g",
-      "Italienische Kräuter 1 TL",
-      "Vollkornbrot (als Beilage) 2-4 Scheiben"
+      "Udon-Nudeln (vorgegart) 400 g",
+      "Butter 20 g",
+      "Sojasauce 2 EL",
+      "Knoblauch 2 Zehen",
+      "Weißkohl (geschnitten) 150 g",
+      "Champignons 100 g"
     ],
     steps: [
-      "Zucchini in ca. 1 cm dicke Scheiben schneiden.",
-      "Jede Scheibe mit Tomatensauce bestreichen, würzen und Käse darauflegen.",
-      "Im Airfryer bei 180°C ca. 8-10 Min backen, bis der Käse goldbraun ist.",
-      "Mit Brot servieren."
+      "Knoblauch, Kohl und Pilze in der Butter anbraten.",
+      "Udon-Nudeln kurz heiß abspülen und mit in den Wok geben.",
+      "Sojasauce darüber gießen und alles kräftig schwenken, bis die Nudeln die Sauce aufgesaugt haben."
     ],
-    checks: "Balanced ✓ · Diabetes ✓ · Schwangerschaft ✓ (Käse schmilzt komplett durch)",
-    swaps: "Zucchini ↔ Auberginen",
-    side: "-",
+    checks: "Balanced ✓ · Schwangerschaft ✓ · Diabetes ✓",
+    swaps: "Udon ↔ Vollkorn-Spaghetti",
+    side: "Etwas gerösteter Sesam on top.",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "di-a",
-    title: "Baozi-Hack Reis 包子风味饭 (Reiskocher)",
-    desc: "Der Geschmack von chinesischen Bao-Teigtaschen, ohne Teig zu kneten.",
-    story: "Wir formen Hackbällchen mit typischen Baozi-Gewürzen (Ingwer, Soja, Sesamöl) und dämpfen sie direkt auf dem Reis.",
-    target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
+    title: "Linsen-Karotten-Reis 扁豆鸡肉饭 (Reiskocher)",
+    desc: "Ein proteinreicher Reistopf mit Linsen, warmen Gewürzen und zartem Hühnchen.",
+    story: "Ein Crossover, das leicht in Richtung indisches Biryani geht, aber im Reiskocher komplett ohne Aufwand gelingt. Die Linsen schmelzen förmlich.",
+    target: "≈82 g KH (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
-      "Reis (roh) 120 g",
-      "Schweinehack (mager) 200 g",
-      "Ingwer (gerieben) 1 TL",
-      "Sojasauce 2 EL",
-      "Weißkohl (fein geschnitten) 100 g",
-      "Wasser"
+      "Reis (roh) 100 g",
+      "Rote Linsen (roh, gewaschen) 40 g",
+      "Hähnchenbrust (gewürfelt) 200 g",
+      "Karotten (in Stiften) 100 g",
+      "Gemüsebrühe 300 ml",
+      "Currypulver (mild) 1 TL"
     ],
     steps: [
-      "Hack mit Ingwer und Sojasauce verkneten, kleine Bällchen formen.",
-      "Reis und Wasser in den Reiskocher. Kohl und Hackbällchen darauf verteilen.",
-      "Start drücken. Der Fleischsaft zieht direkt in den Reis.",
-      "Am Ende gut vermischen."
+      "Reis und Linsen gut waschen und mit der Brühe in den Topf geben. Currypulver einrühren.",
+      "Hähnchen und Karotten oben auflegen.",
+      "Start drücken.",
+      "Am Ende alles durchmischen, die Linsen geben dem Reis eine tolle cremige Textur."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Hackfleisch gart sicher durch)",
-    swaps: "Schweinehack ↔ Hähnchenhack",
-    side: "Ein Spritzer Sesamöl drüber.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Huhn durch) · Diabetes ✓ (Linsen drosseln Blutzucker)",
+    swaps: "Hähnchen ↔ Räuchertofu",
+    side: "Ein Klecks Joghurt.",
     remind: true,
-    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Standard", notes: "Kohl gibt etwas Feuchtigkeit ab." },
+    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Brühe (Reis + Linsen berechnen)", notes: "Rote Linsen zerfallen perfekt im Reiskocher." },
   },
 
   // MITTWOCH
   {
     id: "mi-f",
-    title: "Ricotta-Zitronen Pancakes (Pancake alla Ricotta)",
-    desc: "Fluffige Pancakes mit Ricotta-Käse im Teig. Ein italienischer Frühstückstraum.",
-    story: "Der Ricotta sorgt dafür, dass die Pancakes unglaublich weich und saftig werden, ohne schwer im Magen zu liegen. Ein Hauch Zitrone weckt dich auf.",
-    target: "≈75 g KH (2 P.) · Protein ≈22 g p. P.",
+    title: "Miso-Haferbrei mit Ei 味噌オートミール",
+    desc: "Ein herzhafter Haferbrei, verfeinert mit Umami-Miso und einem hartgekochten Ei.",
+    story: "Wer Miso-Suppe zum Frühstück liebt, wird dieses Oatmeal vergöttern. Es ist warm, wohlig und extrem schnell gemacht.",
+    target: "≈65 g KH (2 P.) · Protein ≈18 g p. P.",
     ingredients: [
-      "Mehl 100 g",
-      "Ricotta (pasteurisiert) 100 g",
-      "Eier 2 Stück",
-      "Zitronenabrieb (bio) 1 TL",
-      "Milch 50 ml",
-      "Backpulver 1 TL"
+      "Haferflocken 100 g",
+      "Wasser oder Gemüsebrühe 400 ml",
+      "Miso-Paste 1 EL",
+      "Eier (hartgekocht) 2 Stück",
+      "Spinat (frisch) 50 g"
     ],
     steps: [
-      "Ricotta, Eier, Milch und Zitronenabrieb glatt rühren.",
-      "Mehl und Backpulver zügig unterheben (nicht zu viel rühren!).",
-      "In der Pfanne bei mittlerer Hitze durchbacken, bis sie fest und goldbraun sind."
+      "Haferflocken in Brühe/Wasser einköcheln.",
+      "In der letzten Minute den Spinat unterheben, bis er zusammenfällt.",
+      "Vom Herd nehmen! Miso-Paste einrühren (darf nicht mehr kochen).",
+      "Mit halbierten, hartgekochten Eiern servieren."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Teig durchbacken, Ricotta pasteurisiert)",
-    swaps: "Ricotta ↔ Magerquark",
-    side: "Ein paar Beeren.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Eier hartgekocht)",
+    swaps: "Spinat ↔ Frühlingszwiebeln",
+    side: "Tee.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "mi-m",
-    title: "Gochujang-Sahne Pasta 고추장 파스타",
+    title: "Sushi Bake Muffins 寿司ベイクマフィン",
     isViral: true,
-    desc: "Vollkorn-Nudeln in einer koreanisch-italienischen Fusions-Sauce.",
-    story: "Ein Internet-Phänomen! Die süßlich-würzige koreanische Chilipaste (Gochujang) vermischt mit etwas Sahne ergibt eine unschlagbare Rosé-Sauce.",
-    target: "≈85 g KH (2 P.) · Protein ≈18 g p. P.",
+    desc: "Der Sushi-Bake-Trend in kleinen, handlichen Cupcake-Formen gebacken.",
+    story: "Sushi Bake ist der Hit auf Potlucks. Wir machen ihn portionierbar: Reis und Lachs in eine Muffinform drücken, im Airfryer backen. Der Rand wird grandios knusprig!",
+    target: "≈75 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Vollkorn-Nudeln 130 g",
-      "Gochujang (milde Paste) 1 EL",
-      "Kochsahne (oder Sojacreme) 100 ml",
-      "Knoblauch 1 Zehe",
-      "Parmesan 20 g",
-      "Spinat 50 g"
+      "Reis (gekocht) 200 g",
+      "Lachs (Dose oder frisch gehackt) 150 g",
+      "Mayonnaise (pasteurisiert) 2 EL",
+      "Sojasauce 1 TL",
+      "Nori (zerbröselt, in Maßen) 1 Blatt"
     ],
     steps: [
-      "Nudeln kochen. Etwas Nudelwasser aufheben.",
-      "Knoblauch in der Pfanne anbraten, Gochujang kurz mitrösten.",
-      "Mit Sahne und Nudelwasser ablöschen. Spinat reinwerfen.",
-      "Nudeln in der Sauce schwenken und mit Parmesan bestreuen."
+      "Lachs mit Mayo und Sojasauce mischen.",
+      "Gekochten Reis in Silikon-Muffinförmchen drücken (wie ein kleines Nest).",
+      "Lachs-Mischung darauf verteilen.",
+      "Im Airfryer bei 190°C ca. 10 Min backen. Mit Nori garnieren."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ · Diabetes ✓",
-    swaps: "Gochujang ↔ Tomatenmark (falls es komplett mild sein soll)",
-    side: "-",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Lachs komplett durchgaren, Mayo pasteurisiert)",
+    swaps: "Lachs ↔ Krebsfleisch-Imitat (Surimi)",
+    side: "Edamame.",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "mi-a",
-    title: "Butabara Daikon 豚バラ大根 (Reiskocher)",
-    desc: "Japanisch inspirierter Schmortopf. Rettich und Schweinebauch verschmelzen förmlich.",
-    story: "Daikon (weißer Rettich) wirkt Wunder bei der Verdauung und saugt die herzhafte Soja-Brühe auf wie ein Schwamm. Ein echtes Wohlfühl-Essen.",
-    target: "≈80 g KH (2 P.) · Protein ≈24 g p. P.",
+    title: "Gyudon-Style Rindfleisch-Reis 牛丼 (Reiskocher)",
+    desc: "Der japanische Fast-Food-Klassiker Gyudon (Rindfleischschale) aus dem Reiskocher.",
+    story: "Hauchdünnes Rindfleisch und weiche Zwiebeln dämpfen direkt auf dem Reis. Der süßlich-salzige Fleischsaft sickert nach unten – köstlich!",
+    target: "≈80 g KH (2 P.) · Protein ≈25 g p. P.",
     ingredients: [
       "Reis (roh) 120 g",
-      "Schweinebauch (in dünnen Scheiben oder gewürfelt) 150 g",
-      "Daikon (Rettich, gewürfelt) 150 g",
+      "Rindfleisch (sehr dünne Scheiben) 150 g",
+      "Zwiebel (in Ringen) 1 Stück",
       "Sojasauce 2 EL",
       "Mirin 1 EL",
-      "Dashi oder Brühe 240 ml"
+      "Dashi-Brühe 240 ml"
     ],
     steps: [
-      "Reis und Brühe in den Topf geben.",
-      "Sojasauce und Mirin dazugeben.",
-      "Schweinebauch und Rettich oben auflegen. Start drücken.",
-      "Nach dem Kochen alles vorsichtig durchmischen."
+      "Reis und Dashi in den Reiskocher.",
+      "Zwiebeln und Rindfleisch locker (!) darüber verteilen. Soja und Mirin angießen.",
+      "Start drücken. Nach dem Kochen gründlich durchmischen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Fleisch wird durchgedämpft)",
-    swaps: "Schweinebauch ↔ Hähnchenoberschenkel",
-    side: "Frühlingszwiebeln drüberstreuen.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Fleisch wird im Dampf >80°C sicher durchgegart)",
+    swaps: "Rindfleisch ↔ Schweinefleisch (dünn geschnitten)",
+    side: "Eingelegter Ingwer.",
     remind: true,
-    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Brühe (Standard)", notes: "Rettich wird extrem weich und lecker." },
+    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Dashi (Standard)", notes: "Fleisch auffächern, nicht klumpen." },
   },
 
   // DONNERSTAG
   {
     id: "do-f",
-    title: "Tomaten-Rührei Toast 番茄炒蛋吐司",
-    desc: "Der chinesische Klassiker 'Tomate & Ei' serviert auf knusprigem Brot.",
-    story: "Jedes chinesische Kind wächst damit auf. Die Säure der Tomate weckt auf, das Ei macht satt. Auf Vollkornbrot ein geniales, schnelles Frühstück.",
-    target: "≈65 g KH (2 P.) · Protein ≈20 g p. P.",
+    title: "Schwedischer Grießbrei (Mannagrynsgröt)",
+    desc: "Ein feiner, wärmender Grießbrei mit etwas Zimt und Obst.",
+    story: "In Schweden isst man diesen samtigen Brei oft im Winter. Er ist rasend schnell gemacht und legt sich wie eine warme Decke in den Magen.",
+    target: "≈70 g KH (2 P.) · Protein ≈15 g p. P.",
     ingredients: [
-      "Tomaten (sehr reif) 2 Stück",
-      "Eier 3 Stück",
-      "Ketchup 1 TL",
-      "Knoblauch 1 Zehe",
-      "Vollkorn-Toast 4 Scheiben"
+      "Weichweizengrieß 60 g",
+      "Milch 500 ml",
+      "Agavendicksaft 1 EL",
+      "Zimt 1 TL",
+      "Beeren (frisch oder TK aufgetaut) 50 g"
     ],
     steps: [
-      "Eier in der Pfanne stocken lassen (komplett durchbraten!), herausnehmen.",
-      "Tomaten mit Knoblauch anbraten, bis sie musig werden. Ketchup dazu.",
-      "Eier zurück in die Pfanne, vermischen.",
-      "Toast rösten und die Mischung darauf verteilen."
+      "Milch aufkochen. Grieß unter ständigem Rühren einrieseln lassen.",
+      "Bei schwacher Hitze ca. 3-5 Min quellen lassen.",
+      "Mit Agavendicksaft, Zimt und Beeren toppen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Eier komplett durch)",
-    swaps: "Toast ↔ Reis",
+    checks: "Balanced ✓ · Schwangerschaft ✓",
+    swaps: "Grieß ↔ Polenta (fein)",
     side: "-",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "do-m",
-    title: "Airfryer Chicken Wings 炸鸡翅 (Asia Style)",
-    desc: "Knusprige Hähnchenflügel aus der Heißluftfritteuse mit klebriger Soja-Glasur.",
-    story: "Flügel im Airfryer werden unglaublich kross, und fast das gesamte Fett tropft ab. Die asiatische Glasur aus Soja und ein wenig Honig macht sie perfekt.",
-    target: "≈80 g KH (2 P.) · Protein ≈30 g p. P.",
+    title: "Tomaten-Ei-Pfanne auf Nudeln 番茄炒蛋面",
+    desc: "Die berühmte chinesische Tomaten-Ei-Pfanne, serviert über Nudeln statt Reis.",
+    story: "Dieses Gericht geht immer. Die Tomaten zerkochen zu einer natürlichen Sauce, das Ei fängt den Geschmack auf. Ein geniales Comfort-Mittagessen.",
+    target: "≈85 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Hähnchenflügel 300 g",
-      "Sojasauce 2 EL",
-      "Honig 1 TL",
-      "Reis (gekocht) 150 g",
-      "Gurke 100 g"
+      "Weizennudeln oder Udon 150 g",
+      "Tomaten (sehr reif) 3 Stück",
+      "Eier 3 Stück",
+      "Ketchup 1 EL",
+      "Sojasauce 1 EL",
+      "Frühlingszwiebel 10 g"
     ],
     steps: [
-      "Flügel trocken tupfen. Im Airfryer bei 200°C ca. 20-25 Min backen (bis sie am Knochen komplett durch sind!).",
-      "Sojasauce und Honig in einer Pfanne kurz aufkochen, bis es dickt.",
-      "Knusprige Flügel in der Sauce schwenken.",
-      "Mit Reis und Gurkensticks servieren."
+      "Eier in der Pfanne komplett durchbraten, herausnehmen.",
+      "Tomaten würfeln und in der Pfanne weichschmoren, bis Sauce entsteht. Ketchup und Soja dazu.",
+      "Eier zurückgeben. Gekochte Nudeln untermischen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Fleisch am Knochen prüfen, muss durch sein!)",
-    swaps: "Flügel ↔ Hähnchenbrust-Würfel",
-    side: "Reis und Gurke.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Eier komplett gestockt)",
+    swaps: "Weizennudeln ↔ Reis",
+    side: "-",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "do-a",
-    title: "Miso-Kinoko Gohan 味噌きのこご飯 (Reiskocher)",
-    desc: "Veganer Umami-Traum. Pilze und Edamame dämpfen mit Miso-Paste im Reis.",
-    story: "Ein leichtes Gericht für den Abend. Miso liefert die Würze, Edamame das Protein, und der Reiskocher macht die ganze Arbeit.",
-    target: "≈82 g KH (2 P.) · Protein ≈18 g p. P.",
+    title: "Erbsen-Schinken Risi e Bisi (Reiskocher)",
+    desc: "Ein italienischer Frühlingsklassiker. Reis mit Erbsen und Schinken aus dem Reiskocher.",
+    story: "'Risi e Bisi' ist in Venedig Kult. Es ist eine Mischung aus Suppe und Risotto. Im Reiskocher wird es zum perfekten, stressfreien Feierabendgericht.",
+    target: "≈80 g KH (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
-      "Reis (roh) 120 g",
-      "Braune Champignons oder Shiitake 150 g",
-      "Edamame (geschält, TK) 100 g",
-      "Miso-Paste 1 EL",
-      "Gemüsebrühe 240 ml",
+      "Risottoreis oder Rundkornreis 120 g",
+      "Erbsen (TK) 150 g",
+      "Kochschinken (gewürfelt) 100 g",
+      "Gemüsebrühe 300 ml",
+      "Parmesan 30 g",
       "Butter 10 g"
     ],
     steps: [
-      "Miso-Paste in der warmen Brühe auflösen.",
-      "Reis, Brühe, Pilze in den Reiskocher geben und starten.",
-      "Nach dem Kochen die Edamame (aufgetaut) und die Butter unter den heißen Reis heben.",
-      "5 Minuten ziehen lassen."
+      "Reis, Brühe und Schinken in den Reiskocher geben. Starten.",
+      "In den letzten 5 Minuten die aufgetauten Erbsen dazugeben (dann bleiben sie grün).",
+      "Nach dem Kochen Parmesan und Butter kräftig unterrühren, bis es schlotzig ist."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ · Diabetes ✓",
-    swaps: "Edamame ↔ Tofu-Würfel",
-    side: "Ein Stück gebratener Lachs (optional).",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Käse pasteurisiert, Schinken erhitzt)",
+    swaps: "Schinken ↔ Speck (Pancetta)",
+    side: "Tomatensalat.",
     remind: true,
-    riceCooker: { enabled: true, program: "White Rice / Mixed", water: "Brühe (Standard)", notes: "Miso nicht unaufgelöst reingeben, sonst gibt es Klumpen." },
+    riceCooker: { enabled: true, program: "White Rice", water: "Brühe (etwas mehr für Risi e Bisi Textur)", notes: "Soll am Ende sehr schlotzig sein." },
   },
 
   // FREITAG
   {
     id: "fr-f",
-    title: "Vietnamesische Reispapier-Pizza Bánh Tráng Nướng",
+    title: "TikTok Wrap-Hack (접는 랩 Folded Wrap)",
     isViral: true,
-    desc: "Ein Airfryer/Pfannen-Hack mit Ei auf Reispapier.",
-    story: "Das genialste vietnamesische Streetfood. Das Reispapier wird beim Erhitzen wie ein knuspriger Taco, das Ei stockt oben drauf.",
-    target: "≈65 g KH (2 P.) · Protein ≈18 g p. P.",
+    desc: "Ein eingeschnittener Tortilla-Wrap, in Vierteln belegt und zur Dreieckstasche gefaltet.",
+    story: "Der wohl praktischste Food-Hack des Internets. Das Falten macht den Wrap extrem stabil, und im Airfryer oder Pfanne wird er außen rundum knusprig.",
+    target: "≈65 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Reispapier 4 Blatt",
-      "Eier 2 Stück",
-      "Frühlingszwiebeln 20 g",
-      "Sriracha-Mayo (pasteurisiert) 1 EL",
-      "Gouda (gerieben) 30 g",
-      "Brot (als Beilage) 2 Scheiben"
+      "Vollkorn-Tortillas 2 Stück",
+      "Käse (Gouda, gerieben) 40 g",
+      "Kochschinken 2 Scheiben",
+      "Ei (als flaches Omelett gebraten) 2 Stück",
+      "Spinat 20 g"
     ],
     steps: [
-      "Ein Reispapier in die heiße Pfanne oder den Airfryer legen.",
-      "Ein halbes, verquirltes Ei darauf verstreichen, Zwiebeln und Käse drauf.",
-      "Backen/Braten bis das Reispapier am Rand poppt und das Ei komplett (!) gestockt ist.",
-      "Zusammenklappen und genießen."
+      "Eier vorher zu zwei dünnen, durchgebratenen Omeletts braten.",
+      "Wraps von unten bis zur Mitte einschneiden.",
+      "Viertel 1: Käse, Viertel 2: Ei, Viertel 3: Schinken, Viertel 4: Spinat.",
+      "Rundum falten zum Dreieck. In Pfanne/Airfryer knusprig toasten."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Ei komplett durchgaren)",
-    swaps: "Käse ↔ Putenbrust-Streifen",
-    side: "Tee.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Ei durch, Käse pasteurisiert)",
+    swaps: "Schinken ↔ Räucherlachs",
+    side: "Kaffee.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "fr-m",
-    title: "Airfryer Lachs-Frikadellen Laxbiffar",
-    desc: "Schnelle Lachsfrikadellen mit Dill, fettarm im Airfryer gebacken.",
-    story: "In Skandinavien liebt man Fischfrikadellen (Laxbiffar). Wir machen sie aus Lachsresten oder Dosenlachs, gebunden mit etwas Semmelbröseln.",
-    target: "≈80 g KH (2 P.) · Protein ≈26 g p. P.",
+    title: "Kroatische Krautfleckerl (Krpice sa zeljem)",
+    desc: "Ein deftiger Balkan-Klassiker: Nudeln mit karamellisiertem Weißkohl und Speck.",
+    story: "Ein unglaublich günstiges, aber grandioses Wohlfühlessen aus Kroatien. Der Weißkohl wird in der Pfanne süßlich und goldbraun.",
+    target: "≈85 g KH (2 P.) · Protein ≈18 g p. P.",
     ingredients: [
-      "Lachs (Dose oder frische Reste, sehr klein gehackt) 200 g",
-      "Ei 1 Stück",
-      "Paniermehl 30 g",
-      "Dill (frisch) 1 EL",
-      "Kartoffeln 300 g",
-      "Quark-Dip (aus Magerquark & Zitrone) 2 EL"
+      "Fleckerl oder quadratische Nudeln 150 g",
+      "Weißkohl (grob gehackt) 250 g",
+      "Speckwürfel 50 g",
+      "Zwiebel 1 Stück",
+      "Salz & reichlich Pfeffer",
+      "Öl 1 EL"
     ],
     steps: [
-      "Lachs mit Ei, Paniermehl und Dill mischen, Frikadellen formen.",
-      "Im Airfryer bei 180°C ca. 12 Minuten backen, bis sie komplett durchgegart und leicht knusprig sind.",
-      "Kartoffeln kochen.",
-      "Mit dem Zitronen-Quark-Dip servieren."
+      "Nudeln kochen.",
+      "Speck und Zwiebeln im Wok/Pfanne anbraten. Kohl dazugeben und bei mittlerer Hitze ca. 15-20 Min braten, bis er leicht karamellisiert und weich ist.",
+      "Nudeln unterheben, kräftig mit Salz und Pfeffer abschmecken."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Frikadellen gut durchgaren)",
-    swaps: "Lachs ↔ Thunfisch (Dose)",
-    side: "Erbsen.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Speck wird durchgebraten) · Diabetes ✓",
+    swaps: "Speck ↔ Räuchertofu",
+    side: "-",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "fr-a",
-    title: "Hühnchen & Kürbis Congee 南瓜鸡粥 (Reiskocher)",
-    desc: "Cremiger Reisbrei mit Kürbis und Hühnchen. Sehr schonend und wärmend.",
-    story: "Am Ende der Arbeitswoche braucht der Körper etwas Sanftes. Der Kürbis verkocht komplett im Brei und verleiht ihm eine wunderschöne, goldene Farbe.",
-    target: "≈75 g KH (2 P.) · Protein ≈24 g p. P.",
+    title: "Garnelen-Paella Asiatisch 海鲜炖饭 (Reiskocher)",
+    desc: "Reiskocher-Paella mit Garnelen, Erbsen und Sojasauce.",
+    story: "Eine Fusion aus asiatischer Reiskocher-Technik und Paella-Zutaten. Der Reis fängt den gesamten Garnelen-Fond auf.",
+    target: "≈80 g KH (2 P.) · Protein ≈26 g p. P.",
     ingredients: [
-      "Reis (roh) 80 g",
-      "Hühnerbrühe 800 ml",
-      "Hähnchenbrust (klein gewürfelt) 150 g",
-      "Kürbis (z.B. Hokkaido, in Stücken) 150 g",
-      "Ingwer 5 g",
-      "Sojasauce 1 EL"
+      "Reis (roh) 120 g",
+      "Garnelen (TK, aufgetaut) 200 g",
+      "Erbsen (TK) 80 g",
+      "Paprika (gewürfelt) 50 g",
+      "Sojasauce 1 EL",
+      "Gemüsebrühe 240 ml"
     ],
     steps: [
-      "Huhn mit Sojasauce mischen.",
-      "Reis, Brühe, Kürbis und Ingwer in den Reiskocher (Porridge Modus, ca. 50 Min).",
-      "In den letzten 15 Minuten das Huhn hinzugeben und sicher durchgaren lassen.",
-      "Gut umrühren, der Kürbis zerfällt von allein."
+      "Reis, Brühe, Paprika und Sojasauce in den Topf geben.",
+      "Garnelen und Erbsen oben auflegen.",
+      "Starten. Nach dem Kochen alles vorsichtig durchheben."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Huhn durch) · Diabetes ✓",
-    swaps: "Kürbis ↔ Karotte",
-    side: "Etwas frischer Koriander oder Frühlingszwiebeln.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Garnelen dampfgaren sicher durch)",
+    swaps: "Garnelen ↔ Hähnchenbrust",
+    side: "Ein Spritzer Limette.",
     remind: true,
-    riceCooker: { enabled: true, program: "Porridge / Congee", water: "1:10 Ratio", notes: "Sehr flüssig am Anfang, dickt toll ein." },
+    riceCooker: { enabled: true, program: "White Rice / Mixed", water: "Brühe (Standard)", notes: "Garnelen vorher gut abtropfen lassen." },
   },
 
   // SAMSTAG
   {
     id: "sa-f",
-    title: "Custard Yogurt Toast ヨーグルトトースト",
-    isViral: true,
-    desc: "Toast, belegt mit einer cremigen Joghurt-Ei-Mischung, gebacken im Airfryer.",
-    story: "Ein viraler Frühstückshit! Eine Mischung aus Joghurt und Ei wird auf eine Kuhle im Toast gegeben. Beim Backen entsteht ein süßer, puddingartiger Belag (Custard).",
-    target: "≈75 g KH (2 P.) · Protein ≈18 g p. P.",
+    title: "Süßkartoffel-Toast 고구마 토스트 (Airfryer)",
+    desc: "Süßkartoffelscheiben ersetzen das Brot, getoppt mit Quark und Beeren.",
+    story: "Ein cooler Low-Gluten-Trend. Die Süßkartoffelscheiben werden im Airfryer außen fest und innen weich – perfekt als 'Brot-Ersatz'.",
+    target: "≈65 g KH (2 P.) · Protein ≈16 g p. P.",
     ingredients: [
-      "Vollkorn-Toast 4 Scheiben",
-      "Griechischer Joghurt (pasteurisiert) 4 EL",
-      "Ei 1 Stück",
-      "Agavendicksaft 1 TL",
-      "Beeren (z.B. Himbeeren) 50 g"
+      "Süßkartoffel (groß) 1 Stück",
+      "Quark (Magerstufe) 150 g",
+      "Agavendicksaft 1 EL",
+      "Beeren (TK, aufgetaut) 50 g",
+      "Zimt"
     ],
     steps: [
-      "Joghurt, Ei und Agave gut verquirlen.",
-      "Mit einem Löffel eine Kuhle in die Mitte der Toastscheiben drücken.",
-      "Die Joghurt-Mischung in die Kuhle füllen, mit Beeren belegen.",
-      "Im Airfryer bei 170°C ca. 8-10 Min backen, bis der 'Pudding' komplett fest ist (kein flüssiges Ei!)."
+      "Süßkartoffel längs in ca. 1 cm dicke Scheiben schneiden.",
+      "Im Airfryer bei 180°C ca. 12-15 Min backen, bis sie weich und der Rand leicht knusprig ist.",
+      "Quark mit Agave süßen.",
+      "Die Süßkartoffel-'Toasts' mit Quark, Beeren und Zimt toppen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Ei-Masse muss gestockt sein)",
-    swaps: "Beeren ↔ Apfelspalten",
+    checks: "Balanced ✓ · Diabetes ✓ (Süßkartoffel hat einen tollen Glykämischen Index)",
+    swaps: "Quark ↔ Körniger Frischkäse",
     side: "Kaffee.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "sa-m",
-    title: "Schnelle Wok-Nudeln 捞面 (Lo Mein)",
-    desc: "Einfache, gebratene Nudeln mit einer dunklen Soja-Sauce und Pak Choi.",
-    story: "Das klassische chinesische Wok-Gericht. 'Lo Mein' bedeutet gerührte Nudeln. Der Schlüssel ist, die Nudeln erst nach dem Gemüse in die Pfanne zu geben.",
-    target: "≈85 g KH (2 P.) · Protein ≈15 g p. P. (mehr mit Beilage)",
+    title: "Wok-Schweinehack mit grünen Bohnen 干煸四季豆",
+    desc: "Gan Bian Si Ji Dou (Style). Grüne Bohnen, scharf angebraten mit herzhaftem Hackfleisch.",
+    story: "Ein Klassiker aus Sichuan. Im Original extrem ölig und scharf. Wir machen es 'Balanced', nehmen mageres Hack und braten die Bohnen mit wenig Öl knackig.",
+    target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
-      "Eiernudeln oder Weizennudeln 150 g",
-      "Pak Choi 150 g",
-      "Sojasauce (dunkel & hell) 2 EL",
+      "Grüne Bohnen (frisch oder TK) 200 g",
+      "Schweinehack (mager) 150 g",
       "Knoblauch 1 Zehe",
-      "Zucker 1 TL",
-      "Tofu oder gebratenes Ei (optional) 100 g"
+      "Sojasauce 2 EL",
+      "Reis (gekocht) 150 g"
     ],
     steps: [
-      "Nudeln kochen und abtropfen.",
-      "Knoblauch und Pak Choi im Wok scharf anbraten.",
-      "Nudeln dazugeben.",
-      "Mit Sojasauce und Zucker würzen, 2 Minuten pfannenrühren."
+      "Grüne Bohnen im Wok anbraten, bis sie runzelig werden. (Oder vorher 3 Min blanchieren).",
+      "Hackfleisch und Knoblauch dazugeben, krümelig und KOMPLETT durchbraten.",
+      "Sojasauce angießen, alles gut durchschwenken.",
+      "Mit Reis servieren."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ · Diabetes ✓",
-    swaps: "Pak Choi ↔ Spinat",
-    side: "Spiegelei (durchgebraten).",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Hack und Bohnen müssen komplett durchgegart sein!)",
+    swaps: "Schweinehack ↔ Veganes Hack",
+    side: "-",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "sa-a",
-    title: "Gyu-Don Style Rice 牛丼風ご飯 (Reiskocher)",
-    desc: "Dünnes Rindfleisch dämpft über dem Reis mit einer süß-salzigen Zwiebel-Sauce.",
-    story: "Gyu-Don ist eigentlich ein japanisches Fast-Food. Die Kombination aus zartem Rindfleisch und weichen Zwiebeln klappt aber auch perfekt im Reiskocher als One-Pot-Meal.",
-    target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
+    title: "Ganze Zwiebel & Feta Reis 丸ごと玉ねぎご飯",
+    isViral: true,
+    desc: "Eine Zwiebel schmilzt im Reiskocher. Feta bringt die cremige Salzigkeit.",
+    story: "Zwei virale Trends verschmolzen: Der Zwiebel-Reis aus Japan und der Baked-Feta-Trend! Die Zwiebel wird süß wie Karamell, der Feta cremig. Genial.",
+    target: "≈80 g KH (2 P.) · Protein ≈22 g p. P.",
     ingredients: [
       "Reis (roh) 120 g",
-      "Rindfleisch (sehr feine Hotpot-Scheiben) 200 g",
-      "Zwiebel 1 Stück",
-      "Sojasauce 2 EL",
-      "Mirin 1 EL",
-      "Brühe 240 ml"
+      "Zwiebel (mittlere Größe, geschält) 1 Stück",
+      "Feta (pasteurisiert) 100 g",
+      "Gemüsebrühe 240 ml",
+      "Olivenöl 1 EL",
+      "Oregano 1 TL"
     ],
     steps: [
-      "Zwiebel in feine Ringe schneiden.",
-      "Reis und Brühe in den Topf. Soja und Mirin dazu.",
-      "Zwiebeln und Rindfleisch obendrauf verteilen (Fleisch auffächern, nicht als Klumpen!).",
-      "Start drücken. Alles durchrühren."
+      "Reis, Brühe und Öl in den Topf. Die Zwiebel oben kreuzweise tief einschneiden (nicht zerteilen) und in die Mitte setzen.",
+      "Den Feta daneben legen.",
+      "Reiskocher starten.",
+      "Nach dem Kochen die butterweiche Zwiebel zerdrücken und mit dem Käse-Reis vermengen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Fleisch wird durchgedämpft)",
-    swaps: "Rind ↔ Schwein",
-    side: "Eingelegter Ingwer.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Käse pasteurisiert) · Diabetes ✓",
+    swaps: "Feta ↔ Mozzarella",
+    side: "Tomatensalat.",
     remind: true,
-    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Standard", notes: "Fleisch gut verteilen, damit es gleichmäßig gart." },
+    riceCooker: { enabled: true, program: "White Rice", water: "Brühe (Standard)", notes: "Zwiebel kreuzweise einschneiden, damit sie weich wird." },
   },
 
   // SONNTAG
   {
     id: "so-f",
-    title: "Tomaten-Käse-Spiegelei 烤番茄鸡蛋 (Airfryer)",
-    desc: "Eier und Kirschtomaten, überbacken in einem kleinen Förmchen.",
-    story: "Sonntagsfrühstück ohne Pfanne abzuwaschen! Man schlägt einfach Eier über Tomaten und Käse auf und lässt den Airfryer den Rest erledigen.",
-    target: "≈60 g KH (2 P.) · Protein ≈22 g p. P.",
+    title: "Reispapier-Jianbing 煎饼 (Airfryer)",
+    desc: "Chinesischer Streetfood-Crêpe, als Wrap mit Reispapier gehackt.",
+    story: "Jianbing ist ein Meisterwerk. Da der Teig schwer zu machen ist, nehmen wir Reispapier! Es wird mit Ei bestrichen, gefaltet und im Airfryer knusprig gebacken.",
+    target: "≈65 g KH (2 P.) · Protein ≈20 g p. P.",
     ingredients: [
-      "Eier 4 Stück",
-      "Kirschtomaten 100 g",
-      "Gouda oder Cheddar (gerieben) 40 g",
-      "Vollkornbrot 4 Scheiben",
-      "Salz & Pfeffer"
+      "Reispapier 4 Blatt",
+      "Eier 2 Stück",
+      "Hoisin-Sauce 1 EL",
+      "Frühlingszwiebel 10 g",
+      "Sesam 1 TL"
     ],
     steps: [
-      "Tomaten halbieren und in zwei kleine, ofenfeste Förmchen legen.",
-      "Käse darüber streuen. Jeweils 2 Eier vorsichtig darüber aufschlagen.",
-      "Im Airfryer bei 170°C ca. 10-12 Min backen (Eier müssen komplett gestockt sein!).",
-      "Mit Toast servieren."
+      "Ein Reispapier in den Airfryer legen. Verquirltes Ei darauf verstreichen, mit Zwiebel und Sesam bestreuen.",
+      "Bei 180°C ca. 5 Min backen (Ei MUSS durchgestockt sein).",
+      "Herausnehmen, mit Hoisin-Sauce bestreichen, falten und genießen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Eigelb darf nicht mehr flüssig sein!)",
-    swaps: "Tomaten ↔ Champignons",
-    side: "Kaffee.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Ei komplett durch!)",
+    swaps: "Hoisin ↔ Milde Chilisauce",
+    side: "Warme Sojamilch.",
     remind: true,
     riceCooker: { enabled: false },
   },
   {
     id: "so-m",
-    title: "Airfryer Lachs-Bites サーモンボウル",
-    desc: "Kleine Lachs-Würfel, asiatisch mariniert und im Airfryer saftig gebacken.",
-    story: "Lachs in Würfeln backt im Airfryer in unter 8 Minuten. Die Ränder karamellisieren durch die Sojasauce herrlich.",
-    target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
+    title: "Airfryer Tonkatsu 豚カツ mit Kohl",
+    desc: "Japanisches Schweineschnitzel, fettarm im Airfryer mit Panko-Kruste gebacken.",
+    story: "Tonkatsu ist Liebe. Damit wir uns das Frittierfett sparen, sprühen wir das Panko-Mehl nur leicht mit Öl ein. Der Airfryer erledigt den Rest mit Bravour.",
+    target: "≈80 g KH (2 P.) · Protein ≈30 g p. P.",
     ingredients: [
-      "Lachsfilet (gewürfelt) 200 g",
-      "Sojasauce 1 EL",
-      "Sesamöl 1 TL",
-      "Reis (gekocht) 150 g",
-      "Brokkoli (gedämpft) 100 g"
+      "Schweineschnitzel 2 Stück",
+      "Panko-Mehl 40 g",
+      "Ei 1 Stück & Mehl (Panierstraße)",
+      "Weißkohl (sehr fein gehobelt) 150 g",
+      "Tonkatsu-Sauce 2 EL",
+      "Reis (gekocht) 150 g"
     ],
     steps: [
-      "Lachswürfel in Sojasauce und Sesamöl wenden.",
-      "Im Airfryer bei 200°C ca. 7-9 Min backen (Fisch muss komplett durchgaren!).",
-      "Mit Reis und Brokkoli in einer Bowl anrichten."
+      "Schnitzel klopfen, in Mehl, Ei und Panko wenden. Leicht mit Öl besprühen.",
+      "Im Airfryer bei 200°C ca. 15-18 Min backen (Fleisch komplett durchgaren!).",
+      "In Streifen schneiden und auf dem Kohlberg anrichten. Sauce darüber geben.",
+      "Mit Reis essen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Lachs komplett durchgaren)",
-    swaps: "Lachs ↔ Tofu",
-    side: "Etwas Chili-Mayo (aus pasteurisierter Mayo) als Dip.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Schwein durchgaren)",
+    swaps: "Schwein ↔ Hähnchenbrust",
+    side: "Miso-Suppe.",
     remind: false,
     riceCooker: { enabled: false },
   },
   {
     id: "so-a",
-    title: "Chicken & Sausage Paella 腊味煲仔饭 (Reiskocher)",
-    desc: "Herzhafter Reistopf mit Hähnchen und etwas Wurst für den Rauchgeschmack.",
-    story: "Die chinesische Variante der Paella (Bao Zai Fan). Der Reis am Boden wird oft herrlich knusprig, während das Fleisch oben dämpft.",
-    target: "≈84 g KH (2 P.) · Protein ≈30 g p. P.",
+    title: "Pilz-Lachs Takikomi Gohan 鮭ときのこの炊き込みご飯",
+    desc: "Herbstlicher japanischer Mischreis mit Lachs und Shiitake.",
+    story: "Takikomi Gohan ist die japanische Kunst, Reis zusammen mit saisonalen Zutaten zu dämpfen. Der Lachs und die Pilze geben ihr volles Aroma an das Getreide ab.",
+    target: "≈82 g KH (2 P.) · Protein ≈28 g p. P.",
     ingredients: [
       "Reis (roh) 120 g",
-      "Hähnchenbrust (gewürfelt) 150 g",
-      "Räucherwurst (z.B. Cabanossi) 50 g",
+      "Lachsfilet 200 g",
+      "Shiitake (oder Champignons) 100 g",
       "Sojasauce 2 EL",
-      "Erbsen (TK) 50 g",
-      "Brühe 240 ml"
+      "Dashi-Brühe 240 ml",
+      "Karotte (Stifte) 50 g"
     ],
     steps: [
-      "Wurst in dünne Scheiben schneiden. Hähnchen mit Sojasauce mischen.",
-      "Reis und Brühe in den Topf.",
-      "Wurst, Hähnchen und Erbsen darauf verteilen.",
-      "Start drücken. Wenn fertig, alles gut durchmischen."
+      "Reis, Dashi und Sojasauce in den Topf geben.",
+      "Pilze, Karottenstifte und den Lachs (am Stück) oben auflegen.",
+      "Reiskocher starten.",
+      "Nach dem Kochen den Lachs zerpflücken und alles fluffig untermischen."
     ],
-    checks: "Balanced ✓ · Schwangerschaft ✓ (Fleisch und Wurst kochen auf >80°C sicher durch)",
-    swaps: "Wurst ↔ Räuchertofu",
-    side: "Ein Tomatensalat.",
+    checks: "Balanced ✓ · Schwangerschaft ✓ (Lachs gart im Dampf komplett durch) · Diabetes ✓",
+    swaps: "Lachs ↔ Weißfisch",
+    side: "Edamame.",
     remind: true,
-    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Standard", notes: "Wurst gibt ordentlich Fett und Geschmack ab." },
+    riceCooker: { enabled: true, program: "Mixed / White Rice", water: "Dashi (Standard)", notes: "Nicht umrühren vor dem Kochen." },
   },
 ];
 
@@ -698,15 +689,14 @@ const DATA = [
 // -----------------------------------------------------------------------
 const CANON = {
   // Protein
-  "Hähnchenbrust": { group: "Protein/Fisch/Tofu", label: "Hähnchenbrust", unitDefault: "g" },
-  "Hähnchenkeule": { group: "Protein/Fisch/Tofu", label: "Hähnchenkeule", unitDefault: "g" },
-  "Hähnchenhack": { group: "Protein/Fisch/Tofu", label: "Hähnchenhack", unitDefault: "g" },
+  "Schweinefilet": { group: "Protein/Fisch/Tofu", label: "Schweinefilet", unitDefault: "g" },
   "Schweinegeschnetzeltes": { group: "Protein/Fisch/Tofu", label: "Schweinegeschnetzeltes", unitDefault: "g" },
-  "Schweinegulasch": { group: "Protein/Fisch/Tofu", label: "Schweinegulasch", unitDefault: "g" },
   "Schweineschnitzel": { group: "Protein/Fisch/Tofu", label: "Schweineschnitzel", unitDefault: "g" },
   "Schweinehack": { group: "Protein/Fisch/Tofu", label: "Schweinehack (mager)", unitDefault: "g" },
   "Rinderhack": { group: "Protein/Fisch/Tofu", label: "Rinderhack (mager)", unitDefault: "g" },
   "Rindfleisch": { group: "Protein/Fisch/Tofu", label: "Rindfleisch", unitDefault: "g" },
+  "Hähnchenbrust": { group: "Protein/Fisch/Tofu", label: "Hähnchenbrust", unitDefault: "g" },
+  "Hähnchenkeule": { group: "Protein/Fisch/Tofu", label: "Hähnchenkeule", unitDefault: "g" },
   "Lachsfilet": { group: "Protein/Fisch/Tofu", label: "Lachsfilet", unitDefault: "g" },
   "Kabeljau": { group: "Protein/Fisch/Tofu", label: "Kabeljau/Seelachs", unitDefault: "g" },
   "Garnelen": { group: "Protein/Fisch/Tofu", label: "Garnelen (geschält)", unitDefault: "g" },
@@ -720,6 +710,7 @@ const CANON = {
   "Parmesan": { group: "Protein/Fisch/Tofu", label: "Parmesan", unitDefault: "g" },
   "Gouda": { group: "Protein/Fisch/Tofu", label: "Gouda / Reibekäse", unitDefault: "g" },
   "Ricotta": { group: "Protein/Fisch/Tofu", label: "Ricotta", unitDefault: "g" },
+  "Quark": { group: "Protein/Fisch/Tofu", label: "Quark", unitDefault: "g" },
 
   // Gemüse
   "Pak Choi": { group: "Gemüse/Pilze", label: "Pak Choi", unitDefault: "g" },
@@ -728,6 +719,7 @@ const CANON = {
   "Karotte": { group: "Gemüse/Pilze", label: "Karotten", unitDefault: "g" },
   "Gurke": { group: "Gemüse/Pilze", label: "Gurke", unitDefault: "g" },
   "Zucchini": { group: "Gemüse/Pilze", label: "Zucchini", unitDefault: "g" },
+  "Sojasprossen": { group: "Gemüse/Pilze", label: "Sojasprossen", unitDefault: "g" },
   "Edamame": { group: "Gemüse/Pilze", label: "Edamame", unitDefault: "g" },
   "Erbsen": { group: "Gemüse/Pilze", label: "Erbsen (TK)", unitDefault: "g" },
   "Brokkoli": { group: "Gemüse/Pilze", label: "Brokkoli", unitDefault: "g" },
@@ -742,12 +734,12 @@ const CANON = {
   "Tomate": { group: "Gemüse/Pilze", label: "Tomate", unitDefault: "Stück" },
   "Passierte Tomaten": { group: "Gemüse/Pilze", label: "Passierte Tomaten", unitDefault: "EL" },
   "Apfel": { group: "Gemüse/Pilze", label: "Apfel", unitDefault: "Stück" },
-  "Taro": { group: "Gemüse/Pilze", label: "Taro (Wasserbrotwurzel)", unitDefault: "g" },
   "Süßkartoffel": { group: "Gemüse/Pilze", label: "Süßkartoffel", unitDefault: "g" },
-  "Kürbis": { group: "Gemüse/Pilze", label: "Kürbis", unitDefault: "g" },
-  "Daikon": { group: "Gemüse/Pilze", label: "Daikon (Rettich)", unitDefault: "g" },
+  "Taro": { group: "Gemüse/Pilze", label: "Taro (Wasserbrotwurzel)", unitDefault: "g" },
   "Ananas": { group: "Gemüse/Pilze", label: "Ananas (Dose)", unitDefault: "g" },
   "Avocado": { group: "Gemüse/Pilze", label: "Avocado", unitDefault: "Stück" },
+  "Paprika": { group: "Gemüse/Pilze", label: "Paprika", unitDefault: "g" },
+  "Kartoffeln": { group: "Gemüse/Pilze", label: "Kartoffeln", unitDefault: "g" },
 
   // Carb
   "Reis": { group: "Reis/Nudeln/Sättigung", label: "Reis (roh/gekocht)", unitDefault: "g" },
@@ -755,15 +747,19 @@ const CANON = {
   "Udon": { group: "Reis/Nudeln/Sättigung", label: "Udon-Nudeln", unitDefault: "g" },
   "Weizennudeln": { group: "Reis/Nudeln/Sättigung", label: "Weizennudeln", unitDefault: "g" },
   "Vollkorn-Nudeln": { group: "Reis/Nudeln/Sättigung", label: "Vollkorn-Nudeln", unitDefault: "g" },
+  "Soba": { group: "Reis/Nudeln/Sättigung", label: "Soba-Nudeln", unitDefault: "g" },
   "Gnocchi": { group: "Reis/Nudeln/Sättigung", label: "Gnocchi", unitDefault: "g" },
+  "Fleckerl": { group: "Reis/Nudeln/Sättigung", label: "Nudeln (Fleckerl)", unitDefault: "g" },
   "Reispapier": { group: "Reis/Nudeln/Sättigung", label: "Reispapier", unitDefault: "Blatt" },
   "Vollkorn-Tortillas": { group: "Reis/Nudeln/Sättigung", label: "Tortilla-Wraps", unitDefault: "Stück" },
-  "Toastbrot": { group: "Reis/Nudeln/Sättigung", label: "Toastbrot / Vollkorn", unitDefault: "Scheiben" },
   "Vollkorn-Toast": { group: "Reis/Nudeln/Sättigung", label: "Vollkorn-Toast", unitDefault: "Scheiben" },
   "Vollkornbrot": { group: "Reis/Nudeln/Sättigung", label: "Vollkornbrot", unitDefault: "Scheiben" },
+  "Toastbrot": { group: "Reis/Nudeln/Sättigung", label: "Toastbrot", unitDefault: "Scheiben" },
   "Haferflocken": { group: "Reis/Nudeln/Sättigung", label: "Haferflocken", unitDefault: "g" },
+  "Weichweizengrieß": { group: "Reis/Nudeln/Sättigung", label: "Grieß", unitDefault: "g" },
   "Mehl": { group: "Reis/Nudeln/Sättigung", label: "Mehl", unitDefault: "g" },
   "Maisstärke": { group: "Reis/Nudeln/Sättigung", label: "Maisstärke", unitDefault: "EL" },
+  "Panko": { group: "Reis/Nudeln/Sättigung", label: "Panko/Paniermehl", unitDefault: "g" },
 
   // Pantry
   "Sojasauce": { group: "Algen/Brühen/Würze", label: "Sojasauce", unitDefault: "EL" },
@@ -775,19 +771,20 @@ const CANON = {
   "Dashi": { group: "Algen/Brühen/Würze", label: "Dashi", unitDefault: "ml" },
   "Milch": { group: "Algen/Brühen/Würze", label: "Milch", unitDefault: "ml" },
   "Sojamilch": { group: "Algen/Brühen/Würze", label: "Sojamilch", unitDefault: "ml" },
-  "Kochsahne": { group: "Algen/Brühen/Würze", label: "Kochsahne", unitDefault: "ml" },
-  "Joghurt": { group: "Algen/Brühen/Würze", label: "Joghurt (Griechisch)", unitDefault: "EL" },
   "Butter": { group: "Algen/Brühen/Würze", label: "Butter", unitDefault: "g" },
   "Olivenöl": { group: "Algen/Brühen/Würze", label: "Olivenöl", unitDefault: "EL" },
   "Speiseöl": { group: "Algen/Brühen/Würze", label: "Speiseöl", unitDefault: "EL" },
   "Mayonnaise": { group: "Algen/Brühen/Würze", label: "Mayo (Tube, pasteurisiert)", unitDefault: "EL" },
+  "Sriracha": { group: "Algen/Brühen/Würze", label: "Sriracha (mild)", unitDefault: "TL" },
   "Ketchup": { group: "Algen/Brühen/Würze", label: "Ketchup", unitDefault: "EL" },
-  "Sriracha-Sauce": { group: "Algen/Brühen/Würze", label: "Sriracha (mild)", unitDefault: "TL" },
+  "Tahini": { group: "Algen/Brühen/Würze", label: "Tahini/Sesampaste", unitDefault: "EL" },
+  "Erdnussbutter": { group: "Algen/Brühen/Würze", label: "Erdnussbutter", unitDefault: "EL" },
+  "Schwarze Sesampaste": { group: "Algen/Brühen/Würze", label: "Schwarze Sesampaste", unitDefault: "EL" },
   "Gochujang": { group: "Algen/Brühen/Würze", label: "Gochujang", unitDefault: "EL" },
   "Miso-Paste": { group: "Algen/Brühen/Würze", label: "Miso-Paste", unitDefault: "EL" },
-  "Tahini": { group: "Algen/Brühen/Würze", label: "Tahini/Sesampaste", unitDefault: "EL" },
-  "Schwarze Sesampaste": { group: "Algen/Brühen/Würze", label: "Schwarze Sesampaste", unitDefault: "EL" },
+  "Hoisin-Sauce": { group: "Algen/Brühen/Würze", label: "Hoisin-Sauce", unitDefault: "EL" },
   "Teriyaki-Sauce": { group: "Algen/Brühen/Würze", label: "Teriyaki-Sauce", unitDefault: "EL" },
+  "Tonkatsu-Sauce": { group: "Algen/Brühen/Würze", label: "Tonkatsu-Sauce", unitDefault: "EL" },
   "Mirin": { group: "Algen/Brühen/Würze", label: "Mirin", unitDefault: "EL" },
   "Honig": { group: "Algen/Brühen/Würze", label: "Honig/Agave", unitDefault: "EL" },
   "Agavendicksaft": { group: "Algen/Brühen/Würze", label: "Agavendicksaft", unitDefault: "TL" },
@@ -856,7 +853,7 @@ function animePlaceholder(title) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-function ImageBanner({ meal, year = 2026, weekFolder = "kw11" }) {
+function ImageBanner({ meal, year = 2026, weekFolder = "kw12" }) {
   const [src, setSrc] = useState("");
   
   useEffect(() => {
@@ -976,9 +973,9 @@ function WeekOverview({ data, DAY_NAME_DE, meta }) {
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
         <div className="ghk-hero-inner" style={{ padding: 18, borderRadius: 12, marginBottom: 16, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
-            Woche 11 – Übersicht <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
+            Woche 12 – Übersicht <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
           </h2>
-          <p style={{ marginTop: 6, color: "var(--muted)" }}>Virale Hits 🔥 · Originaltitel (CN/JP/KR) · Balanced</p>
+          <p style={{ marginTop: 6, color: "var(--muted)" }}>Virale Airfryer-Hacks 🔥 · Originaltitel (CN/JP/KR) · Balanced</p>
         </div>
         <div style={{ display: "grid", gap: 12 }}>
           {DAYS_ORDER.map((d) => (
@@ -1038,7 +1035,7 @@ function RiceCookerSection({ data }) {
           );
         })}
       </div>
-      <p style={{ marginTop: 12, color: "var(--muted)" }}>Tägliche Entlastung: Lazy Sushi Bake, Tomaten-Feta Risotto, Schweinebauch & Daikon.</p>
+      <p style={{ marginTop: 12, color: "var(--muted)" }}>Tägliche Entlastung: Hainan-Style Lachs, Ganze Zwiebel Feta Reis, Gyudon und mehr.</p>
     </section>
   );
 }
@@ -1062,7 +1059,7 @@ function ThemeSwitch({ mode, setMode, effectiveDark }) {
 // -----------------------------------------------------------------------
 // MAIN EXPORT
 // -----------------------------------------------------------------------
-export default function Woche11DE() {
+export default function Woche12DE() {
   const langFromUrl = useLangHint();
   const hiddenByLang = langFromUrl && langFromUrl !== meta.lang;
   if (hiddenByLang) return null;
@@ -1123,7 +1120,7 @@ export default function Woche11DE() {
           <h1 style={{ margin: 0 }}>{UI_TITLES.main}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {tagChip(`Start: ${meta.startDate}`)}
-            {tagChip("Woche 11")}
+            {tagChip("Woche 12")}
             {tagChip("Virale Trends & Wohlfühlküche")}
             {tagChip("Täglich 1× 🍚 Reiskocher")}
           </div>
