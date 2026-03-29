@@ -20,8 +20,8 @@ const FILE_BASE = "Woche 8 2025-11-17";
 
 /* ---------- UI ----------- */
 const UI_TITLES = {
-  main: "GhibliKitchen – Woche 8",
-  list: "GhibliKitchen – Einkaufsliste – Woche 8",
+  main: "Moving Kitchen Tales – Woche 8",
+  list: "Moving Kitchen Tales – Einkaufsliste – Woche 8",
 };
 
 const COLORS = {
@@ -1569,8 +1569,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
-    console.log("[GhibliKitchen] All tests passed (DE JSX Woche 8). ");
+    console.log("[Moving Kitchen Tales] All tests passed (DE JSX Woche 8). ");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

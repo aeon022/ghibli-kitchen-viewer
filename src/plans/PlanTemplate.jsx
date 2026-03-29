@@ -88,7 +88,7 @@ function animePlaceholder(title, subtitle = "") {
     <g font-family='Noto Sans, Arial, sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
       <text x='40' y='180' font-size='20' fill='#374151'>Illustration placeholder</text>
-      <text x='40' y='640' font-size='14' fill='#6B7280'>GhibliKitchen</text>
+      <text x='40' y='640' font-size='14' fill='#6B7280'>Moving Kitchen Tales</text>
     </g>
   </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
@@ -312,7 +312,7 @@ export default function PlanTemplate({
   data,
   canon,
   dayNames,
-  uiTitles = { main: "GhibliKitchen – Woche", list: "GhibliKitchen – Einkaufsliste" },
+  uiTitles = { main: "Moving Kitchen Tales – Woche", list: "Moving Kitchen Tales – Einkaufsliste" },
   year = 2026,
   options = { showImagesInViewer: true, pdf: { hideImages: true } },
 }) {

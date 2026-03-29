@@ -5,7 +5,7 @@ import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – Woche 4 (Start: 2026-01-19)
+  Moving Kitchen Tales – Woche 4 (Start: 2026-01-19)
   Design: Identisch zu Woche 3.
   Fix: Header-Bild (Gradient) repariert.
   Inhalt: CN/JP/KR, schwangerschaftsgeeignet, Reiskocher-Fokus.
@@ -814,7 +814,7 @@ function animePlaceholder(title) {
     <rect width='1200' height='675' fill='url(#g)'/>
     <g font-family='Noto Sans, Arial, sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
-      <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
+      <text x='40' y='180' font-size='20' fill='#374151'>Moving Kitchen Tales</text>
     </g>
   </svg>`;
   // Encode as proper Data URI

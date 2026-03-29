@@ -1,12 +1,9 @@
-# GhibliKitchen – Wochenpläne & Kochbuch-Layouts
+# Moving Kitchen Tales – Wochenpläne & Kochbuch-Layouts
 
-**GhibliKitchen** ist ein Koch- und Ernährungs-Assistent für strukturierte Wochenpläne, Einkaufslisten und bebilderte Kochbuch-Layouts – mit Fokus auf **CN/JP/KR-Küche**, mild gewürzt und angepasst an **Diabetes (früh), Gastritis (mild) und Schwangerschaft**.  
-Das Projekt verbindet klar definierte **Gesundheits-Leitplanken**, ein **druckfähiges UI (PDF/HTML)** und eine **Datenstruktur, die von einem GPT („GhibliKitchen“) erzeugt/validiert werden kann**.
+**Moving Kitchen Tales** ist ein Koch- und Ernährungs-Assistent für strukturierte Wochenpläne, Einkaufslisten und bebilderte Kochbuch-Layouts – mit Fokus auf **CN/JP/KR-Küche**, mild gewürzt und angepasst an **Diabetes (früh), Gastritis (mild) und Schwangerschaft**.  
+Das Projekt verbindet klar definierte **Gesundheits-Leitplanken**, ein **druckfähiges UI (PDF/HTML)** und eine **Datenstruktur, die von einem GPT („Moving Kitchen Tales“) erzeugt/validiert werden kann**.
 
-Du findest GhibliKitchen Viewer auf Github Pages https://aeon022.github.io/ghibli-kitchen-viewer/ und den Code auf Github https://github.com/aeon022/ghibli-kitchen-viewer/.
-
-GhibliKitchen GPT findest du hier: https://chatgpt.com/g/g-68d2d50254c08191a73a90bc619bbf2f-ghiblikitchen
-
+Du findest Moving Kitchen Tales Viewer auf Github Pages https://aeon022.github.io/ghibli-kitchen-viewer/ und den Code auf Github https://github.com/aeon022/ghibli-kitchen-viewer/.
 
 ---
 
@@ -19,7 +16,7 @@ GhibliKitchen GPT findest du hier: https://chatgpt.com/g/g-68d2d50254c08191a73a9
 - [Layout](#layout)
 - [.jsx-Datei & UI-Layout](#jsx-datei--ui-layout)
 - [Datenmodell (Rezepte & Einkaufsliste)](#datenmodell-rezepte--einkaufsliste)
-- [Verknüpfung zu GPT „GhibliKitchen“](#verknüpfung-zu-gpt-ghiblikitchen)
+- [Verknüpfung zu GPT „Moving Kitchen Tales“](#verknüpfung-zu-gpt-moving-kitchen-tales)
 - [Entwicklung & Nutzung](#entwicklung--nutzung)
 - [Qualitätsregeln & Validierung](#qualitätsregeln--validierung)
 - [Beitragen](#beitragen)
@@ -83,8 +80,8 @@ GhibliKitchen GPT findest du hier: https://chatgpt.com/g/g-68d2d50254c08191a73a9
 export const meta = { title: "Woche 2", startDate: "2025-10-06", id: "woche-2-2025-10-06" };
 const FILE_BASE = "Woche 2 2025-10-06";
 // UI-Titel:
-// - Kochbuch-Tab: "GhibliKitchen – Woche 2"
-// - Einkaufsliste: "GhibliKitchen – Einkaufsliste – Woche 2"
+// - Kochbuch-Tab: "Moving Kitchen Tales – Woche 2"
+// - Einkaufsliste: "Moving Kitchen Tales – Einkaufsliste – Woche 2"
 ```
 
 - **TopBar-Buttons (nur drei):** „PDF erzeugen“, „HTML exportieren“, „Drucken“  
@@ -134,7 +131,7 @@ Automatisch aggregiert & **gruppiert**:
 
 ---
 
-## Verknüpfung zu GPT „GhibliKitchen“
+## Verknüpfung zu GPT „Moving Kitchen Tales“
 
 - **Rolle:** Ein spezialisiertes GPT erzeugt/validiert Wochenpläne gemäß obiger Leitplanken
 
@@ -191,7 +188,7 @@ export default function App(){ return <Woche2 />; }
 
 **Bei Erfolg:**
 ```
-[GhibliKitchen] All tests passed (JSX).
+[Moving Kitchen Tales] All tests passed (JSX).
 ```
 
 ---
@@ -215,6 +212,5 @@ export default function App(){ return <Woche2 />; }
 
 ## Kurzfassung
 
-**GhibliKitchen** bietet eine robuste, GPT-gestützte Pipeline für **gesunde, milde Wochenpläne**  
+**Moving Kitchen Tales** bietet eine robuste, GPT-gestützte Pipeline für **gesunde, milde Wochenpläne**  
 mit **druckfertigem Layout** und **automatischer Einkaufsliste** – alles in **einer React-Datei** pro Woche
-

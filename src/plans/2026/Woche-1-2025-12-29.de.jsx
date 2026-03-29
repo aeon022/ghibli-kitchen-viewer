@@ -5,7 +5,7 @@ import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – Woche 1 (Start: 2025-12-29, ISO-KW 1)
+  Moving Kitchen Tales – Woche 1 (Start: 2025-12-29, ISO-KW 1)
 */
 
 // ---- Meta ----
@@ -945,7 +945,7 @@ function animePlaceholder(title, prompt = "") {
         <text x='40' y='120' font-size='44' fill='#1F2937'>🍱  ${safe(title)}</text>
         <text x='40' y='180' font-size='22' fill='#374151'>Illustration placeholder</text>
         <text x='40' y='240' font-size='18' fill='#6B7280'>${safe(prompt).slice(0, 300)}</text>
-        <text x='40' y='640' font-size='14' fill='#6B7280'>GhibliKitchen · generated placeholder</text>
+        <text x='40' y='640' font-size='14' fill='#6B7280'>Moving Kitchen Tales · generated placeholder</text>
       </g>
     </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;

@@ -17,8 +17,8 @@ const FILE_BASE = "Woche 7 2025-11-10";
 
 /* ---------- UI ----------- */
 const UI_TITLES = {
-  main: "GhibliKitchen – 第7周",
-  list: "GhibliKitchen – 采购清单 – 第7周",
+  main: "Moving Kitchen Tales – 第7周",
+  list: "Moving Kitchen Tales – 采购清单 – 第7周",
 };
 
 const COLORS = {
@@ -1118,8 +1118,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
-    console.log("[GhibliKitchen] All tests passed (ZH JSX, Woche 7).");
+    console.log("[Moving Kitchen Tales] All tests passed (ZH JSX, Woche 7).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

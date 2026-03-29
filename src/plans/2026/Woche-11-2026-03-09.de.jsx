@@ -5,7 +5,7 @@ import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – Woche 11 (Start: 2026-03-09)
+  Moving Kitchen Tales – Woche 11 (Start: 2026-03-09)
   Fokus: Virale Hits (hervorgehoben!), Original-Titel (CN/JP/KR), Reiskocher, Airfryer.
   Inhalt: Balanced, Schwangerschaftssicher, Diabetesfreundlich.
 */
@@ -851,7 +851,7 @@ function animePlaceholder(title) {
     <rect width='1200' height='675' fill='url(#g)'/>
     <g font-family='sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
-      <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
+      <text x='40' y='180' font-size='20' fill='#374151'>Moving Kitchen Tales</text>
     </g>
   </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

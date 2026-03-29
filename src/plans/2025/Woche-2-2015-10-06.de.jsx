@@ -16,8 +16,8 @@ export const meta = {
 const FILE_BASE = "Woche 2 2025-10-06";
 
 const UI_TITLES = {
-  main: "GhibliKitchen – Woche 2",
-  list: "GhibliKitchen – Einkaufsliste – Woche 2",
+  main: "Moving Kitchen Tales – Woche 2",
+  list: "Moving Kitchen Tales – Einkaufsliste – Woche 2",
 };
 
 const COLORS = {
@@ -1136,8 +1136,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY groups missing");
-    console.log("[GhibliKitchen] All tests passed (Week 2, DE JSX).");
+    console.log("[Moving Kitchen Tales] All tests passed (Week 2, DE JSX).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

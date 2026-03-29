@@ -226,7 +226,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
 
       {/* Titel mit Span für Ausblenden */}
       <div className="brand">
-        GhibliKitchen<span className="brand-suffix"> Pläne</span>
+        Moving Kitchen<span className="brand-suffix"> Tales</span>
       </div>
 
       <div className="sidebar-content-scroll">
@@ -538,5 +538,7 @@ export default function App() {
         <BackToTop />
       </div>
     </LangProvider>
+  );
+}
   );
 }

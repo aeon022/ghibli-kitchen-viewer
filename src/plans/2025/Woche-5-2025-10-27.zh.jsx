@@ -880,8 +880,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY 分组缺失");
-    console.log("[GhibliKitchen] All tests passed (ZH JSX).");
+    console.log("[Moving Kitchen Tales] All tests passed (ZH JSX).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

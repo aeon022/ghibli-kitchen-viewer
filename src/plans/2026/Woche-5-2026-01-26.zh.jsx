@@ -5,7 +5,7 @@ import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
 
 /*
-  GhibliKitchen – 第5周 (Start: 2026-01-26)
+  Moving Kitchen Tales – 第5周 (Start: 2026-01-26)
   Design: 与第4周相同 (修复了Header渐变)。
   Content: 中文 (Chinese), 亚洲家常菜 (CN/JP/KR), 孕期安全 (全熟/清淡).
 */
@@ -842,7 +842,7 @@ function animePlaceholder(title) {
     <rect width='1200' height='675' fill='url(#g)'/>
     <g font-family='Noto Sans SC, sans-serif'>
       <text x='40' y='120' font-size='44' fill='#1F2937'>🍱 ${esc(title)}</text>
-      <text x='40' y='180' font-size='20' fill='#374151'>GhibliKitchen</text>
+      <text x='40' y='180' font-size='20' fill='#374151'>Moving Kitchen Tales</text>
     </g>
   </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;

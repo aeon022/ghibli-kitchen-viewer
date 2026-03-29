@@ -29,8 +29,8 @@ const FILE_BASE = "Woche 1 2025-09-29";
 
 // ---------- UI Titel/Farben ----------
 const UI_TITLES = {
-  main: "GhibliKitchen – Woche 1",
-  list: "GhibliKitchen – Einkaufsliste – Woche 1",
+  main: "Moving Kitchen Tales – Woche 1",
+  list: "Moving Kitchen Tales – Einkaufsliste – Woche 1",
 };
 const COLORS = {
   pageBg: "#FAF7F1",
@@ -1430,8 +1430,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY groups missing");
-    console.log("[GhibliKitchen] All tests passed (Woche-1 DE).");
+    console.log("[Moving Kitchen Tales] All tests passed (Woche-1 DE).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }
