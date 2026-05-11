@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 18 (Start: 2026-04-27)
@@ -136,7 +137,7 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
@@ -537,7 +538,7 @@ const DATA = [
   // SAMSTAG
   {
     id: "sa-f",
-    title: "Miso-Haferbrei mit Spinat",
+    title: "Miso-Haferbrei mit Spinat 味噌オートミール",
     desc: "Haferbrei, gekocht in Dashi, verfeinert mit Miso und frischem Spinat.",
     story: "Ein herzhaftes Frühstück am Wochenende. Die Miso-Paste liefert probiotische Kulturen und der Spinat wertvolles Eisen.",
     target: "≈65 g KH (2 P.) · Protein ≈15 g p. P.",
@@ -904,45 +905,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw18" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 

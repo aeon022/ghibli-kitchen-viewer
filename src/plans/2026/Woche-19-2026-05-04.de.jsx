@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 19 (Start: 2026-05-04)
@@ -136,11 +137,11 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
-    title: "Chili Oil Fried Eggs 🌶️🍳",
+    title: "Chili Oil Fried Eggs 辣油煎蛋",
     isViral: true,
     desc: "Spiegeleier, die direkt in mildem Chili-Öl knusprig gebraten werden.",
     story: "Ein weltweiter Food-Trend! Das Chili-Öl (Lao Gan Ma oder ähnlich) röstet das Eiweiß extrem knusprig und verleiht ihm eine fantastische, tiefrote Farbe. Serviert auf cremigem Avocado-Toast.",
@@ -299,7 +300,7 @@ const DATA = [
   // MITTWOCH
   {
     id: "mi-f",
-    title: "Reispapier-Frühlingszwiebel-Pfannkuchen (Airfryer)",
+    title: "Reispapier-Frühlingszwiebel-Pfannkuchen 葱油饼 (Airfryer)",
     isViral: true,
     desc: "Die geniale Shortcut-Version der chinesischen Scallion Pancakes (Cong You Bing).",
     story: "Teig kneten dauert ewig. TikTok hat die Lösung: Mehrere Schichten nasses Reispapier, dazwischen Frühlingszwiebeln und ein verquirltes Ei. Im Airfryer backt das extrem blättrig und knusprig auf!",
@@ -562,7 +563,7 @@ const DATA = [
   },
   {
     id: "sa-m",
-    title: "Mildes Pad Krapow (Thai Basilikum Hähnchen)",
+    title: "Mildes Pad Krapow ผัดกะเพรา (Thai Basilikum Hähnchen)",
     desc: "Der thailändische Streetfood-König. Hähnchenhack gebraten mit viel Basilikum und Sojasauce.",
     story: "Im Original extrem scharf. Wir machen eine milde, familientaugliche Version. Das Hähnchenhack saugt die Sauce auf, der frische Basilikum gibt den genialen Kick.",
     target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -642,7 +643,7 @@ const DATA = [
   },
   {
     id: "so-m",
-    title: "Airfryer Cevapcici Bowl (Kroatien)",
+    title: "Airfryer Ćevapčići Bowl (Kroatien)",
     desc: "Balkan-Flair am Mittag: Fettarm gebackene Hackröllchen mit Ajvar und Nudeln.",
     story: "Cevapcici sind in Kroatien Kult. Im Airfryer werden sie rundum perfekt gebräunt, und das überschüssige Fett tropft ab. Mit Ajvar-Nudeln ein echter Genuss.",
     target: "≈85 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -887,45 +888,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw19" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 

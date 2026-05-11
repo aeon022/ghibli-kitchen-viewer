@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 20 (Start: 2026-05-11)
@@ -136,11 +137,11 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
-    title: "Airfryer Kardamom Baked Oats",
+    title: "Airfryer Kardamom Baked Oats Kardemummagröt",
     isViral: true,
     desc: "Schwedisch inspirierter Haferbrei, der im Airfryer wie ein kleiner Kuchen aufbackt.",
     story: "Kardamom ist die Seele der schwedischen Backkunst. Dieser virale Airfryer-Hit verwandelt morgendliche Haferflocken in ofenwarmes Gebäck. Fantastisch und wärmend.",
@@ -245,7 +246,7 @@ const DATA = [
   },
   {
     id: "di-m",
-    title: "Airfryer Baked Salmon Toast",
+    title: "Airfryer Baked Salmon Toast Laxsmörgås",
     desc: "Skandinavisch inspiriert: Vollkorntoast mit saftig gebackenem Lachs und Dill.",
     story: "Schwedischer Gravlax ist roh und in der Schwangerschaft tabu. Wir backen frischen Lachs im Airfryer in nur 8 Minuten zart und saftig durch. Auf Toast ein hervorragender Lunch.",
     target: "≈60 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -270,7 +271,7 @@ const DATA = [
   },
   {
     id: "di-a",
-    title: "Garnelen & Erbsen Reis (Reiskocher)",
+    title: "Garnelen & Erbsen Reis 虾仁豌豆饭 (Reiskocher)",
     desc: "Simpler, asiatisch angehauchter Reistopf mit Garnelen und grünen Erbsen.",
     story: "Ein Gericht, das dir die Arbeit abnimmt. Die Garnelen dämpfen über dem Reis und bleiben saftig, während der Reis den kräftigen Fond aufnimmt.",
     target: "≈80 g KH (2 P.) · Protein ≈26 g p. P.",
@@ -378,7 +379,7 @@ const DATA = [
   // DONNERSTAG
   {
     id: "do-f",
-    title: "Knäckebrot mit Lachs & Quark",
+    title: "Knäckebröd mit Lachs & Quark",
     desc: "Ein schnelles, knackiges Frühstück auf schwedische Art.",
     story: "Knäckebröd ist das Rückgrat der schwedischen Vorratskammer. Kombiniert mit durchgebratenem oder heißgeräuchertem Lachs und etwas Magerquark entsteht ein wunderbar leichtes Frühstück.",
     target: "≈65 g KH (2 P.) · Protein ≈22 g p. P.",
@@ -887,45 +888,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw18" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 

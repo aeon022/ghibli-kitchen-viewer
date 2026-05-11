@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 15 (Start: 2026-04-06)
@@ -137,11 +138,11 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
-    title: "Viral Pesto Fried Eggs",
+    title: "Viral Pesto Fried Eggs 煎蛋",
     isViral: true,
     desc: "Spiegeleier, die direkt in grünem Pesto statt in Öl gebraten werden.",
     story: "Ein grandioser TikTok-Trend. Das Pesto liefert das Öl zum Braten und würzt das Ei gleichzeitig mit Basilikum, Knoblauch und Parmesan. Auf knusprigem Brot ein Traum.",
@@ -223,7 +224,7 @@ const DATA = [
   // DIENSTAG
   {
     id: "di-f",
-    title: "Miso-Bananen-Pancakes",
+    title: "Miso-Bananen-Pancakes 味噌バナナパンケーキ",
     desc: "Süße Bananen-Pancakes mit einem winzigen Hauch salziger Miso-Paste für das ultimative Umami.",
     story: "Die Kombination aus süßer Banane und salzigem Miso funktioniert ähnlich genial wie Salted Caramel. Ein tolles, ungewöhnliches Frühstück.",
     target: "≈75 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -276,7 +277,7 @@ const DATA = [
   },
   {
     id: "di-a",
-    title: "Rindfleisch & Erbsen Pilaf (Reiskocher)",
+    title: "Rindfleisch & Erbsen Pilaf پلو (Reiskocher)",
     desc: "Ein herrlich aromatischer Rindfleisch-Reis mit Erbsen und orientalischen Gewürzen.",
     story: "Inspiriert vom orientalischen Pulao. Der Reiskocher nimmt dir die Arbeit ab, das Rindfleisch wird butterzart.",
     target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -405,7 +406,7 @@ const DATA = [
   },
   {
     id: "do-m",
-    title: "Crispy Reispapier Sushi-Rollen (Airfryer)",
+    title: "Crispy Reispapier Sushi-Rollen 寿司ロール (Airfryer)",
     isViral: true,
     desc: "Gefüllte Reispapier-Rollen, die im Airfryer wie kleine Sushi-Tacos aufknuspern.",
     story: "Statt Algen nehmen wir Reispapier! Gefüllt mit Reis, Thunfisch und Mayo werden sie im Airfryer wahnsinnig knusprig. Ein toller TikTok-Trend für die Mittagspause.",
@@ -485,7 +486,7 @@ const DATA = [
   },
   {
     id: "fr-m",
-    title: "Airfryer Teriyaki-Lachs Bites",
+    title: "Airfryer Teriyaki-Lachs Bites 照り焼きサーモン",
     desc: "Saftige Lachswürfel, kross gebacken und mit Teriyaki-Sauce glasiert.",
     story: "Lachs in kleine Würfel geschnitten gart im Airfryer extrem schnell und bekommt überall eine fantastische Kruste. Ideal für Bowls.",
     target: "≈80 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -509,7 +510,7 @@ const DATA = [
   },
   {
     id: "fr-a",
-    title: "Tom Yum Reis (Reiskocher)",
+    title: "Tom Yum Reis ต้มยำ (Reiskocher)",
     desc: "Die Aromen der berühmten thailändischen sauren Suppe, eingekocht in duftenden Reis mit Garnelen.",
     story: "Ein Schuss Tom-Yum-Paste (gibt es im Glas) verwandelt faden Reis in eine Geschmacksexplosion aus Zitronengras und Galgant.",
     target: "≈80 g KH (2 P.) · Protein ≈26 g p. P.",
@@ -642,7 +643,7 @@ const DATA = [
   },
   {
     id: "so-m",
-    title: "Kroatische Cevapcici mit Djuvec-Reis (Pfanne)",
+    title: "Kroatische Ćevapčići mit Đuveč-Reis (Pfanne)",
     desc: "Der Balkan-Klassiker. Kräftige Hackröllchen mit würzigem Tomaten-Erbsen-Reis.",
     story: "Djuvec-Reis lebt von Ajvar und Tomatenmark. Wir machen es in einer großen Pfanne und braten die Cevapcici direkt mit.",
     target: "≈85 g KH (2 P.) · Protein ≈28 g p. P.",
@@ -668,7 +669,7 @@ const DATA = [
   },
   {
     id: "so-a",
-    title: "Hähnchen & Edamame Reis (Reiskocher)",
+    title: "Hähnchen & Edamame Reis 鶏と枝豆のご飯 (Reiskocher)",
     desc: "Ein extrem sauberes, proteinreiches Gericht. Hähnchenbrust dämpft mit Sojabohnen.",
     story: "Edamame geben dem Reis einen tollen, nussigen Biss. Das Hähnchen liefert mageres Protein. Ein perfekter, sanfter Abschluss der Woche.",
     target: "≈82 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -900,45 +901,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw15" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 

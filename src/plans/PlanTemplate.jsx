@@ -151,38 +151,113 @@ function ImageBanner({ meal, year, weekFolder = "kw1" }) {
 }
 
 function MealCard({ meal, year, meta }) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { isBookmarked, toggleBookmark, bookmarkLists, toggleInList } = useBookmarks();
   const bookmarked = isBookmarked(meta.id, meal.id);
+  const [showOptions, setShowOptions] = React.useState(false);
 
   return (
     <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
       <ImageBanner meal={meal} year={year} />
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <button
-            onClick={() => toggleBookmark({
-              planSlug: meta.id,
-              recipeId: meal.id,
-              recipeTitle: meal.title,
-              planTitle: meta.title
-            })}
-            style={{
-              background: bookmarked ? "var(--accent)" : "transparent",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              padding: "4px 8px",
-              cursor: "pointer",
-              fontSize: 16,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: bookmarked ? "#fff" : "var(--text)"
-            }}
-            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
-          >
-            {bookmarked ? "★" : "☆"}
-          </button>
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowOptions(!showOptions)}
+              style={{
+                background: bookmarked ? "var(--accent)" : "transparent",
+                border: "1px solid var(--border)",
+                borderRadius: 8,
+                padding: "4px 8px",
+                cursor: "pointer",
+                fontSize: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: bookmarked ? "#fff" : "var(--text)"
+              }}
+              title={bookmarked ? "Bookmark entfernen" : "Bookmark hinzufügen"}
+            >
+              {bookmarked ? "★" : "☆"}
+            </button>
+            {showOptions && (
+              <div style={{
+                position: "absolute",
+                top: "100%",
+                right: 0,
+                background: "var(--panel)",
+                border: "1px solid var(--border)",
+                borderRadius: 8,
+                padding: "8px",
+                zIndex: 10,
+                minWidth: "150px"
+              }}>
+                <button
+                  onClick={() => {
+                    toggleBookmark({
+                      planSlug: meta.id,
+                      recipeId: meal.id,
+                      recipeTitle: meal.title,
+                      planTitle: meta.title
+                    });
+                    setShowOptions(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    background: bookmarked ? "var(--accent)" : "transparent",
+                    border: "none",
+                    padding: "4px 8px",
+                    cursor: "pointer",
+                    fontSize: 12,
+                    color: bookmarked ? "#fff" : "var(--text)",
+                    borderRadius: 4
+                  }}
+                >
+                  {bookmarked ? "Aus Merkliste entfernen" : "Zu Merkliste hinzufügen"}
+                </button>
+                {bookmarkLists.length > 0 && (
+                  <>
+                    <hr style={{ margin: "8px 0", border: "none", borderTop: "1px solid var(--border)" }} />
+                    {bookmarkLists.map((list) => {
+                      const inList = list.bookmarks.some((b) => b.planSlug === meta.id && b.recipeId === meal.id);
+                      return (
+                        <button
+                          key={list.id}
+                          onClick={() => {
+                            toggleInList(list.id, {
+                              planSlug: meta.id,
+                              recipeId: meal.id,
+                              recipeTitle: meal.title,
+                              planTitle: meta.title
+                            });
+                            setShowOptions(false);
+                          }}
+                          style={{
+                            display: "block",
+                            width: "100%",
+                            textAlign: "left",
+                            background: inList ? "var(--accent)" : "transparent",
+                            border: "none",
+                            padding: "4px 8px",
+                            cursor: "pointer",
+                            fontSize: 12,
+                            color: inList ? "#fff" : "var(--text)",
+                            borderRadius: 4
+                          }}
+                        >
+                          {list.name} {inList ? "✓" : ""}
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {tagChip(meal.target)}
           {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
           {meal.remind ? tagChip("💊 Metformin") : null}

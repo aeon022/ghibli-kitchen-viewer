@@ -1,5 +1,5 @@
 // src/plans/2026/Woche-10-2026-03-02.de.jsx
-import { useBookmarks } from "@/hooks/useBookmarks";
+import { SharedMealCard } from "@/components/MealCard";
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -872,47 +872,15 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw10" }) {
 }
 
 function MealCard({ meal }) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = isBookmarked(meta.id, meal.id);
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}><button onClick={() => toggleBookmark({ planSlug: meta.id, recipeId: meal.id, recipeTitle: meal.title, planTitle: meta.title })} style={{ background: bookmarked ? "var(--accent, #e07a9a)" : "transparent", border: "1px solid var(--border, rgba(0,0,0,.1))", borderRadius: 8, padding: "4px 8px", cursor: "pointer", fontSize: 16, display: "inline-flex", alignItems: "center", justifyContent: "center", color: bookmarked ? "#fff" : "var(--text, #111827)" }} title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}>{bookmarked ? "★" : "☆"}</button><h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3></div>
-        <div>
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={typeof viralChip === "function" ? viralChip : undefined}
+    />
   );
 }
 

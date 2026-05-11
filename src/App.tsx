@@ -1,10 +1,12 @@
 // src/App.tsx
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Routes, Route, Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
-import { useBookmarks, Bookmark } from "./hooks/useBookmarks";
+import { useBookmarks, Bookmark, BookmarkList } from "./hooks/useBookmarks";
+import { PinnwandPage } from "./PinnwandPage";
 
 type Lang = "de" | "zh";
 const LANG_KEY = "mkt.lang";
+const SUPPORT_URL = "https://buy.polar.sh/polar_cl_IMvSv9smK6P0o45BtZE0XHi4CHkRhOnKB1EKL4DXUVZ";
 
 type Recipe = {
   id: string;
@@ -95,6 +97,7 @@ type PlanRecord = {
 // ---- Lang Context ----
 const LangCtx = createContext<{ lang: Lang; setLang: (l: Lang) => void }>({ lang: "de", setLang: () => {} });
 function useLang() { return useContext(LangCtx); }
+export { useLang };
 
 function LangProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -148,7 +151,7 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
   const { lang, setLang } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bookmarks } = useBookmarks();
+  const { bookmarkLists } = useBookmarks();
 
   const [search, setSearch] = useState("");
 
@@ -314,26 +317,32 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
           )}
         </div>
 
-        {/* Bookmarks */}
-        {bookmarks.length > 0 && (
-          <details className="year" open>
-            <summary>{lang === "de" ? "Bookmarks" : "收藏"}</summary>
+        {/* Pinnwand-Listen */}
+        <details className="year" open>
+          <summary>{lang === "de" ? "Pinnwand" : "Pinboard"}</summary>
+          {bookmarkLists.length === 0 ? (
+            <div style={{ padding: "8px", fontSize: 13, color: "var(--muted)" }}>
+              <Link to="/pinnwand" onClick={handleLinkClick}>
+                {lang === "de" ? "Listen verwalten" : "Manage lists"}
+              </Link>
+            </div>
+          ) : (
             <ul className="year-list">
-              {bookmarks.map((b) => (
-                <li key={`${b.planSlug}-${b.recipeId}`}>
+              {bookmarkLists.map((list: BookmarkList) => (
+                <li key={list.id}>
                   <Link 
-                    to={`/plan/${b.planSlug}#meal-${b.recipeId}`}
+                    to="/pinnwand"
                     onClick={handleLinkClick}
                     style={{ display: "flex", flexDirection: "column", gap: 2 }}
                   >
-                    <span style={{ fontWeight: 600 }}>{b.recipeTitle}</span>
-                    <span style={{ fontSize: 11, opacity: 0.7 }}>{b.planTitle}</span>
+                    <span style={{ fontWeight: 600 }}>⭐ {list.name}</span>
+                    <span style={{ fontSize: 11, opacity: 0.7 }}>{list.bookmarks.length} Rezepte</span>
                   </Link>
                 </li>
               ))}
             </ul>
-          </details>
-        )}
+          )}
+        </details>
 
         <div className="year-controls">
           <button className="small-btn" onClick={() => setOpenYears(prev => Object.fromEntries(Object.keys(prev).map(k => [Number(k), true])))}>Alle +</button>
@@ -367,6 +376,17 @@ function Sidebar({ plans, collapsed, setCollapsed }: { plans: PlanRecord[], coll
             </ul>
           </details>
         ))}
+
+        <a
+          href={SUPPORT_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="sidebar-support-btn"
+          onClick={handleLinkClick}
+        >
+          <span aria-hidden="true">♥</span>
+          <span>{lang === "de" ? "Projekt unterstützen" : "支持项目"}</span>
+        </a>
       </div>
     </aside>
   );
@@ -377,15 +397,18 @@ function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
   const { bookmarks, removeBookmark } = useBookmarks();
 
   const bookmarkedRecipes = useMemo(() => {
-    const res: { plan: PlanRecord, recipe: Recipe }[] = [];
+    const res: { plan?: PlanRecord, recipe: Recipe, bookmark: Bookmark }[] = [];
     for (const b of bookmarks) {
       const plan = plans.find(p => p.slug === b.planSlug);
-      if (plan) {
-        const recipe = plan.recipes.find(r => r.id === b.recipeId);
-        if (recipe) {
-          res.push({ plan, recipe });
-        }
-      }
+      const recipe = plan?.recipes.find(r => r.id === b.recipeId);
+      res.push({
+        plan,
+        recipe: recipe ?? {
+          id: b.recipeId,
+          title: b.recipeTitle,
+        },
+        bookmark: b,
+      });
     }
     return res;
   }, [bookmarks, plans]);
@@ -407,9 +430,11 @@ function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
         <p style={{ color: "var(--muted)", fontSize: isMobile() ? "13px" : "16px" }}>{bookmarkedRecipes.length} Rezepte gespeichert</p>
       </div>
       <div style={{ display: "grid", gap: isMobile() ? 12 : 24 }}>
-        {bookmarkedRecipes.map(({ plan, recipe }) => {
+        {bookmarkedRecipes.map(({ plan, recipe, bookmark }) => {
+          const planTitle = plan?.meta.title ?? bookmark.planTitle;
+          const planSlug = plan?.slug ?? bookmark.planSlug;
           return (
-            <div key={`${plan.slug}-${recipe.id}`} style={{ border: "1px solid var(--border)", borderRadius: 14, background: "var(--panel)", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <div key={`${bookmark.planSlug}-${recipe.id}`} style={{ border: "1px solid var(--border)", borderRadius: 14, background: "var(--panel)", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
               <div style={{ 
                 padding: isMobile() ? "6px 12px" : "10px 16px", 
                 background: "var(--grad-hero)", 
@@ -419,10 +444,10 @@ function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
                 borderBottom: "1px solid var(--border)"
               }}>
                 <span style={{ fontSize: 10, fontWeight: 700, color: "rgba(0,0,0,0.5)", textTransform: "uppercase" }}>
-                  {plan.meta.title}
+                  {planTitle}
                 </span>
                 <button 
-                  onClick={() => removeBookmark(plan.slug, recipe.id)}
+                  onClick={() => removeBookmark(bookmark.planSlug, recipe.id)}
                   style={{ 
                     background: "rgba(255,255,255,0.7)", 
                     border: "none", 
@@ -445,7 +470,7 @@ function BookmarkPage({ plans }: { plans: PlanRecord[] }) {
                 <h2 style={{ marginTop: 0, fontSize: isMobile() ? "16px" : "22px", lineHeight: 1.2, marginBottom: 8 }}>{recipe.title}</h2>
                 {recipe.desc && !isMobile() && <p style={{ fontStyle: "italic", color: "var(--muted)", fontSize: "14px", lineHeight: 1.5 }}>{recipe.desc}</p>}
                 <Link 
-                  to={`/plan/${plan.slug}#meal-${recipe.id}`} 
+                  to={`/plan/${planSlug}#meal-${recipe.id}`} 
                   style={{ 
                     display: "inline-flex", 
                     alignItems: "center",
@@ -473,6 +498,13 @@ function HomePage({ plans }: { plans: PlanRecord[] }) {
   const { lang } = useLang();
   const navigate = useNavigate();
   const currentPlan = useMemo(() => pickCurrent(plans, lang), [plans, lang]);
+  const currentPlanPreview = currentPlan?.recipes.slice(0, 3) ?? [];
+  const latestPlans = useMemo(() => {
+    return plans
+      .filter((plan) => plan.lang === lang && plan.slug !== currentPlan?.slug)
+      .sort((a, b) => b.startDate.localeCompare(a.startDate))
+      .slice(0, 4);
+  }, [plans, lang, currentPlan?.slug]);
 
   return (
     <div className="home-page">
@@ -480,10 +512,10 @@ function HomePage({ plans }: { plans: PlanRecord[] }) {
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title">Moving Kitchen Tales</h1>
-          <p className="hero-subtitle">Wo Rezepte zu Geschichten werden.</p>
+          <p className="hero-subtitle">Wo Wochenpläne nach Filmnacht, Streetfood und Zuhause schmecken.</p>
           <p className="hero-text">
-            Hol dir den Zauber animierter Klassiker und den echten Geschmack Asiens direkt an deinen Herd. 
-            Von herzerwärmenden Film-Gerichten bis zu rasanten Viral-Hits – einfach zubereitet, authentisch im Aroma.
+            Koch dich durch animierte Comfort-Food-Momente, Asia-Klassiker, Reiskocher-Magie und virale Küchenhacks.
+            Kuratiert als Wochenpläne, gemacht für echte Tage, an denen Essen trotzdem ein kleines Ereignis sein darf.
           </p>
           <div className="hero-btns">
             {currentPlan && (
@@ -503,47 +535,149 @@ function HomePage({ plans }: { plans: PlanRecord[] }) {
             >
               Entdecke die Klassiker
             </button>
+            <a
+              className="btn-support"
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Projekt unterstützen
+            </a>
           </div>
         </div>
       </section>
+
+      <section className="how-it-works">
+        <div className="section-kicker">So funktioniert's</div>
+        <h2>Plan auf, Hunger an, loskochen.</h2>
+        <div className="steps-grid">
+          <div className="step-card">
+            <span>1</span>
+            <h3>Woche auswählen</h3>
+            <p>Spring in den aktuellen Plan oder stöbere durch alte Küchenkapitel.</p>
+          </div>
+          <div className="step-card">
+            <span>2</span>
+            <h3>Gericht kochen</h3>
+            <p>Frühstück, Lunch, Dinner: mit klaren Zutaten, Alltagstempo und genug Story.</p>
+          </div>
+          <div className="step-card">
+            <span>3</span>
+            <h3>Favoriten pinnen</h3>
+            <p>Sammle Lieblinge in Merkliste und Pinnwand, damit gute Ideen nicht verschwinden.</p>
+          </div>
+        </div>
+      </section>
+
+      {currentPlan ? (
+        <section className="current-plan-section">
+          <div className="current-plan-copy">
+            <div className="section-kicker">Aktueller Wochenplan</div>
+            <h2>{currentPlan.meta.title} <span>{currentPlan.startDate}</span></h2>
+            <p>
+              Ein kompletter Plan mit drei Mahlzeiten pro Tag, viel Asia-Comfort, Reiskocher-Ideen
+              und genug Abwechslung, damit die Woche nicht nach Routine schmeckt.
+            </p>
+            <button
+              className="btn-primary"
+              onClick={() => navigate(`/plan/${currentPlan.slug}?lang=${lang}`)}
+            >
+              Aktuellen Plan öffnen
+            </button>
+          </div>
+          <div className="current-plan-recipes">
+            {currentPlanPreview.map((recipe) => (
+              <Link key={recipe.id} to={`/plan/${currentPlan.slug}#meal-${recipe.id}`}>
+                <strong>{recipe.title}</strong>
+                {recipe.desc ? <span>{recipe.desc}</span> : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {latestPlans.length > 0 ? (
+        <section className="latest-plans-section">
+          <div className="latest-plans-head">
+            <div>
+              <div className="section-kicker">Frisch aus der Küche</div>
+              <h2>Neue Kapitel, wenn du direkt weiterkochen willst.</h2>
+            </div>
+            <span>{latestPlans.length} Vorschläge</span>
+          </div>
+          <div className="latest-plans-grid">
+            {latestPlans.map((plan) => {
+              const teaserRecipe = plan.recipes[0];
+              return (
+                <Link key={plan.slug} className="latest-plan-card" to={`/plan/${plan.slug}?lang=${lang}`}>
+                  <span>{plan.startDate}</span>
+                  <h3>{plan.meta.title ?? plan.meta.id}</h3>
+                  {teaserRecipe ? <p>{teaserRecipe.title}</p> : null}
+                  <strong>Plan öffnen</strong>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {/* Categories */}
       <section className="categories">
         <div className="cat-card">
           <div className="cat-icon">🎬</div>
           <h3>Studio Classics</h3>
-          <p>Direkt von der Leinwand auf deinen Teller. Erlebe die ikonischen Mahlzeiten, die Kindheitserinnerungen wecken.</p>
+          <p>Gerichte mit dieser warmen Filmküchen-Energie: dampfende Schalen, knusprige Toasts und Essen, das sofort nach Szene klingt.</p>
         </div>
         <div className="cat-card">
           <div className="cat-icon">🔥</div>
           <h3>Viral Asia-Hits</h3>
-          <p>Die Trends, die das Netz erobern. Modern, unkompliziert und in wenigen Minuten fertig.</p>
+          <p>TikTok-Tricks mit Substanz: Rice-Paper-Hacks, knusprige Airfryer-Ideen und schnelle Bowls mit echter Alltagstauglichkeit.</p>
         </div>
         <div className="cat-card">
           <div className="cat-icon">⏲️</div>
           <h3>The 10-Minute Pantry</h3>
-          <p>Wenn die Zeit knapp ist, aber der Anspruch hoch bleibt. Schnelle asiatische Hausmannskost für jeden Tag.</p>
+          <p>Für Tage mit wenig Energie und großem Hunger: Vorratsküche, Reiskocher, ein paar Handgriffe, fertig ist das Kapitel.</p>
         </div>
       </section>
 
+      <section className="pinboard-teaser">
+        <div>
+          <div className="section-kicker">Merkliste & Pinnwand</div>
+          <h2>Deine Lieblingsgerichte bekommen einen festen Platz.</h2>
+          <p>
+            Markiere Rezepte mit dem Stern oder sortiere sie in eigene Pinnwände:
+            schnelle Lunches, Reiskocher-Favoriten, Comfort Food, Wochenende, Gäste.
+          </p>
+        </div>
+        <Link className="btn-secondary" to="/pinnwand">
+          Pinnwand öffnen
+        </Link>
+      </section>
+
       {/* About Section */}
-      <section className="about-section">
+      <section id="about" className="about-section">
         <div className="about-content">
           <p className="quote">
-            "Essen ist in unseren liebsten Filmen oft mehr als nur Nahrung – es ist Trost, Abenteuer und Gemeinschaft."
+            "Manche Gerichte bleiben im Kopf, weil sie mehr erzählen als ein Rezept: von Zuhause, Aufbruch, Trost und kleinen Abenteuern am Küchentisch."
           </p>
           <p>
-            <strong>Moving Kitchen Tales</strong> ist eine Sammlung für alle, die diese besondere Atmosphäre in den eigenen vier Wänden nachempfinden wollen. 
-            Wir konzentrieren uns auf das Wesentliche: frische Zutaten, einfache Handgriffe und Gerichte, die Seele und Geist guttun.
+            <strong>Moving Kitchen Tales</strong> ist kein trockenes Kocharchiv, sondern ein wachsendes Küchen-Universum:
+            Wochenpläne mit Frühstück, Mittagessen und Abendessen, inspiriert von asiatischer Hausmannskost,
+            animierten Food-Momenten und viralen Ideen, die auch nach Feierabend noch machbar bleiben.
           </p>
           <div className="teaser">
-            Bereit für deine eigene kulinarische Reise? Such dir ein Kapitel aus und fang an zu kochen.
+            Such dir einen Plan aus, pinne deine Favoriten und bau dir deine eigene kleine Küchenreise zusammen.
           </div>
         </div>
       </section>
 
       <footer className="home-footer">
-        <p><em>"Jede Schüssel ein Kapitel. Jeder Bissen eine Reise."</em></p>
+        <p><em>"Ein Plan für die Woche. Ein Teller für die Stimmung. Eine Geschichte nach der anderen."</em></p>
+        <div className="home-footer-links">
+          <a href="https://abteilung83.at" target="_blank" rel="noreferrer">
+            Made with love by abteilung83.at & Imprint
+          </a>
+        </div>
       </footer>
     </div>
   );
@@ -615,6 +749,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<HomePage plans={plans} />} />
             <Route path="/bookmarks" element={<BookmarkPage plans={plans} />} />
+            <Route path="/pinnwand" element={<PinnwandPage plans={plans} />} />
             <Route path="/plan/:slug" element={<PlanPage plans={plans} />} />
             <Route path="*" element={<HomePage plans={plans} />} />
           </Routes>

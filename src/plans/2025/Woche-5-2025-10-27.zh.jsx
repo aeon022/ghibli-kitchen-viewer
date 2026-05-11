@@ -1,7 +1,7 @@
 // src/plans/Woche-5-2025-10-27.zh.jsx
 // 基于 Woche-4 结构（1:1），仅更换元数据与食谱 DATA
 
-import { useBookmarks } from "@/hooks/useBookmarks";
+import { BookmarkMenuButton } from "@/components/MealCard";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { exportPDFById, exportHTMLById } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -519,8 +519,6 @@ const mealLabelI18n = (id, t) => t.meal[id.split("-")[1]];
 
 /* ---------- Recipe Card ---------- */
 function RecipeCard({ r, t, lang }) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = isBookmarked(meta.id, r.id);
   const recipeImgKey = getImageKey(`recipe::${r.id}`);
   const img = readLocalImage(recipeImgKey);
   const title = toText(r.title);
@@ -578,30 +576,12 @@ function RecipeCard({ r, t, lang }) {
             {dayNameI18n(r.id, t)} – {mealTitleI18n(r.id, t)}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-          <button
-            onClick={() => toggleBookmark({
-              planSlug: meta.id,
-              recipeId: r.id,
-              recipeTitle: title,
-              planTitle: meta.title
-            })}
-            style={{
-              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
-              border: "1px solid var(--border, rgba(0,0,0,.1))",
-              borderRadius: 8,
-              padding: "4px 8px",
-              cursor: "pointer",
-              fontSize: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: bookmarked ? "#fff" : "var(--text, #111827)",
-              marginRight: "8px"
-            }}
-            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
-          >
-            {bookmarked ? "★" : "☆"}
-          </button><h2 style={{ margin: 0 }}>{title}</h2></div>
+          <BookmarkMenuButton
+            planSlug={meta.id}
+            recipeId={r.id}
+            recipeTitle={title}
+            planTitle={meta.title}
+          /><h2 style={{ margin: 0 }}>{title}</h2></div>
           <p style={{ marginTop: -6, marginBottom: 8, color: COLORS.neutral, fontSize: 12 }}>{story}</p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <section>

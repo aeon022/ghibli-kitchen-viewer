@@ -1,5 +1,5 @@
 // src/plans/2026/Woche-1-2025-12-29.zh.jsx
-import { useBookmarks } from "@/hooks/useBookmarks";
+import { SharedMealCard } from "@/components/MealCard";
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -933,86 +933,15 @@ function ImageBanner({ meal }) {
 
 // ---- UI ----
 function MealCard({ meal }) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = isBookmarked(meta.id, meal.id);
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 8,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <button
-            onClick={() => toggleBookmark({
-              planSlug: meta.id,
-              recipeId: meal.id,
-              recipeTitle: meal.title,
-              planTitle: meta.title
-            })}
-            style={{
-              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
-              border: "1px solid var(--border, rgba(0,0,0,.1))",
-              borderRadius: 8,
-              padding: "4px 8px",
-              cursor: "pointer",
-              fontSize: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: bookmarked ? "#fff" : "var(--text, #111827)",
-              marginRight: "8px"
-            }}
-            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
-          >
-            {bookmarked ? "★" : "☆"}
-          </button><h3 style={{ margin: 0 }}>{meal.title}</h3></div>
-        <div>
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 电饭煲") : null}
-          {meal.remind ? tagChip("💊 用餐同时服用二甲双胍") : null}
-        </div>
-      </div>
-      <p style={{ marginTop: 8, color: "var(--muted)" }}>{meal.desc}</p>
-      <p style={{ fontStyle: "italic", color: "var(--muted)", marginTop: -6 }}>
-        {meal.story}
-      </p>
-      <h4>食材（2人）</h4>
-      <ul>
-        {meal.ingredients.map((i, idx) => (
-          <li key={idx}>{i}</li>
-        ))}
-      </ul>
-      <h4>做法</h4>
-      <ol>
-        {meal.steps.map((s, idx) => (
-          <li key={idx}>{s}</li>
-        ))}
-      </ol>
-      <p><strong>提示：</strong> {meal.checks}</p>
-      <p><strong>替换：</strong> {meal.swaps}</p>
-      <p><strong>配菜与饮品：</strong> {meal.side}</p>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 8 }}>
-          <details>
-            <summary>电饭煲参数</summary>
-            <ul>
-              <li><strong>程序：</strong> {meal.riceCooker.program}</li>
-              <li><strong>水米比：</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? (
-                <li><strong>备注：</strong> {meal.riceCooker.notes}</li>
-              ) : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={typeof viralChip === "function" ? viralChip : undefined}
+    />
   );
 }
 

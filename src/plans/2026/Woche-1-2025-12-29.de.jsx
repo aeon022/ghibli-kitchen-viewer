@@ -1,5 +1,5 @@
 // src/plans/2026/Woche-1-2025-12-29.de.jsx
-import { useBookmarks } from "@/hooks/useBookmarks";
+import { SharedMealCard } from "@/components/MealCard";
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
@@ -1003,86 +1003,15 @@ function ImageBanner({ meal }) {
 
 /* ------------------------------- UI ------------------------------ */
 function MealCard({ meal }) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
-  const bookmarked = isBookmarked(meta.id, meal.id);
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 8,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <button
-            onClick={() => toggleBookmark({
-              planSlug: meta.id,
-              recipeId: meal.id,
-              recipeTitle: meal.title,
-              planTitle: meta.title
-            })}
-            style={{
-              background: bookmarked ? "var(--accent, #e07a9a)" : "transparent",
-              border: "1px solid var(--border, rgba(0,0,0,.1))",
-              borderRadius: 8,
-              padding: "4px 8px",
-              cursor: "pointer",
-              fontSize: 16,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: bookmarked ? "#fff" : "var(--text, #111827)",
-              marginRight: "8px"
-            }}
-            title={bookmarked ? "Bookmark entfernen" : "Bookmark setzen"}
-          >
-            {bookmarked ? "★" : "☆"}
-          </button><h3 style={{ margin: 0 }}>{meal.title}</h3></div>
-        <div>
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin mit der Mahlzeit einnehmen") : null}
-        </div>
-      </div>
-      <p style={{ marginTop: 8, color: "var(--muted)" }}>{meal.desc}</p>
-      <p style={{ fontStyle: "italic", color: "var(--muted)", marginTop: -6 }}>
-        {meal.story}
-      </p>
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>
-        {meal.ingredients.map((i, idx) => (
-          <li key={idx}>{i}</li>
-        ))}
-      </ul>
-      <h4>Zubereitung</h4>
-      <ol>
-        {meal.steps.map((s, idx) => (
-          <li key={idx}>{s}</li>
-        ))}
-      </ol>
-      <p><strong>Hinweise:</strong> {meal.checks}</p>
-      <p><strong>Austausche:</strong> {meal.swaps}</p>
-      <p><strong>Beilage & Getränke:</strong> {meal.side}</p>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 8 }}>
-          <details>
-            <summary>Reiskocher-Details</summary>
-            <ul>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasserverhältnis:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? (
-                <li><strong>Hinweise:</strong> {meal.riceCooker.notes}</li>
-              ) : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={typeof viralChip === "function" ? viralChip : undefined}
+    />
   );
 }
 

@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 16 (Start: 2026-04-13)
@@ -136,7 +137,7 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
@@ -191,7 +192,7 @@ const DATA = [
   },
   {
     id: "mo-a",
-    title: "Kung Pao Chicken Rice (Reiskocher) 宫保鸡饭",
+    title: "Kung Pao Chicken Rice 宫保鸡饭 (Reiskocher)",
     desc: "Die Aromen des Szechuan-Klassikers Kung Pao sanft im Reiskocher gedämpft.",
     story: "Kung Pao ist eigentlich scharf und im Wok gebraten. Diese One-Pot-Version fokussiert sich auf die süß-säuerliche Sojasauce und die knackigen Erdnüsse. Sehr schonend!",
     target: "≈80 g KH (2 P.) · Protein ≈32 g p. P.",
@@ -245,7 +246,7 @@ const DATA = [
   },
   {
     id: "di-m",
-    title: "Shakshuka (Well-Done Edition)",
+    title: "Shakshuka (Well-Done Edition) (شكشوكة)",
     desc: "Eier in einer würzigen Tomaten-Paprika-Sauce, komplett durchgegart.",
     story: "Shakshuka kommt aus Nordafrika/Israel. In der Schwangerschaft pochieren wir die Eier nicht weich, sondern legen einfach einen Deckel auf die Pfanne, bis auch das Eigelb komplett fest ist.",
     target: "≈65 g KH (2 P.) · Protein ≈22 g p. P.",
@@ -561,7 +562,7 @@ const DATA = [
   },
   {
     id: "sa-m",
-    title: "Viral Sushi Waffles 🍣🧇 (Airfryer Hack)",
+    title: "Viral Sushi Waffles 寿司ワッフル (Airfryer Hack)",
     isViral: true,
     desc: "Gekochter Reis wird im Airfryer (oder Waffeleisen) knusprig gebacken und wie Sushi belegt.",
     story: "Kein Waffeleisen? Kein Problem. Wir formen flache Reis-Patties, backen sie im Airfryer extrem knusprig und toppen sie mit cremiger Thunfisch-Mayo.",
@@ -588,7 +589,7 @@ const DATA = [
   },
   {
     id: "sa-a",
-    title: "Golden Coconut Chicken Rice 🥥 (Reiskocher)",
+    title: "Golden Coconut Chicken Rice 椰香鸡饭 (Reiskocher)",
     desc: "Reis, Hühnchen und Erbsen dämpfen in einer aromatischen Kurkuma-Kokos-Brühe.",
     story: "Ein asiatisch-karibisches Crossover. Die Kokosmilch macht den Reis unfassbar cremig, das Kurkuma färbt ihn leuchtend gelb. Hühnchen gart zart mit.",
     target: "≈82 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -898,45 +899,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw16" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 

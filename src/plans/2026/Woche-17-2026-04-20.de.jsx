@@ -2,6 +2,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { exportHTMLById, ensureScript } from "@/utils/exporters";
 import { buildEmbedCss } from "@/utils/embedCss";
+import { SharedMealCard } from "@/components/MealCard";
 
 /*
   Moving Kitchen Tales – Woche 17 (Start: 2026-04-20)
@@ -136,7 +137,7 @@ const DAY_NAME_DE = {
 // -----------------------------------------------------------------------
 // DATA (ALLE 21 REZEPTE)
 // -----------------------------------------------------------------------
-const DATA = [
+export const DATA = [
   // MONTAG
   {
     id: "mo-f",
@@ -166,7 +167,7 @@ const DATA = [
   },
   {
     id: "mo-m",
-    title: "Udon Miso-Carbonara",
+    title: "Udon Miso-Carbonara (うどん味噌)",
     desc: "Japanische Udon-Nudeln in einer cremigen Sahnesauce mit Speck und Miso-Paste.",
     story: "Eine asiatische Abwandlung der Carbonara. Wir verzichten aus Sicherheitsgründen auf rohes Ei und binden die Sauce stattdessen mit etwas Sahne und herzhafter Miso-Paste.",
     target: "≈85 g KH (2 P.) · Protein ≈22 g p. P.",
@@ -191,7 +192,7 @@ const DATA = [
   },
   {
     id: "mo-a",
-    title: "Hainan-Style Tofu & Shiitake (Reiskocher)",
+    title: "Hainan-Style Tofu & Shiitake 海南豆腐 (Reiskocher)",
     desc: "Tofu und Pilze garen schonend über Reis in einer aromatischen Ingwer-Brühe.",
     story: "Die vegane Variante des Hainan Chicken Rice. Der Tofu saugt die intensive Brühe auf und wird extrem weich, während der Ingwer wärmt.",
     target: "≈80 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -299,7 +300,7 @@ const DATA = [
   // MITTWOCH
   {
     id: "mi-f",
-    title: "Savory Soy Oatmeal",
+    title: "Savory Soy Oatmeal 醤油オートミール",
     desc: "Herzhafter Haferbrei, gewürzt mit Sojasauce und Sesamöl, serviert mit hartgekochtem Ei.",
     story: "Eine schnelle Alternative zu traditionellem asiatischen Congee. Haferflocken kochen schneller und liefern langanhaltende Energie.",
     target: "≈60 g KH (2 P.) · Protein ≈20 g p. P.",
@@ -325,7 +326,7 @@ const DATA = [
   },
   {
     id: "mi-m",
-    title: "Kroatische Djuvec-Gnocchi",
+    title: "Kroatische Đuveč-Gnocchi",
     desc: "Gnocchi aus der Pfanne, geschwenkt in einer würzigen Ajvar-Gemüse-Sauce.",
     story: "Djuvec-Reis ist ein Hit auf dem Balkan. Wir wandeln die Aromen (Paprika, Erbsen, Ajvar) ab und kombinieren sie mit weichen Gnocchi für ein schnelles Mittagessen.",
     target: "≈85 g KH (2 P.) · Protein ≈15 g p. P.",
@@ -406,7 +407,7 @@ const DATA = [
   },
   {
     id: "do-m",
-    title: "Buldak-Style Vollkorn-Penne",
+    title: "Buldak-Style Vollkorn-Penne 불닭 파스타",
     isViral: true,
     desc: "Pasta in einer cremigen, koreanisch inspirierten Gochujang-Sahne-Sauce.",
     story: "Buldak-Nudeln sind scharf. Wir machen eine milde, ausgewogene Version: Gochujang bringt Würze, die Sahne sorgt für die Cremigkeit. Perfekt mit Vollkorn-Penne.",
@@ -539,7 +540,7 @@ const DATA = [
   // SAMSTAG
   {
     id: "sa-f",
-    title: "Miso-Bananen-Pancakes",
+    title: "Miso-Bananen-Pancakes 味噌バナナパンケーキ",
     desc: "Süße Bananen-Pancakes mit einem winzigen Hauch salziger Miso-Paste für intensives Umami.",
     story: "Die Kombination aus süßer Banane und salzigem Miso funktioniert ähnlich wie Salted Caramel. Ein tolles, ungewöhnliches Frühstück für den Samstag.",
     target: "≈75 g KH (2 P.) · Protein ≈18 g p. P.",
@@ -565,7 +566,7 @@ const DATA = [
   },
   {
     id: "sa-m",
-    title: "Airfryer Crispy Rice Paper Dumplings",
+    title: "Airfryer Crispy Rice Paper Dumplings 라이스페이퍼 만두",
     isViral: true,
     desc: "Quadratische, knusprige Teigtaschen aus Reispapier, gefüllt mit Rinderhack und Kohl.",
     story: "Ein toller Hack, wenn man keinen Nudelteig kneten möchte. Reispapier-Blätter werden wie Briefumschläge um die Füllung gefaltet und im Airfryer extrem kross gebacken.",
@@ -592,7 +593,7 @@ const DATA = [
   },
   {
     id: "sa-a",
-    title: "Claypot-Style Cabanossi Rice (Reiskocher)",
+    title: "Claypot-Style Cabanossi Rice 煲仔饭 (Reiskocher)",
     desc: "Reistopf mit geräucherter Wurst und Pak Choi, inspiriert vom chinesischen Claypot Rice.",
     story: "In Guangdong wird Reis mit süßer Lap-Cheong-Wurst in Tontöpfen gegart. Wir nutzen herzhafte Cabanossi. Ihr Fett und Raucharoma ziehen komplett in den Reis ein.",
     target: "≈84 g KH (2 P.) · Protein ≈20 g p. P.",
@@ -671,7 +672,7 @@ const DATA = [
   },
   {
     id: "so-a",
-    title: "Oyakodon (Reiskocher-Hack)",
+    title: "Oyakodon 親子丼 (Reiskocher-Hack)",
     desc: "Huhn und Ei dämpfen zusammen auf Reis. Ein entspanntes, warmes Abendessen.",
     story: "Oyakodon (Eltern-Kind-Schale) ist ein japanisches Soulfood. Im Reiskocher sparen wir uns die Pfanne. Das Ei wird hier nicht weich, sondern komplett fest gedämpft.",
     target: "≈80 g KH (2 P.) · Protein ≈30 g p. P.",
@@ -884,45 +885,14 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw17" }) {
 
 function MealCard({ meal }) {
   return (
-    <div className="meal-card" style={cardPanelStyle} id={`meal-${meal.id}`}>
-      <ImageBanner meal={meal} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
-        <h3 style={{ margin: 0, lineHeight: 1.3 }}>{meal.title}</h3>
-        <div>
-          {meal.isViral ? viralChip() : null}
-          {tagChip(meal.target)}
-          {meal.riceCooker?.enabled ? tagChip("🍚 Reiskocher") : null}
-          {meal.remind ? tagChip("💊 Metformin") : null}
-        </div>
-      </div>
-      {meal.desc ? <p style={{ marginTop: 8, color: "var(--muted)", fontStyle: "italic" }}>{meal.desc}</p> : null}
-      {meal.story ? <p style={{ marginTop: 4, color: "var(--text)", fontSize: "0.9em" }}>{meal.story}</p> : null}
-      
-      <h4>Zutaten (2 Personen)</h4>
-      <ul>{meal.ingredients.map((i, idx) => <li key={idx}>{i}</li>)}</ul>
-      
-      <h4>Zubereitung</h4>
-      <ol>{meal.steps.map((s, idx) => <li key={idx}>{s}</li>)}</ol>
-      
-      <div style={{ marginTop: 16, padding: "12px 16px", background: "var(--chip-bg)", borderRadius: 12 }}>
-        <p style={{margin:"0 0 4px"}}><strong>Hinweise:</strong> {meal.checks}</p>
-        <p style={{margin:"0 0 4px"}}><strong>Austausche:</strong> {meal.swaps}</p>
-        <p style={{margin:0}}><strong>Beilage:</strong> {meal.side}</p>
-      </div>
-
-      {meal.riceCooker?.enabled ? (
-        <div style={{ marginTop: 12 }}>
-          <details>
-            <summary style={{cursor:"pointer", fontWeight:600}}>Reiskocher-Details</summary>
-            <ul style={{marginTop:8}}>
-              <li><strong>Programm:</strong> {meal.riceCooker.program}</li>
-              <li><strong>Wasser:</strong> {meal.riceCooker.water}</li>
-              {meal.riceCooker.notes ? <li><strong>Info:</strong> {meal.riceCooker.notes}</li> : null}
-            </ul>
-          </details>
-        </div>
-      ) : null}
-    </div>
+    <SharedMealCard
+      meal={meal}
+      meta={meta}
+      cardPanelStyle={cardPanelStyle}
+      ImageBanner={ImageBanner}
+      tagChip={tagChip}
+      viralChip={viralChip}
+    />
   );
 }
 
