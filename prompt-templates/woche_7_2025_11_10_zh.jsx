@@ -16,7 +16,7 @@ import { pickText, pickList } from "../i18n-data";
    story 段必须写明菜式来源/地区 + “灵感来自 <来源>”。
 
    >>> 提示开始 <<<
-   你是“GhibliKitchen”。为第 {{WEEK_NR}} 周（起始 {{START_DATE}}）生成 21 道新菜：
+   你是“Moving Kitchen Tales”。为第 {{WEEK_NR}} 周（起始 {{START_DATE}}）生成 21 道新菜：
    7 天 × 早餐/午餐/晚餐（顺序 f < m < a）。输出以下对象，可直接粘贴到 const DATA = [ ... ]：
 
    每个对象包含：
@@ -62,8 +62,8 @@ const FILE_BASE = "Woche 7 2025-11-10";
 
 /* ---------- UI ----------- */
 const UI_TITLES = {
-  main: "GhibliKitchen – 第7周",
-  list: "GhibliKitchen – 购物清单 – 第7周",
+  main: "Moving Kitchen Tales – 第7周",
+  list: "Moving Kitchen Tales – 购物清单 – 第7周",
 };
 
 const COLORS = {
@@ -427,12 +427,12 @@ function GroceryList() {
 /* ---------- Root ---------- */
 export default function Woche7_2025_11_10_ZH() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "zh");
   const t = UI[lang] || UI.zh;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
@@ -564,7 +564,7 @@ function Tests() {
     if (!/^Woche 7 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
     if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
     if (DATA.length === 0) {
-      console.warn("[GhibliKitchen] Template mode: DATA empty – skipping strict tests (ZH).");
+      console.warn("[Moving Kitchen Tales] Template mode: DATA empty – skipping strict tests (ZH).");
       return;
     }
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
@@ -579,8 +579,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY groups missing");
-    console.log("[GhibliKitchen] All tests passed (ZH JSX). Template valid.");
+    console.log("[Moving Kitchen Tales] All tests passed (ZH JSX). Template valid.");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

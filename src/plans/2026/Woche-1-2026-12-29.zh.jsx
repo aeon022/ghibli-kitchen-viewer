@@ -109,7 +109,7 @@ const cardPanelStyle = {
 
 const tagChip = (text) => (
   <span
-    className="ghk-chip"
+    className="mkt-chip"
     style={{
       display: "inline-block",
       padding: "2px 10px",
@@ -897,7 +897,7 @@ function ImageBanner({ meal }) {
   }, [meal]);
   return (
     <div
-      className="ghk-art"
+      className="mkt-art"
       style={{
         position: "relative",
         borderRadius: 14,
@@ -1021,7 +1021,7 @@ function DaySection({ dayKey, meals }) {
     <section className="day-section" style={{ marginBottom: 28 }} id={`day-${dayKey}`}>
       <h2 style={{ marginBottom: 12 }}>
         {DAY_NAME_ZH[dayKey].replace(/\s*\(.+\)$/, "")}
-        <span className="ghk-date-paren">
+        <span className="mkt-date-paren">
           {" "}{DAY_NAME_ZH[dayKey].match(/\(.+\)$/)?.[0] ?? ""}
         </span>
       </h2>
@@ -1063,10 +1063,10 @@ function WeekOverview({ data }) {
   return (
     <section style={{ marginBottom: 24 }}>
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
-        <div className="ghk-hero-inner" style={{ padding: 14, borderRadius: 12, marginBottom: 10, background: "var(--grad-hero)" }}>
+        <div className="mkt-hero-inner" style={{ padding: 14, borderRadius: 12, marginBottom: 10, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
             第1周 – 总览{" "}
-            <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>
+            <span className="mkt-date-paren" style={{ color: "var(--muted)" }}>
               ({meta.startDate})
             </span>
           </h2>
@@ -1191,7 +1191,7 @@ async function exportPdfFromRoot(rootEl) {
 
   const clone = rootEl.cloneNode(true);
   clone.id = "kochbuch-export";
-  clone.classList.add("ghk-exporting");
+  clone.classList.add("mkt-exporting");
   document.body.appendChild(clone);
 
   window.scrollTo(0, 0);
@@ -1206,7 +1206,7 @@ async function exportPdfFromRoot(rootEl) {
     pagebreak: {
       mode: ["css", "legacy"],
       after: [".day-section"],
-      avoid: [".meal-card", ".ghk-hero"]
+      avoid: [".meal-card", ".mkt-hero"]
     },
     html2canvas: {
       backgroundColor: pageBg,
@@ -1313,7 +1313,7 @@ export default function Woche1ZH() {
       {/* Screen & Print Styles */}
       <style>{`
   /* Coolere Tabs/Buttons (wie DE) */
-  .ghk-tab {
+  .mkt-tab {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
     padding: 8px 16px;
     border-radius: 12px;
@@ -1325,64 +1325,64 @@ export default function Woche1ZH() {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     transition: all 0.2s ease;
   }
-  .ghk-tab:hover {
+  .mkt-tab:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border-color: var(--accent-2);
   }
-  .ghk-tab:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
-  .ghk-tab span.icon { font-size: 1.2em; line-height: 1; }
+  .mkt-tab:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+  .mkt-tab span.icon { font-size: 1.2em; line-height: 1; }
 
   /* Switch */
-  .ghk-switch { --switch-w:48px; --switch-h:28px; --knob:22px; position:relative; display:inline-block;
+  .mkt-switch { --switch-w:48px; --switch-h:28px; --knob:22px; position:relative; display:inline-block;
     width:var(--switch-w); height:var(--switch-h); }
-  .ghk-switch input { opacity:0; width:0; height:0; position:absolute; }
-  .ghk-switch .ghk-slider { position:absolute; inset:0; border-radius:var(--switch-h);
+  .mkt-switch input { opacity:0; width:0; height:0; position:absolute; }
+  .mkt-switch .mkt-slider { position:absolute; inset:0; border-radius:var(--switch-h);
     background:var(--btn-border); border:1px solid var(--btn-border); transition:background .2s,border-color .2s; }
-  .ghk-switch .ghk-slider::before { content:""; position:absolute; height:var(--knob); width:var(--knob);
+  .mkt-switch .mkt-slider::before { content:""; position:absolute; height:var(--knob); width:var(--knob);
     left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow);
     transition:transform .2s; }
-  .ghk-switch input:checked + .ghk-slider { background:var(--accent-2); border-color:var(--accent-2); }
-  .ghk-switch input:checked + .ghk-slider::before { transform:translateY(-50%) translateX(calc(var(--switch-w) - var(--knob) - 6px)); }
-  .ghk-switch input:disabled + .ghk-slider { opacity:.6; }
+  .mkt-switch input:checked + .mkt-slider { background:var(--accent-2); border-color:var(--accent-2); }
+  .mkt-switch input:checked + .mkt-slider::before { transform:translateY(-50%) translateX(calc(var(--switch-w) - var(--knob) - 6px)); }
+  .mkt-switch input:disabled + .mkt-slider { opacity:.6; }
 
   /* Segmented Control */
-  .ghk-segment { display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); margin:0; }
-  .ghk-segment label { position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
-  .ghk-segment input[type="radio"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
-  .ghk-segment span { display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; user-select:none; }
-  .ghk-segment input[type="radio"]:checked + span { background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
+  .mkt-segment { display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); margin:0; }
+  .mkt-segment label { position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
+  .mkt-segment input[type="radio"] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .mkt-segment span { display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; user-select:none; }
+  .mkt-segment input[type="radio"]:checked + span { background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
 
   /* Viewer 中强制可见 */
-  #ghk-content { display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; min-height: 1px; }
-  #ghk-content > [hidden] { display: none !important; }
+  #mkt-content { display: block !important; visibility: visible !important; opacity: 1 !important; position: relative !important; min-height: 1px; }
+  #mkt-content > [hidden] { display: none !important; }
 
   /* 导出模式 */
-  .ghk-exporting {
+  .mkt-exporting {
     width: 794px !important; max-width: 794px !important; margin: 0 auto !important;
     background: #fff !important; box-sizing: border-box !important; font-size: 12pt !important; line-height: 1.45 !important;
     --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12);
     --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6;
   }
-  .ghk-exporting * { box-shadow: none !important; }
-  .ghk-exporting .ghk-art,
-  .ghk-exporting img { display:none !important; visibility:hidden !important; }
-  .ghk-exporting .ghk-chip { display:none !important; }
-  .ghk-exporting .ghk-date-paren { display:none !important; }
+  .mkt-exporting * { box-shadow: none !important; }
+  .mkt-exporting .mkt-art,
+  .mkt-exporting img { display:none !important; visibility:hidden !important; }
+  .mkt-exporting .mkt-chip { display:none !important; }
+  .mkt-exporting .mkt-date-paren { display:none !important; }
 
   @media print {
-    .ghk-art, .ghk-date-paren { display: none !important; }
+    .mkt-art, .mkt-date-paren { display: none !important; }
   }
 
   @page { size: A4; margin: 12mm; }
   @media print {
     html, body, #root { background: #fff !important; }
-    aside, nav, header, footer, .ghk-no-print { display: none !important; }
+    aside, nav, header, footer, .mkt-no-print { display: none !important; }
     main { grid-template-columns: 1fr !important; }
     #kochbuch-root { width: calc(210mm - 24mm); margin: 0 auto !important; box-shadow: none !important; border: none !important; background: #fff !important; }
-    .ghk-hero { box-shadow: none !important; border: 0 !important; padding: 0 !important; background: #fff !important; }
-    .ghk-hero-inner { background: #fff !important; border-radius: 0 !important; padding: 0 !important; margin: 0 0 6mm 0 !important; }
-    .ghk-hero h1 { margin: 0 0 2mm 0 !important; font-size: 18pt !important; line-height: 1.2 !important; }
+    .mkt-hero { box-shadow: none !important; border: 0 !important; padding: 0 !important; background: #fff !important; }
+    .mkt-hero-inner { background: #fff !important; border-radius: 0 !important; padding: 0 !important; margin: 0 0 6mm 0 !important; }
+    .mkt-hero h1 { margin: 0 0 2mm 0 !important; font-size: 18pt !important; line-height: 1.2 !important; }
     .day-section, .meal-card { break-inside: avoid; page-break-inside: avoid; -webkit-column-break-inside: avoid; -webkit-region-break-inside: avoid; }
     .meal-card { margin-bottom: 12mm; }
     h2, h3 { break-after: avoid; page-break-after: avoid; }
@@ -1392,9 +1392,9 @@ export default function Woche1ZH() {
 `}</style>
 
       {/* 顶部区块 + 操作 */}
-      <div className="ghk-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
+      <div className="mkt-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
         <div
-          className="ghk-hero-inner"
+          className="mkt-hero-inner"
           style={{
             background: "var(--grad-hero)",
             borderRadius: 12,
@@ -1415,7 +1415,7 @@ export default function Woche1ZH() {
         </div>
 
         <div
-          className="ghk-no-print"
+          className="mkt-no-print"
           style={{
             display: "flex",
             gap: 8,
@@ -1425,18 +1425,18 @@ export default function Woche1ZH() {
           }}
         >
           {/* 单选：食谱 ⇄ 购物清单 */}
-          <fieldset className="ghk-segment" role="radiogroup" aria-label="选择视图">
+          <fieldset className="mkt-segment" role="radiogroup" aria-label="选择视图">
             <legend className="sr-only">视图</legend>
 
             <label htmlFor="view-kochbuch">
               <input
                 id="view-kochbuch"
                 type="radio"
-                name="ghk-view"
+                name="mkt-view"
                 value="kochbuch"
                 checked={tab === "kochbuch"}
                 onChange={() => setTab("kochbuch")}
-                aria-controls="ghk-content"
+                aria-controls="mkt-content"
               />
               <span>{UI_TITLES.main}</span>
             </label>
@@ -1445,11 +1445,11 @@ export default function Woche1ZH() {
               <input
                 id="view-liste"
                 type="radio"
-                name="ghk-view"
+                name="mkt-view"
                 value="liste"
                 checked={tab === "liste"}
                 onChange={() => setTab("liste")}
-                aria-controls="ghk-content"
+                aria-controls="mkt-content"
               />
               <span>{UI_TITLES.list}</span>
             </label>
@@ -1457,13 +1457,13 @@ export default function Woche1ZH() {
 
           {/* 导出/打印 + 主题  (Rechtsbündig via marginLeft: auto) */}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginLeft: "auto" }}>
-            <button type="button" onClick={doExportPDF} title="导出为 PDF" className="ghk-tab">
+            <button type="button" onClick={doExportPDF} title="导出为 PDF" className="mkt-tab">
               <span className="icon">📄</span> PDF
             </button>
-            <button type="button" onClick={doExportHTML} title="导出为 HTML" className="ghk-tab">
+            <button type="button" onClick={doExportHTML} title="导出为 HTML" className="mkt-tab">
               <span className="icon">🌐</span> HTML
             </button>
-            <button type="button" onClick={doPrint} title="打印" className="ghk-tab">
+            <button type="button" onClick={doPrint} title="打印" className="mkt-tab">
               <span className="icon">🖨️</span> 打印
             </button>
 
@@ -1478,9 +1478,9 @@ export default function Woche1ZH() {
         <WeekOverview data={DATA} />
 
         {/* 内容：两个固定面板，通过 hidden 切换 */}
-        <div id="ghk-content" data-view={tab}>
+        <div id="mkt-content" data-view={tab}>
           <section
-            id="ghk-pane-kochbuch"
+            id="mkt-pane-kochbuch"
             aria-labelledby="view-kochbuch"
             aria-hidden={tab !== "kochbuch"}
             hidden={tab !== "kochbuch"}
@@ -1489,7 +1489,7 @@ export default function Woche1ZH() {
           </section>
 
           <section
-            id="ghk-pane-liste"
+            id="mkt-pane-liste"
             aria-labelledby="view-liste"
             aria-hidden={tab !== "liste"}
             hidden={tab !== "liste"}

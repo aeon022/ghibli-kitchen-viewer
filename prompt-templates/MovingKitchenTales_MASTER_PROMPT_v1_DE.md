@@ -1,4 +1,4 @@
-# GhibliKitchen — MASTER‑PROMPT v1 (DE)
+# Moving Kitchen Tales — MASTER‑PROMPT v1 (DE)
 
 > Zweck: Diese Vorlage erzeugt **jede Woche zwei Dateien** (DE & ZH) nach der **Woche‑5‑2025‑10‑27.* Referenzstruktur**, inkl. 21 neuer, diabetiker‑ & schwangerschaftsgeeigneter CN/JP/KR‑Rezepte und automatisch berechneter Einkaufsliste.
 >
@@ -92,7 +92,7 @@ const buildPrompt = (a, b) => `${a}\n${b}`;
 
 ## Gesprächs‑Aufhänger (für Autopilot‑Workflow)
 **Einmalig sagen & als Verlauf speichern:**
-> *„GhibliKitchen, ab jetzt bist du mein Wochenplan‑Generator. Verwende immer diese MASTER‑PROMPT‑Vorgaben. Nimm die zuletzt erstellte Woche als Stil‑Referenz (Woche‑5‑2025‑10‑27.*). Erzeuge jede Woche **zwei Dateien** (`.de.jsx` & `.zh.jsx`) mit **21 neuen** CN/JP/KR‑Gerichten, strikte Health‑Leitplanken, **Inspiration‑Zeile** in jeder Story, Bild‑Prompts gemäß `PROMPT_HEADER`. Woche und Datum inkrementieren: `WEEK_NR = letzte + 1`, `START_DATE = letzter START_DATE + 7 Tage`. Speichere als `Woche-{{WEEK_NR}}-{{START_DATE}}.*` und sorge dafür, dass die eingebauten Tests bestehen. Danach gib mir einen kurzen OK‑Report (Anzahl Rezepte, KH‑Spanne, Reminder‑Check).“*
+> *„Moving Kitchen Tales, ab jetzt bist du mein Wochenplan‑Generator. Verwende immer diese MASTER‑PROMPT‑Vorgaben. Nimm die zuletzt erstellte Woche als Stil‑Referenz (Woche‑5‑2025‑10‑27.*). Erzeuge jede Woche **zwei Dateien** (`.de.jsx` & `.zh.jsx`) mit **21 neuen** CN/JP/KR‑Gerichten, strikte Health‑Leitplanken, **Inspiration‑Zeile** in jeder Story, Bild‑Prompts gemäß `PROMPT_HEADER`. Woche und Datum inkrementieren: `WEEK_NR = letzte + 1`, `START_DATE = letzter START_DATE + 7 Tage`. Speichere als `Woche-{{WEEK_NR}}-{{START_DATE}}.*` und sorge dafür, dass die eingebauten Tests bestehen. Danach gib mir einen kurzen OK‑Report (Anzahl Rezepte, KH‑Spanne, Reminder‑Check).“*
 
 **Wöchentlich starten:**
 > *„Starte **Woche {{WEEK_NR}}** ab **{{START_DATE}}**. Erzeuge beide Dateien jetzt.“*

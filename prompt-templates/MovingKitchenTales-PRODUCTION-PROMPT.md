@@ -1,4 +1,4 @@
-# 🏭 GhibliKitchen Production Prompt — **Korrigierte Version (DE & ZH, 2 Dateien strikt)**
+# 🏭 Moving Kitchen Tales Production Prompt — **Korrigierte Version (DE & ZH, 2 Dateien strikt)**
 
 Dieser Prompt erzwingt die Ausgabe von **genau zwei getrennten Dateien** – eine **deutsche** und eine **chinesische** – im **identischen** Design und Verhalten wie die Referenz **„Woche-4-2025-10-20“**. **Keine Kombi-Datei.**
 
@@ -61,8 +61,8 @@ const FILE_BASE = "Woche {{WEEK_NR}} {{START_DATE}}";
 ```
 
 **UI-Titel (anzeigen):**
-- Hauptseite: `GhibliKitchen – Woche {{WEEK_NR}}`
-- Liste: `GhibliKitchen – Einkaufsliste – Woche {{WEEK_NR}}`
+- Hauptseite: `Moving Kitchen Tales – Woche {{WEEK_NR}}`
+- Liste: `Moving Kitchen Tales – Einkaufsliste – Woche {{WEEK_NR}}`
 
 **Farben & Styles:**
 
@@ -274,9 +274,9 @@ function Tests() {
     if (asJson.includes('"de":') || asJson.includes('"zh":') || asJson.includes('{"de"') || asJson.includes('{"zh"')) {
       throw new Error("DATA muss monolingual sein (keine { de, zh }-Objekte im finalen Output).");
     }
-    console.log("[GhibliKitchen] All tests passed (JSX).");
+    console.log("[Moving Kitchen Tales] All tests passed (JSX).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }
 ```

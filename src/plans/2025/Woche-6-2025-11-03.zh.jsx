@@ -972,12 +972,12 @@ function GroceryList() {
 /* ---------- 主组件 ---------- */
 export default function Woche6_2025_11_03_ZH() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "zh");
   const t = UI[lang] || UI.zh;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });

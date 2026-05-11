@@ -3,7 +3,7 @@
 **Moving Kitchen Tales** ist ein Koch- und Ernährungs-Assistent für strukturierte Wochenpläne, Einkaufslisten und bebilderte Kochbuch-Layouts – mit Fokus auf **CN/JP/KR-Küche**, mild gewürzt und angepasst an **Diabetes (früh), Gastritis (mild) und Schwangerschaft**.  
 Das Projekt verbindet klar definierte **Gesundheits-Leitplanken**, ein **druckfähiges UI (PDF/HTML)** und eine **Datenstruktur, die von einem GPT („Moving Kitchen Tales“) erzeugt/validiert werden kann**.
 
-Du findest Moving Kitchen Tales Viewer auf Github Pages https://aeon022.github.io/ghibli-kitchen-viewer/ und den Code auf Github https://github.com/aeon022/ghibli-kitchen-viewer/.
+Du findest Moving Kitchen Tales Viewer auf Github Pages https://aeon022.github.io/moving-kitchen-tales/ und den Code auf Github https://github.com/aeon022/moving-kitchen-tales/.
 
 ---
 

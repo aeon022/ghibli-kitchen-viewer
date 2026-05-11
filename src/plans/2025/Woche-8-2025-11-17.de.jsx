@@ -1414,12 +1414,12 @@ function GroceryList() {
 /* ---------- Root-Komponente ---------- */
 export default function Woche8_2025_11_17_DE() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "de");
   const t = UI[lang] || UI.de;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });

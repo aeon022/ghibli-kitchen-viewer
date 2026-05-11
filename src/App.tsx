@@ -4,7 +4,7 @@ import { Routes, Route, Link, Navigate, useLocation, useNavigate, useParams } fr
 import { useBookmarks, Bookmark } from "./hooks/useBookmarks";
 
 type Lang = "de" | "zh";
-const LANG_KEY = "ghk.lang";
+const LANG_KEY = "mkt.lang";
 
 type Recipe = {
   id: string;
@@ -99,7 +99,7 @@ function useLang() { return useContext(LangCtx); }
 function LangProvider({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const nav = useNavigate();
-  const isRoot = location.pathname === "/" || location.pathname === "/ghibli-kitchen-viewer" || location.pathname === "/ghibli-kitchen-viewer/";
+  const isRoot = location.pathname === "/" || location.pathname === "/moving-kitchen-tales" || location.pathname === "/moving-kitchen-tales/";
   const [lang, setLangState] = useState<Lang>(() => "de");
 
   useEffect(() => {

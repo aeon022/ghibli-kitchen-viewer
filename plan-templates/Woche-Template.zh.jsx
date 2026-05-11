@@ -966,12 +966,12 @@ function GroceryList() {
 /* ---------- 主组件（默认导出必须是 React 组件！） ---------- */
 export default function Woche4_YYYY_10_20_ZH() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "zh");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "zh");
   const t = UI[lang] || UI.zh;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
@@ -1119,8 +1119,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY 分组缺失");
-    console.log("[GhibliKitchen] All tests passed (ZH JSX).");
+    console.log("[Moving Kitchen Tales] All tests passed (ZH JSX).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }

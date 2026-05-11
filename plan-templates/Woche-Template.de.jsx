@@ -16,8 +16,8 @@ export const meta = {
 const FILE_BASE = "Woche X YYYY-MM-DD";
 
 const UI_TITLES = {
-  main: "GhibliKitchen – Woche X",
-  list: "GhibliKitchen – Einkaufsliste – Woche X",
+  main: "Moving Kitchen Tales – Woche X",
+  list: "Moving Kitchen Tales – Einkaufsliste – Woche X",
 };
 
 const COLORS = {
@@ -906,12 +906,12 @@ function GroceryList() {
 // ---------- Main ----------
 export default function Woche4_YYYY_10_20_DE() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "de");
   const t = UI[lang] || UI.de;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
@@ -1056,9 +1056,9 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY groups missing");
-    console.log("[GhibliKitchen] All tests passed (JSX).");
+    console.log("[Moving Kitchen Tales] All tests passed (JSX).");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }
 

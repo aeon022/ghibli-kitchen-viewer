@@ -63,7 +63,7 @@ const cardMainStyle = {
 
 // ---------- Prompt Header（仅在代码保留） ----------
 const PROMPT_HEADER =
-  "Use exactly two cats only: Fleur (small, playful, European Shorthair, grey-black tabby) and Finn (larger, reserved prankster, European Shorthair, grey-black tabby). No third cat, no extra animals. Chinese woman (traditional or sporty-modern; occasional Princess Mononoke aura). Western man with short fauxhawk. Studio Ghibli watercolor vibe, warm golden light, gentle magical steam/pot/vegetable spirits. Pregnancy-safe food only (no raw fish/eggs). A4 landscape page; manga/cartoon panel with generous margins; image intended to occupy ≤ one-third of the page width on the left.";
+  "Use exactly two cats only: Fleur (small, playful, European Shorthair, grey-black tabby) and Finn (larger, reserved prankster, European Shorthair, grey-black tabby). No third cat, no extra animals. Chinese woman (traditional or sporty-modern; occasional quiet folklore aura). Western man with short fauxhawk. warm hand-painted watercolor vibe, warm golden light, gentle magical steam/pot/vegetable spirits. Pregnancy-safe food only (no raw fish/eggs). A4 landscape page; manga/cartoon panel with generous margins; image intended to occupy ≤ one-third of the page width on the left.";
 
 const buildPrompt = (a, b) => `${a}\n${b}`;
 

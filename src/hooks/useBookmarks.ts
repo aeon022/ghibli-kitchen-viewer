@@ -9,12 +9,12 @@ export interface Bookmark {
 
 export function useBookmarks() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(() => {
-    const saved = localStorage.getItem('ghk.bookmarks');
+    const saved = localStorage.getItem('mkt.bookmarks');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('ghk.bookmarks', JSON.stringify(bookmarks));
+    localStorage.setItem('mkt.bookmarks', JSON.stringify(bookmarks));
   }, [bookmarks]);
 
   const addBookmark = (bookmark: Bookmark) => {

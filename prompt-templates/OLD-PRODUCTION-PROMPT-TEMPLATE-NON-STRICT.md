@@ -17,7 +17,7 @@ Ziel & UI-Layout (fix, Woche-3-Style)
 - DALL·E-Prompts **nicht rendern** (nur als Strings im Code vorhanden).
 - Bilder-Uploads (Cover + je Rezept) via FileReader, persistiert in localStorage (`${FILE_BASE}::img::cover`, `${FILE_BASE}::img::recipe::${id}`).
 - **Wochentag-Überschrift:** pro Rezept **oberhalb des Rezepttitels im rechten Hauptteil** (nicht als eigener H-Tag), kleine Zeile.
-- **Kurz-Story (neutral):** Direkt **unter** dem Rezepttitel im rechten Hauptteil, sachlich (Region/Anlass/Saison, z. B. „kommt aus …, beliebt im …“), **Schriftgröße: 12**. Kein übertriebener „Ghibli“-Stil.
+- **Kurz-Story (neutral):** Direkt **unter** dem Rezepttitel im rechten Hauptteil, sachlich (Region/Anlass/Saison, z. B. „kommt aus …, beliebt im …“), **Schriftgröße: 12**. Kein übertriebener „Fantasy“-Stil.
 - Mittags **kein** Metformin-Reminder; Frühstück/Abend **mit** Reminder-Box.
 
 
@@ -25,8 +25,8 @@ Fixe Metadaten & Dateibasis
 export const meta = { title: "Woche {{WEEK_NR}}", startDate: "{{START_DATE}}", id: "woche-{{WEEK_NR}}-{{START_DATE}}" }
 const FILE_BASE = "Woche {{WEEK_NR}} {{START_DATE}}";
 // UI-Titel:
-//   „GhibliKitchen – Woche {{WEEK_NR}}“
-//   „GhibliKitchen – Einkaufsliste – Woche {{WEEK_NR}}“
+//   „Moving Kitchen Tales – Woche {{WEEK_NR}}“
+//   „Moving Kitchen Tales – Einkaufsliste – Woche {{WEEK_NR}}“
 
 
 Farb- & Stilvorgaben (Woche-3-Style)
@@ -133,7 +133,7 @@ Tests (Pflicht, am Ende mounten)
 - FILE_BASE Regex: `^Woche {{WEEK_NR}} \d{4}-\d{2}-\d{2}$`.
 - `buildPrompt("A","B") === "A\nB"`.
 - LIST_SUMMARY besitzt **genau 4 Gruppen**.
-- Konsolen-Log: `"[GhibliKitchen] All tests passed (JSX)."`
+- Konsolen-Log: `"[Moving Kitchen Tales] All tests passed (JSX)."`
 
 
 Parameter

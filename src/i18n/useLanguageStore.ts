@@ -11,7 +11,7 @@ type LanguageState = {
   getSnapshot: () => Lang;
 };
 
-const STORAGE_KEY = 'ghibli-lang';
+const STORAGE_KEY = 'moving-kitchen-tales-lang';
 const listeners = new Set<() => void>();
 
 function getInitialLang(): Lang {

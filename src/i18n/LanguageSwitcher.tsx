@@ -1,7 +1,7 @@
 // src/i18n/LanguageSwitcher.tsx
 import React, { useEffect, useState } from "react";
 
-const KEY = "ghk.lang";
+const KEY = "mkt.lang";
 const OPTIONS = [
   { code: "de", label: "DE" },
   { code: "zh", label: "中文" },
@@ -21,7 +21,7 @@ export default function LanguageSwitcher() {
 
   useEffect(() => {
     try { localStorage.setItem(KEY, val); } catch {}
-    window.dispatchEvent?.(new Event("ghk:lang-change"));
+    window.dispatchEvent?.(new Event("mkt:lang-change"));
   }, [val]);
 
   return (

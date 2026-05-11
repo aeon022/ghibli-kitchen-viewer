@@ -115,7 +115,7 @@ const cardPanelStyle = {
 };
 
 const tagChip = (text) => (
-  <span className="ghk-chip" style={{ display: "inline-block", padding: "2px 10px", borderRadius: 999, background: "var(--chip-bg)", border: "1px solid var(--border)", fontSize: 12, marginRight: 6, marginBottom: 6 }}>
+  <span className="mkt-chip" style={{ display: "inline-block", padding: "2px 10px", borderRadius: 999, background: "var(--chip-bg)", border: "1px solid var(--border)", fontSize: 12, marginRight: 6, marginBottom: 6 }}>
     {text}
   </span>
 );
@@ -831,7 +831,7 @@ function ImageBanner({ meal, year = 2026, weekFolder = "kw3" }) {
   }, [meal, year, weekFolder]);
 
   return (
-    <div className="ghk-art" style={{ position: "relative", borderRadius: 14, overflow: "hidden", marginBottom: 12, border: "1px solid var(--border)", boxShadow: "var(--shadow)" }}>
+    <div className="mkt-art" style={{ position: "relative", borderRadius: 14, overflow: "hidden", marginBottom: 12, border: "1px solid var(--border)", boxShadow: "var(--shadow)" }}>
       <img src={src} alt={meal.title} style={{ width: "100%", height: "auto", display: "block", aspectRatio: "16/9", objectFit: "cover" }} loading="lazy" />
     </div>
   );
@@ -885,7 +885,7 @@ function DaySection({ dayKey, meals, dayName }) {
   return (
     <section className="day-section" style={{ marginBottom: 40 }} id={`day-${dayKey}`}>
       <h2 style={{ marginBottom: 16, borderBottom:"2px solid var(--border)", paddingBottom:8 }}>
-        {dayName.replace(/\s*\(.+\)$/ , "")} <span className="ghk-date-paren" style={{fontSize:"0.7em", color:"var(--muted)", fontWeight:400}}>{dayName.match(/\(.+\)$/)?.[0] ?? ""}</span>
+        {dayName.replace(/\s*\(.+\)$/ , "")} <span className="mkt-date-paren" style={{fontSize:"0.7em", color:"var(--muted)", fontWeight:400}}>{dayName.match(/\(.+\)$/)?.[0] ?? ""}</span>
       </h2>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 24 }}>
         {meals.map((m) => <MealCard key={m.id} meal={m} />)}
@@ -915,9 +915,9 @@ function WeekOverview({ data, DAY_NAME_ZH, meta }) {
   return (
     <section style={{ marginBottom: 32 }}>
       <div style={{ ...cardPanelStyle, background: "var(--panel)", border: "1px solid var(--border)" }}>
-        <div className="ghk-hero-inner" style={{ padding: 18, borderRadius: 12, marginBottom: 16, background: "var(--grad-hero)" }}>
+        <div className="mkt-hero-inner" style={{ padding: 18, borderRadius: 12, marginBottom: 16, background: "var(--grad-hero)" }}>
           <h2 style={{ margin: 0 }}>
-            第3周 – 总览 <span className="ghk-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
+            第3周 – 总览 <span className="mkt-date-paren" style={{ color: "var(--muted)" }}>({meta.startDate})</span>
           </h2>
           <p style={{ marginTop: 6, color: "var(--muted)" }}>JP/CN · 孕期安全 (全熟/清淡) · 多鱼/海鲜 · 每日1次电饭煲料理</p>
         </div>
@@ -990,14 +990,14 @@ async function exportPdfFromRoot(rootEl, filename) {
   if (!window.html2pdf) throw new Error("html2pdf 不可用");
   const clone = rootEl.cloneNode(true);
   clone.id = "kochbuch-export";
-  clone.classList.add("ghk-exporting");
+  clone.classList.add("mkt-exporting");
   document.body.appendChild(clone);
   window.scrollTo(0, 0);
   await nextFrame();
   const opt = {
     margin: [34, 28, 34, 28],
     filename,
-    pagebreak: { mode: ["css", "legacy"], after: [".day-section"], avoid: [".meal-card", ".ghk-hero"] },
+    pagebreak: { mode: ["css", "legacy"], after: [".day-section"], avoid: [".meal-card", ".mkt-hero"] },
     html2canvas: { backgroundColor: "#FFFFFF", useCORS: true, logging: false, scale: 2, scrollY: -window.scrollY },
     jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
   };
@@ -1007,11 +1007,11 @@ async function exportPdfFromRoot(rootEl, filename) {
 // Theme Switch Component
 function ThemeSwitch({ mode, setMode, effectiveDark }) {
   return (
-    <div className="ghk-theme-switch" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: 6, border: "1px solid var(--btn-border)", borderRadius: 999, background: "var(--panel)" }}>
-      <button type="button" className="ghk-tab" aria-pressed={mode === "auto"} onClick={() => setMode(mode === "auto" ? (effectiveDark ? "dark" : "light") : "auto")} style={{ padding: "6px 10px" }}>Auto</button>
-      <label className="ghk-switch" title={effectiveDark ? "暗色" : "亮色"}>
+    <div className="mkt-theme-switch" style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: 6, border: "1px solid var(--btn-border)", borderRadius: 999, background: "var(--panel)" }}>
+      <button type="button" className="mkt-tab" aria-pressed={mode === "auto"} onClick={() => setMode(mode === "auto" ? (effectiveDark ? "dark" : "light") : "auto")} style={{ padding: "6px 10px" }}>Auto</button>
+      <label className="mkt-switch" title={effectiveDark ? "暗色" : "亮色"}>
         <input type="checkbox" checked={effectiveDark} onChange={(e) => setMode(e.target.checked ? "dark" : "light")} disabled={mode === "auto"} />
-        <span className="ghk-slider" />
+        <span className="mkt-slider" />
       </label>
     </div>
   );
@@ -1065,30 +1065,30 @@ export default function Woche3ZH() {
       .meal-card li { line-height: 1.7; margin-bottom: 0.5rem; }
       .meal-card h4 { margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--accent-2); font-weight: 700; }
       
-      .ghk-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
-      .ghk-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
-      .ghk-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
-      .ghk-switch input{ opacity:0; width:0; height:0; position:absolute; }
-      .ghk-switch .ghk-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
-      .ghk-switch .ghk-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
-      .ghk-switch input:checked + .ghk-slider{ background:var(--accent-2); border-color:var(--accent-2); }
-      .ghk-switch input:checked + .ghk-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
+      .mkt-tab { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; border-radius: 12px; border: 1px solid var(--btn-border); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; }
+      .mkt-tab:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-color: var(--accent-2); }
+      .mkt-switch{ --w:48px; --h:28px; --k:22px; position:relative; display:inline-block; width:var(--w); height:var(--h); }
+      .mkt-switch input{ opacity:0; width:0; height:0; position:absolute; }
+      .mkt-switch .mkt-slider{ position:absolute; inset:0; border-radius:var(--h); background:var(--btn-border); border:1px solid var(--btn-border); transition:0.2s; }
+      .mkt-switch .mkt-slider::before{ content:""; position:absolute; height:var(--k); width:var(--k); left:3px; top:50%; transform:translateY(-50%); border-radius:999px; background:var(--panel); box-shadow:var(--shadow); transition:transform .2s; }
+      .mkt-switch input:checked + .mkt-slider{ background:var(--accent-2); border-color:var(--accent-2); }
+      .mkt-switch input:checked + .mkt-slider::before{ transform:translateY(-50%) translateX(calc(var(--w) - var(--k) - 6px)); }
 
-      .ghk-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
-      .ghk-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
-      .ghk-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
-      .ghk-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
-      .ghk-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
+      .mkt-segment{ display:inline-flex; gap:4px; border:1px solid var(--btn-border); border-radius:999px; padding:4px; background:var(--panel); }
+      .mkt-segment label{ position:relative; display:inline-flex; align-items:center; border-radius:999px; overflow:hidden; cursor:pointer; }
+      .mkt-segment input[type="radio"]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+      .mkt-segment span{ display:inline-block; padding:8px 14px; border-radius:999px; border:1px solid transparent; }
+      .mkt-segment input[type="radio"]:checked + span{ background:var(--btn-on-bg); outline:2px solid var(--accent-2); outline-offset:1px; }
 
-      #ghk-content{ display:block !important; }
-      #ghk-content > [hidden]{ display:none !important; }
+      #mkt-content{ display:block !important; }
+      #mkt-content > [hidden]{ display:none !important; }
 
-      .ghk-exporting{ width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important; box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important; --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12); --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6; }
-      .ghk-exporting *{ box-shadow:none !important; }
-      .ghk-exporting .ghk-art, .ghk-exporting img{ display:none !important; visibility:hidden !important; }
-      .ghk-exporting .ghk-chip, .ghk-exporting .ghk-date-paren{ display:none !important; }
+      .mkt-exporting{ width:794px !important; max-width:794px !important; margin:0 auto !important; background:#fff !important; box-sizing:border-box !important; font-size:12pt !important; line-height:1.45 !important; --bg:#FFFFFF; --text:#111827; --panel:#FFFFFF; --border:rgba(0,0,0,.12); --muted:#374151; --chip-bg:#F3F4F6; --btn-border:rgba(0,0,0,.15); --btn-on-bg:#F3F4F6; }
+      .mkt-exporting *{ box-shadow:none !important; }
+      .mkt-exporting .mkt-art, .mkt-exporting img{ display:none !important; visibility:hidden !important; }
+      .mkt-exporting .mkt-chip, .mkt-exporting .mkt-date-paren{ display:none !important; }
 
-      @media print { .ghk-art, .ghk-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .ghk-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .ghk-hero, .ghk-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
+      @media print { .mkt-art, .mkt-date-paren{ display:none !important; visibility:hidden !important; } html, body, #root { background:#fff !important; } aside, nav, header, footer, .mkt-no-print { display:none !important; } #kochbuch-root { width: calc(210mm - 24mm); margin:0 auto !important; background:#fff !important; border:none !important; box-shadow:none !important; } .mkt-hero, .mkt-hero-inner { background:#fff !important; box-shadow:none !important; } .day-section, .meal-card { break-inside:avoid; page-break-inside:avoid; } h2, h3 { break-after:avoid; page-break-after:avoid; } #kochbuch-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } a[href]:after { content:""; } }
     `}</style>
   );
 
@@ -1096,8 +1096,8 @@ export default function Woche3ZH() {
     <div style={{ background: "var(--bg)", color: "var(--text)", padding: 24 }}>
       <Styles />
 
-      <div className="ghk-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
-        <div className="ghk-hero-inner" style={{ background: "var(--grad-hero)", borderRadius: 12, padding: 14, marginBottom: 12, display: "grid", gap: 8 }}>
+      <div className="mkt-hero" style={{ ...cardPanelStyle, padding: 16, marginBottom: 18 }}>
+        <div className="mkt-hero-inner" style={{ background: "var(--grad-hero)", borderRadius: 12, padding: 14, marginBottom: 12, display: "grid", gap: 8 }}>
           <h1 style={{ margin: 0 }}>{UI_TITLES.main}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {tagChip(`开始：${meta.startDate}`)}
@@ -1107,22 +1107,22 @@ export default function Woche3ZH() {
           </div>
         </div>
 
-        <div className="ghk-no-print" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
-          <fieldset className="ghk-segment" role="radiogroup" aria-label="选择视图">
+        <div className="mkt-no-print" style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+          <fieldset className="mkt-segment" role="radiogroup" aria-label="选择视图">
             <label>
-              <input type="radio" name="ghk-view" value="kochbuch" checked={tab === "kochbuch"} onChange={() => setTab("kochbuch")} />
+              <input type="radio" name="mkt-view" value="kochbuch" checked={tab === "kochbuch"} onChange={() => setTab("kochbuch")} />
               <span>{UI_TITLES.main}</span>
             </label>
             <label>
-              <input type="radio" name="ghk-view" value="liste" checked={tab === "liste"} onChange={() => setTab("liste")} />
+              <input type="radio" name="mkt-view" value="liste" checked={tab === "liste"} onChange={() => setTab("liste")} />
               <span>{UI_TITLES.list}</span>
             </label>
           </fieldset>
 
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginLeft: "auto" }}>
-            <button type="button" onClick={doExportPDF} className="ghk-tab"><span className="icon">📄</span> PDF</button>
-            <button type="button" onClick={doExportHTML} className="ghk-tab"><span className="icon">🌐</span> HTML</button>
-            <button type="button" onClick={doPrint} className="ghk-tab"><span className="icon">🖨️</span> 打印</button>
+            <button type="button" onClick={doExportPDF} className="mkt-tab"><span className="icon">📄</span> PDF</button>
+            <button type="button" onClick={doExportHTML} className="mkt-tab"><span className="icon">🌐</span> HTML</button>
+            <button type="button" onClick={doPrint} className="mkt-tab"><span className="icon">🖨️</span> 打印</button>
             <ThemeSwitch mode={mode} setMode={setMode} effectiveDark={effectiveDark} />
           </div>
         </div>
@@ -1130,14 +1130,14 @@ export default function Woche3ZH() {
 
       <div id="kochbuch-root" style={{ ...cardPanelStyle }}>
         <WeekOverview data={DATA} DAY_NAME_ZH={DAY_NAME_ZH} meta={meta} />
-        <div id="ghk-content" data-view={tab}>
-          <section id="ghk-pane-kochbuch" aria-hidden={tab !== "kochbuch"} hidden={tab !== "kochbuch"}>
+        <div id="mkt-content" data-view={tab}>
+          <section id="mkt-pane-kochbuch" aria-hidden={tab !== "kochbuch"} hidden={tab !== "kochbuch"}>
             {DAYS_ORDER.map((d) => (
               <DaySection key={d} dayKey={d} meals={DATA.filter(r => r.id.startsWith(d))} dayName={DAY_NAME_ZH[d]} />
             ))}
             <RiceCookerSection data={DATA} />
           </section>
-          <section id="ghk-pane-liste" aria-hidden={tab !== "liste"} hidden={tab !== "liste"}>
+          <section id="mkt-pane-liste" aria-hidden={tab !== "liste"} hidden={tab !== "liste"}>
             {Object.entries(listGroups).map(([group, items]) => (
               <div key={group} style={{ marginBottom: 20 }}>
                 <h3>{group}</h3>

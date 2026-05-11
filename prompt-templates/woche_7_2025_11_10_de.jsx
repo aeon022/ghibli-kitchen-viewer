@@ -18,7 +18,7 @@ import { pickText, pickList } from "../i18n-data";
    Made With Lau, Lee Kum Kee, The Hong Kong Cookery, China Sichuan Food – nur als Inspiration, nicht kopieren!).
 
    >>> PROMPT START <<<
-   Du bist „GhibliKitchen“. Erstelle für Woche {{WEEK_NR}} (Start {{START_DATE}}) exakt 21 neue Gerichte:
+   Du bist „Moving Kitchen Tales“. Erstelle für Woche {{WEEK_NR}} (Start {{START_DATE}}) exakt 21 neue Gerichte:
    7 Tage × Frühstück (f) · Mittag (m) · Abend (a) – IDs im Format "mo|di|mi|do|fr|sa|so- f|m|a".
 
    Objekt-Schema je Rezept:
@@ -64,8 +64,8 @@ const FILE_BASE = "Woche 7 2025-11-10";
 
 /* ---------- UI ----------- */
 const UI_TITLES = {
-  main: "GhibliKitchen – Woche 7",
-  list: "GhibliKitchen – Einkaufsliste – Woche 7",
+  main: "Moving Kitchen Tales – Woche 7",
+  list: "Moving Kitchen Tales – Einkaufsliste – Woche 7",
 };
 
 const COLORS = {
@@ -430,12 +430,12 @@ function GroceryList() {
 /* ---------- Root-Komponente ---------- */
 export default function Woche7_2025_11_10_DE() {
   const [tab, setTab] = useState("kochbuch");
-  const [lang, setLang] = useState(() => localStorage.getItem("ghibli-lang") || "de");
+  const [lang, setLang] = useState(() => localStorage.getItem("moving-kitchen-tales-lang") || "de");
   const t = UI[lang] || UI.de;
   const toggleLang = () => {
     const next = lang === "de" ? "zh" : "de";
     setLang(next);
-    localStorage.setItem("ghibli-lang", next);
+    localStorage.setItem("moving-kitchen-tales-lang", next);
   };
   const [pdfLink, setPdfLink] = useState({ kochbuch: "", einkauf: "" });
   const [htmlLink, setHtmlLink] = useState({ kochbuch: "", einkauf: "" });
@@ -568,7 +568,7 @@ function Tests() {
     if (!/^Woche 7 \d{4}-\d{2}-\d{2}$/.test(FILE_BASE)) throw new Error("FILE_BASE Regex");
     if (buildPrompt("A", "B") !== "A\nB") throw new Error("buildPrompt not working");
     if (DATA.length === 0) {
-      console.warn("[GhibliKitchen] Template-Modus: DATA leer – strikte Tests übersprungen (DE).");
+      console.warn("[Moving Kitchen Tales] Template-Modus: DATA leer – strikte Tests übersprungen (DE).");
       return;
     }
     if (DATA.length !== 21) throw new Error("DATA length must be 21");
@@ -583,8 +583,8 @@ function Tests() {
     });
     const groups = Object.keys(LIST_SUMMARY);
     if (groups.length !== 4) throw new Error("LIST_SUMMARY Gruppen fehlen");
-    console.log("[GhibliKitchen] All tests passed (DE JSX). Template valid.");
+    console.log("[Moving Kitchen Tales] All tests passed (DE JSX). Template valid.");
   } catch (e) {
-    console.error("[GhibliKitchen] Tests failed:", e);
+    console.error("[Moving Kitchen Tales] Tests failed:", e);
   }
 }
